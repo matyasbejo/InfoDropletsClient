@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoDroplets.Client", "InfoDroplets.Client\InfoDroplets.Client.csproj", "{6E79738B-F960-41EC-901C-0DAE75358C32}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoDroplets.Models", "InfoDroplets.Models\InfoDroplets.Models.csproj", "{7C7DECD4-317D-43BA-9758-E11D4BD13ACC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{6E79738B-F960-41EC-901C-0DAE75358C32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E79738B-F960-41EC-901C-0DAE75358C32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E79738B-F960-41EC-901C-0DAE75358C32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C7DECD4-317D-43BA-9758-E11D4BD13ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C7DECD4-317D-43BA-9758-E11D4BD13ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C7DECD4-317D-43BA-9758-E11D4BD13ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C7DECD4-317D-43BA-9758-E11D4BD13ACC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
