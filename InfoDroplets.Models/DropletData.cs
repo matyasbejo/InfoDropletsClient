@@ -1,6 +1,6 @@
 ﻿namespace InfoDroplets.Models
 {
-    public class DropletDataRow
+    public class DropletData
     {
         #region variables
         private readonly int dropletId;
@@ -11,7 +11,7 @@
         private readonly DateTime time;
         #endregion
 
-        public DropletDataRow(int dropletId, int satelliteCount, double longitude, double latitude, double height, DateTime time)
+        public DropletData(int dropletId, int satelliteCount, double longitude, double latitude, double height, DateTime time)
         {
             this.dropletId = dropletId;
             this.satelliteCount = satelliteCount;
