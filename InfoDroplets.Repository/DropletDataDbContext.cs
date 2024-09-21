@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using InfoDroplets.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace InfoDropletsClient.Repository;
+namespace InfoDroplets.Repository;
 
 public class DropletDataDbContext : DbContext
 {
