@@ -1,5 +1,6 @@
 ﻿using System;
 using InfoDroplets.Models;
+using InfoDroplets.Repository;
 
 namespace InfoDroplets.ConsoleClient
 {

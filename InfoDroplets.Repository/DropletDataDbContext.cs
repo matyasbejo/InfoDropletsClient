@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InfoDroplets.Repository;
 
-public class DropletDataDbContext : DbContext
+internal class DropletDataDbContext : DbContext
 {
-    public DbSet<DropletData> DropletDatas { get; set; }
+    internal DbSet<DropletData> DropletDatas { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -16,7 +16,7 @@ public class DropletDataDbContext : DbContext
         {
             string conn = @"";
             optionsBuilder.UseLazyLoadingProxies()
-                .UseInMemoryDatabase(conn);
+                .UseSqlServer(conn);
         }
     }
 }
