@@ -48,7 +48,7 @@ namespace InfoDroplets.Models
             var inputValues = inputString.Split(";");
             DropletId = int.Parse(inputValues[0]);
             SatelliteCount = int.Parse(inputValues[1]);
-            Time = DateTime.ParseExact(inputValues[2], "hh:mm:ss", null);
+            Time = DateTime.ParseExact(inputValues[2], "H:m:s", null);
             Latitude = double.Parse(inputValues[3]); 
             Longitude = double.Parse(inputValues[4]);
             Elevation = double.Parse(inputValues[5]);
