@@ -42,5 +42,16 @@ namespace InfoDroplets.Models
             Elevation = elevation;
             Time = time;
         }
+
+        public DropletData(string inputString)
+        {
+            var inputValues = inputString.Split(";");
+            DropletId = int.Parse(inputValues[0]);
+            SatelliteCount = int.Parse(inputValues[1]);
+            Time = DateTime.ParseExact(inputValues[2], "hh:mm:ss", null);
+            Latitude = double.Parse(inputValues[3]); 
+            Longitude = double.Parse(inputValues[4]);
+            Elevation = double.Parse(inputValues[5]);
+        }
     }
 }
