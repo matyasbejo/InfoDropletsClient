@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\InfoDroplets.Models\InfoDroplets.Models.csproj" />
+    <ProjectReference Include="..\InfoDroplets.Repository\InfoDroplets.Repository.csproj" />
   </ItemGroup>
 
 </Project>
