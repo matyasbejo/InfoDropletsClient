@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace InfoDroplets.Repository
 {
-    public class DropletDataRepository : Repository<DataEntry>, IRepository<DataEntry>
+    public class DataEntryRepository : Repository<DataEntry>, IRepository<DataEntry>
     {
-        public DropletDataRepository(ClientDbContext ctx) : base(ctx)
+        public DataEntryRepository(ClientDbContext ctx) : base(ctx)
         {
         }
 
