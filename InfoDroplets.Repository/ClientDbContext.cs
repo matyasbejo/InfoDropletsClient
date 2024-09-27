@@ -9,7 +9,7 @@ namespace InfoDroplets.Repository;
 public class ClientDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
     public DbSet<TrackingEntry> TrackingEntrySet { get; set; }
-    public DbSet<DropletInfo> DropletInfoSet { get; set; }
+    public DbSet<Droplet> DropletSet { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

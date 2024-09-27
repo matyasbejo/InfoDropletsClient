@@ -15,7 +15,7 @@ namespace InfoDroplets.Repository
 
         public override TrackingEntry Read(int id)
         {
-            return ctx.DropletDataSet.FirstOrDefault(d => d.Id == id);
+            return ctx.TrackingEntrySet.FirstOrDefault(d => d.Id == id);
         }
 
         public override void Update(TrackingEntry item)

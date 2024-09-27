@@ -13,7 +13,7 @@ namespace InfoDroplets.Models
         [Required]
         public int DropletId { get; private set; }
 
-        public virtual DropletInfo Droplet { get; private set; }
+        public virtual Droplet Droplet { get; private set; }
 
         [Required]
         [Range(0, 32)]

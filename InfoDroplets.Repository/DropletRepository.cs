@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace InfoDroplets.Repository
 {
-    public class DropletInfoRepository : Repository<DropletInfo>, IRepository<DropletInfo>
+    public class DropletRepository : Repository<Droplet>, IRepository<Droplet>
     {
-        public DropletInfoRepository(ClientDbContext ctx) : base(ctx)
+        public DropletRepository(ClientDbContext ctx) : base(ctx)
         {
         }
 
-        public override DropletInfo Read(int id)
+        public override Droplet Read(int id)
         {
-            return ctx.DropletInfoSet.FirstOrDefault(d => d.Id == id);
+            return ctx.DropletSet.FirstOrDefault(d => d.Id == id);
         }
 
-        public override void Update(DropletInfo item)
+        public override void Update(Droplet item)
         {
             var oldData = Read(item.Id);
             foreach(var prop in oldData.GetType().GetProperties())

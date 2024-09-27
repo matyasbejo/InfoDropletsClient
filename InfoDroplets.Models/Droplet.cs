@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace InfoDroplets.Models
 {
-    public class DropletInfo
+    public class Droplet
     {
         #region Properties
         [Key]
@@ -20,7 +20,7 @@ namespace InfoDroplets.Models
         public virtual ICollection<TrackingEntry>? Measurements { get; set; }
         #endregion
 
-        public DropletInfo(int id, DropletVersion version = DropletVersion.Mk3_1)
+        public Droplet(int id, DropletVersion version = DropletVersion.Mk3_1)
         {
             this.Id = id;
             this.Version = version;
