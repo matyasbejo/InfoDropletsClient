@@ -16,7 +16,7 @@ public class ClientDbContext : Microsoft.EntityFrameworkCore.DbContext
         if (!optionsBuilder.IsConfigured)
         {
             string conn = "DropletDb";
-            optionsBuilder.UseInMemoryDatabase(conn);
+            optionsBuilder.UseInMemoryDatabase(conn).UseLazyLoadingProxies();
         }
     }
 
