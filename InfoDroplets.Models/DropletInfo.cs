@@ -15,15 +15,20 @@ namespace InfoDroplets.Models
         public int Id { get; set; }
 
         [Range(0,5)]
-        public int Generation { get; set; }
+        public DropletVersion Version { get; set; }
 
-        public virtual ICollection<DataEntry> Measurements { get; set; }
+        public virtual ICollection<DataEntry>? Measurements { get; set; }
         #endregion
 
-        public DropletInfo(int id, int generation)
+        public DropletInfo(int id, DropletVersion version = DropletVersion.Mk3_1)
         {
             this.Id = id;
-            this.Generation = generation;
+            this.Version = version;
         }
+    }
+
+    public enum DropletVersion
+    {
+        Mk1, Mk2, Mk3, Mk3_1, Mk4
     }
 }
