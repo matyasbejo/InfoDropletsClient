@@ -34,7 +34,7 @@ namespace InfoDroplets.Logic
         {
             var DataEntry = repo.Read(id);
             if (DataEntry == null)
-                throw new ArgumentException("DataEntry doesn't exist");
+                throw new ArgumentException("TrackingEntry doesn't exist");
 
             return DataEntry;
         }
