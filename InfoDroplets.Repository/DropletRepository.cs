@@ -9,9 +9,7 @@ namespace InfoDroplets.Repository
 {
     public class DropletRepository : Repository<Droplet>, IRepository<Droplet>
     {
-        public DropletRepository(ClientDbContext ctx) : base(ctx)
-        {
-        }
+        public DropletRepository(ClientDbContext ctx) : base(ctx) { }
 
         public override Droplet Read(int id)
         {
