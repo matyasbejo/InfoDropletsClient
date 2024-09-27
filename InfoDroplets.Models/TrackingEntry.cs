@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InfoDroplets.Models
 {
-    public class DataEntry
+    public class TrackingEntry
     {
         #region properties
         [Key]
@@ -35,7 +35,7 @@ namespace InfoDroplets.Models
         public DateTime Time { get; private set; }
         #endregion
 
-        public DataEntry(int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time)
+        public TrackingEntry(int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time)
         {
             DropletId = dropletId;
             SatelliteCount = satelliteCount;
@@ -45,7 +45,7 @@ namespace InfoDroplets.Models
             Time = time;
         }
 
-        public DataEntry(string inputString)
+        public TrackingEntry(string inputString)
         {
             var inputValues = inputString.Split(";");
             DropletId = int.Parse(inputValues[0]);

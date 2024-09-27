@@ -17,7 +17,7 @@ namespace InfoDroplets.Models
         [Range(0,5)]
         public DropletVersion Version { get; set; }
 
-        public virtual ICollection<DataEntry>? Measurements { get; set; }
+        public virtual ICollection<TrackingEntry>? Measurements { get; set; }
         #endregion
 
         public DropletInfo(int id, DropletVersion version = DropletVersion.Mk3_1)

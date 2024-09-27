@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace InfoDroplets.Repository
 {
-    public class DataEntryRepository : Repository<DataEntry>, IRepository<DataEntry>
+    public class TrackingEntryRepository : Repository<TrackingEntry>, IRepository<TrackingEntry>
     {
-        public DataEntryRepository(ClientDbContext ctx) : base(ctx)
+        public TrackingEntryRepository(ClientDbContext ctx) : base(ctx)
         {
         }
 
-        public override DataEntry Read(int id)
+        public override TrackingEntry Read(int id)
         {
             return ctx.DropletDataSet.FirstOrDefault(d => d.Id == id);
         }
 
-        public override void Update(DataEntry item)
+        public override void Update(TrackingEntry item)
         {
             var oldData = Read(item.Id);
             foreach(var prop in oldData.GetType().GetProperties())
