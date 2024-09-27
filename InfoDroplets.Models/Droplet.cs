@@ -12,6 +12,7 @@ namespace InfoDroplets.Models
     {
         #region Properties
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [Range(0,5)]
