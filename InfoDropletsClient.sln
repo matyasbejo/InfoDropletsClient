@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoDroplets.Models", "Info
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoDroplets.ConsoleClient", "InfoDroplets.ConsoleClient\InfoDroplets.ConsoleClient.csproj", "{AA825C2C-BB96-40FF-8C07-37E0550E1E32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoDroplets.Repository", "InfoDroplets.Repository\InfoDroplets.Repository.csproj", "{51772C7C-EF12-4E90-B51B-639610A05B0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoDroplets.Repository", "InfoDroplets.Repository\InfoDroplets.Repository.csproj", "{51772C7C-EF12-4E90-B51B-639610A05B0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoDroplets.Logic", "InfoDroplets.Logic\InfoDroplets.Logic.csproj", "{35258D9E-0F53-4655-9B07-C2E9913473D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{51772C7C-EF12-4E90-B51B-639610A05B0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51772C7C-EF12-4E90-B51B-639610A05B0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51772C7C-EF12-4E90-B51B-639610A05B0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35258D9E-0F53-4655-9B07-C2E9913473D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35258D9E-0F53-4655-9B07-C2E9913473D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35258D9E-0F53-4655-9B07-C2E9913473D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35258D9E-0F53-4655-9B07-C2E9913473D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
