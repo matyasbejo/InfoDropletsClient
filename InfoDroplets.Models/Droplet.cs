@@ -26,6 +26,11 @@ namespace InfoDroplets.Models
             this.Id = id;
             this.Version = version;
         }
+
+        public override string ToString()
+        {
+            return Id.ToString();
+        }
     }
 
     public enum DropletVersion
