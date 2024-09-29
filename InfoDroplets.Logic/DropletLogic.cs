@@ -12,6 +12,7 @@ namespace InfoDroplets.Logic
             this.repo = repo;
         }
 
+        #region CRUD
         public void Create(Droplet item)
         {
            repo.Create(item);
@@ -40,5 +41,19 @@ namespace InfoDroplets.Logic
         {
             repo.Update(item);
         }
+        #endregion
+
+        #region Non CRUD
+        public TrackingEntry GetLastData(int dropletId)
+        {
+            return this.Read(dropletId).Measurements.LastOrDefault();
+        }
+
+        public GpsPos GetPosition(int dropletId)
+        {
+            var data = this.GetLastData(dropletId);
+            return new GpsPos(data.Latitude, data.Longitude, data.Elevation);
+        }
+        #endregion
     }
 }
