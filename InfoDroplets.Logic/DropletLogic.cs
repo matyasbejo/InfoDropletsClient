@@ -65,6 +65,29 @@ namespace InfoDroplets.Logic
             var data = this.GetLastData(dropletId);
             return new GpsPos(data.Latitude, data.Longitude, data.Elevation);
         }
+
+        public double GetDistanceFromGnu(GpsPos gnuPos)
+        {
+            var dropletPos = GetLastData(9);
+            double DistanceSphere = HaversineDistance(dropletPos, gnuPos);
+            double AltitudeDelta = dropletPos.Elevation - gnuPos.Elevation;
+            return Math.Sqrt(Math.Pow(DistanceSphere, 2) + Math.Pow(AltitudeDelta, 2));
+
+            double HaversineDistance(GpsPos pos1, GpsPos pos2)
+            {
+                double earthRadius = 6378;
+                double degreesToRadians = 0.0174532925;
+
+                var latRad = (pos2.Latitude - pos1.Latitude) * degreesToRadians;
+                var lngRad = (pos2.Longitude - pos1.Longitude) * degreesToRadians;
+                var h1 = Math.Sin(latRad / 2) * Math.Sin(latRad / 2) +
+                              Math.Cos(pos1.Latitude * degreesToRadians) * Math.Cos(pos2.Latitude * degreesToRadians) *
+                              Math.Sin(lngRad / 2) * Math.Sin(lngRad / 2);
+                var h2 = 2 * Math.Asin(Math.Min(1, Math.Sqrt(h1)));
+
+                return earthRadius * h2;
+            }
+        }
         #endregion
     }
 }
