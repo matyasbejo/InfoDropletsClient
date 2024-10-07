@@ -28,10 +28,10 @@ public class ClientDbContext : Microsoft.EntityFrameworkCore.DbContext
         .HasForeignKey(dropletData => dropletData.DropletId)
         .OnDelete(DeleteBehavior.Restrict));
 
-        modelBuilder.Entity<Droplet>().HasData(new Droplet(9));
-        modelBuilder.Entity<TrackingEntry>().HasData(new TrackingEntry(1,9, 3, 10, 10, 20, new DateTime(2002, 12, 06)));
-        modelBuilder.Entity<TrackingEntry>().HasData(new TrackingEntry(2,9, 4, 20, 21, 300, new DateTime(2002, 12, 07)));
-        modelBuilder.Entity<TrackingEntry>().HasData(new TrackingEntry(3,9, 4, 21, -10, 30, new DateTime(2002, 12, 08)));
+        modelBuilder.Entity<Droplet>().HasData(new Droplet(10));
+        modelBuilder.Entity<TrackingEntry>().HasData(new TrackingEntry(1,10, 3, 10, 10, 20, new DateTime(2002, 12, 06)));
+        modelBuilder.Entity<TrackingEntry>().HasData(new TrackingEntry(2,10, 4, 20, 21, 300, new DateTime(2002, 12, 07)));
+        modelBuilder.Entity<TrackingEntry>().HasData(new TrackingEntry(3,10, 4, 21, -10, 30, new DateTime(2002, 12, 08)));
     }
 
     public ClientDbContext()
