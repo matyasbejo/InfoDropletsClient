@@ -46,7 +46,18 @@ namespace InfoDroplets.Logic
         #region Non CRUD
         public TrackingEntry GetLastData(int dropletId)
         {
-            return this.Read(dropletId).Measurements.LastOrDefault();
+            var lastMesurement = this.Read(dropletId).Measurements?.LastOrDefault();
+            if (lastMesurement == null)
+                throw new ArgumentNullException("Droplet has no data");
+            else return lastMesurement;
+        }
+
+        public List<TrackingEntry> GetLastDataPair(int dropletId)
+        {
+            var lastMesurement = this.Read(dropletId).Measurements?.TakeLast(2);
+            if (lastMesurement == null)
+                throw new ArgumentNullException("Droplet has no data");
+            else return lastMesurement.ToList();
         }
 
         public GpsPos GetPosition(int dropletId)
