@@ -18,6 +18,13 @@ namespace InfoDroplets.Models
             Elevation = elevation;
         }
 
+        public GpsPos(TrackingEntry trackingEntry)
+        {
+            Latitude = trackingEntry.Latitude;
+            Longitude = trackingEntry.Longitude;
+            Elevation = trackingEntry.Elevation;
+        }
+
         public override string ToString()
         {
             return $"{Latitude},{Longitude},{Elevation}";
