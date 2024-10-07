@@ -1,14 +1,22 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace InfoDroplets.Models
 {
     public class GpsPos
     {
         #region Properties
-        public double Latitude { get; private set; }
+        [Required]
+        [Range(0, 180)]
+        public double Latitude { get; protected set; }
 
-        public double Longitude { get; private set; }
+        [Required]
+        [Range(0, 180)]
+        public double Longitude { get; protected set; }
 
-        public double Elevation { get; private set; }
+        [Required]
+        [Range(0, 50000)]
+        public double Elevation { get; protected set; }
         #endregion
 
         public GpsPos(double latitude, double longitude, double elevation)
@@ -18,11 +26,9 @@ namespace InfoDroplets.Models
             Elevation = elevation;
         }
 
-        public GpsPos(TrackingEntry trackingEntry)
+        public GpsPos()
         {
-            Latitude = trackingEntry.Latitude;
-            Longitude = trackingEntry.Longitude;
-            Elevation = trackingEntry.Elevation;
+               
         }
 
         public override string ToString()

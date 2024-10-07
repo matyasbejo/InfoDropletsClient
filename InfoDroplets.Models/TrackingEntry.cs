@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Metrics;
 
 namespace InfoDroplets.Models
 {
-    public class TrackingEntry
+    public class TrackingEntry : GpsPos
     {
         #region properties
         [Key]
@@ -20,40 +21,19 @@ namespace InfoDroplets.Models
         public int SatelliteCount { get; private set; }
 
         [Required]
-        [Range(0, 180)]
-        public double Longitude { get; private set; }
-
-        [Required]
-        [Range(0, 180)]
-        public double Latitude { get; private set; }
-
-        [Required]
-        [Range(0, 50000)]
-        public double Elevation { get; private set; }
-
-        [Required]
         public DateTime Time { get; private set; }
         #endregion
 
-        public TrackingEntry(int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time)
+        public TrackingEntry(int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time) : base(latitude,longitude,elevation)
         {
             DropletId = dropletId;
             SatelliteCount = satelliteCount;
-            Longitude = longitude;
-            Latitude = latitude;
-            Elevation = elevation;
             Time = time;
         }
 
-        public TrackingEntry(int id, int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time)
+        public TrackingEntry(int id, int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time) : this(dropletId,satelliteCount, longitude, latitude, elevation, time)
         {
             Id = id;
-            DropletId = dropletId;
-            SatelliteCount = satelliteCount;
-            Longitude = longitude;
-            Latitude = latitude;
-            Elevation = elevation;
-            Time = time;
         }
 
         public TrackingEntry(string inputString)
@@ -62,7 +42,7 @@ namespace InfoDroplets.Models
             DropletId = int.Parse(inputValues[0]);
             SatelliteCount = int.Parse(inputValues[1]);
             Time = DateTime.ParseExact(inputValues[2], "H:m:s", null);
-            Latitude = double.Parse(inputValues[3]); 
+            Latitude = double.Parse(inputValues[3]);
             Longitude = double.Parse(inputValues[4]);
             Elevation = double.Parse(inputValues[5]);
         }
