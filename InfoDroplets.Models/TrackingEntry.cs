@@ -45,6 +45,17 @@ namespace InfoDroplets.Models
             Time = time;
         }
 
+        public TrackingEntry(int id, int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time)
+        {
+            Id = id;
+            DropletId = dropletId;
+            SatelliteCount = satelliteCount;
+            Longitude = longitude;
+            Latitude = latitude;
+            Elevation = elevation;
+            Time = time;
+        }
+
         public TrackingEntry(string inputString)
         {
             var inputValues = inputString.Split(";");
