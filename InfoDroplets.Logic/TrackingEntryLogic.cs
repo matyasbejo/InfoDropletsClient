@@ -14,8 +14,10 @@ namespace InfoDroplets.Logic
 
         public void Create(string data)
         {
-            if (data.Split(";").Count() != 6)
-                throw new ArgumentException($"Input string error: {data}");
+            string allowedCharacters = "0123456789;.:";
+            data = data.Trim();
+            if (data.Split(";").Count() != 6 || data.Any(c => !allowedCharacters.Contains(c)))
+                throw new ArgumentException($"Input error: {data}");
 
             repo.Create(new TrackingEntry(data));
         }
