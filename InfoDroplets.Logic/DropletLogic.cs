@@ -1,12 +1,15 @@
 ﻿using InfoDroplets.Models;
 using InfoDroplets.Repository;
+using InfoDroplets.Utils.Enums;
+using InfoDroplets.Utils.SerialCommunication;
+using System.Timers;
 
 namespace InfoDroplets.Logic
 {
     public class DropletLogic
     {
         IRepository<Droplet> repo;
-
+        public event CommandGeneratedEventHandler CommandGenerated;
         public DropletLogic(IRepository<Droplet> repo)
         {
             this.repo = repo;
@@ -86,6 +89,39 @@ namespace InfoDroplets.Logic
                 var h2 = 2 * Math.Asin(Math.Min(1, Math.Sqrt(h1)));
 
                 return earthRadius * h2;
+            }
+        }
+
+        public virtual void SendCommand(int dropletId, RadioCommand commandType)
+        {
+            string command = GetCommand(dropletId, commandType);
+
+            CommandGenerated?.Invoke(this, new CommandEventArgs(command));
+        }
+
+        public virtual void SendCommand(string input)
+        {
+            CommandGenerated?.Invoke(this, new CommandEventArgs(input));
+        }
+
+        string GetCommand(int dropletId, RadioCommand command)
+        {
+            switch (command)
+            {
+                case RadioCommand.FullReset:
+                    return $"F{dropletId}";
+
+                case RadioCommand.GpsReset:
+                    return $"R{dropletId}";
+
+                case RadioCommand.GetVersion:
+                    return $"V{dropletId}";
+
+                case RadioCommand.Ping:
+                    return $"P{dropletId}";
+
+                default:
+                    throw new NotImplementedException("Command unknown");
             }
         }
         #endregion
