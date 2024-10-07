@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InfoDroplets.Utils.Enums;
 
 namespace InfoDroplets.Models
 {
@@ -31,10 +32,5 @@ namespace InfoDroplets.Models
         {
             return Id.ToString();
         }
-    }
-
-    public enum DropletVersion
-    {
-        Mk1, Mk2, Mk3, Mk3_1, Mk4
     }
 }
