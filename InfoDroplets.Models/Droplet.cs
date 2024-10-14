@@ -19,6 +19,14 @@ namespace InfoDroplets.Models
         [Range(0,5)]
         public DropletVersion Version { get; set; }
 
+        public DropletMovementStatus? MovementStatus { get; set; }
+
+        public double? DistanceFromGNU { get; set; }
+
+        public TrackingEntry? LastData { get; set; }
+
+        public GpsPos? Position { get; set; }
+
         public virtual ICollection<TrackingEntry>? Measurements { get; set; }
         #endregion
 
