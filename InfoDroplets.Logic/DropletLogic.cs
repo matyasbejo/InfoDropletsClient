@@ -94,7 +94,7 @@ namespace InfoDroplets.Logic
 
         public virtual void SendCommand(int dropletId, RadioCommand commandType)
         {
-            string command = GetCommand(dropletId, commandType);
+            string command = GenerateCommand(dropletId, commandType);
 
             CommandGenerated?.Invoke(this, new CommandEventArgs(command));
         }
@@ -104,7 +104,7 @@ namespace InfoDroplets.Logic
             CommandGenerated?.Invoke(this, new CommandEventArgs(input));
         }
 
-        string GetCommand(int dropletId, RadioCommand command)
+        string GenerateCommand(int dropletId, RadioCommand command)
         {
             switch (command)
             {
