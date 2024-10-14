@@ -32,14 +32,23 @@ namespace InfoDroplets.Utils.SerialCommunication
             if (!_serialPort.IsOpen)
             {
                 Open();
+
+                bool restarted = false;
+                DateTime timeAtReset = DateTime.Now;
+
                 _serialPort.WriteLine("reset");
-                bool started = false;
-                while (!started)
+                do
                 {
                     var input = ReadLine();
                     if (input.Contains("GNU Reciever"))
-                        started = true;
+                        restarted = true;
+                    else if (DateTime.Now - timeAtReset > TimeSpan.FromSeconds(10))
+                    {
+                        _serialPort.WriteLine("reset");
+                        timeAtReset = DateTime.Now;
+                    }
                 }
+                while (!restarted);
             }
         }
         public void SetPortName(string PortName)
@@ -58,6 +67,7 @@ namespace InfoDroplets.Utils.SerialCommunication
         public void Open() { _serialPort.Open(); }
         public void Close() { _serialPort.Close(); }
         public string ReadLine() { return _serialPort.ReadLine(); }
+        public static string[] GetPortNames() { return SerialPort.GetPortNames(); }
 
         public void Dispose()
         {
