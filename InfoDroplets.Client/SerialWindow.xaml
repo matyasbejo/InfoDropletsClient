@@ -1,12 +1,45 @@
 ﻿<Window x:Class="InfoDroplets.Client.SerialWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:s="clr-namespace:InfoDroplets.Utils.SerialCommunication;assembly=InfoDroplets.Utils"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InfoDroplets.Client"
         mc:Ignorable="d"
-        Title="SerialWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="SerialWindow" Height="450" Width="800"
+        DataContext="InfoDroplets.Utils.SerialWrapper">
+    
+    <Grid Background="AliceBlue">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.Resources>
+            <Style TargetType="Control" x:Key="SerialLoginStyle">
+                <Setter Property="Padding" Value="0,10,0,10" />
+                <Setter Property="Margin" Value="5,5,5,5"/>
+                <Setter Property="FontFamily" Value="Helvetica"/>
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+            <ObjectDataProvider x:Key="SerialWrapperProvider" ObjectType="{x:Type s:SerialWrapper}"/>
+        </Grid.Resources>
+
+        <Label x:Name="lb_title" Content="Info-Droplet Client V1.0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Helvetica" FontSize="30"/>
+
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Background="White" CornerRadius="5"  DataContext="{StaticResource SerialWrapperProvider}">
+            <StackPanel >
+                <Label x:Name="lb_selectPortName" Content="Select serial port:" HorizontalAlignment="Center" Style="{StaticResource SerialLoginStyle}"/>
+                <ComboBox x:Name="cb_portOptions" ItemsSource="{Binding AvaliableSerialPorts}" SelectedIndex="0" Style="{StaticResource SerialLoginStyle}"/>
+                <Button x:Name="bt_submit" Content="Start" Style="{StaticResource SerialLoginStyle}" IsCancel="True" Click="bt_submit_Click"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

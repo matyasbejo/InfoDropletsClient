@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.IO.Ports;
 using System.Linq;
@@ -8,15 +9,21 @@ using System.Threading.Tasks;
 
 namespace InfoDroplets.Utils.SerialCommunication
 {
-
     public class SerialWrapper : IDisposable
     {
         SerialPort _serialPort;
+
+        public List<string> AvaliableSerialPorts { get; set; }
 
         public SerialWrapper(SerialPort serialPort)
         {
             _serialPort = serialPort;
             _serialPort.BaudRate = 9600;
+        }
+        
+        public SerialWrapper()
+        {
+            AvaliableSerialPorts = SerialPort.GetPortNames().ToList();
         }
 
         public void SendCommand(object sender, CommandEventArgs e)
@@ -68,10 +75,20 @@ namespace InfoDroplets.Utils.SerialCommunication
         public void Close() { _serialPort.Close(); }
         public string ReadLine() { return _serialPort.ReadLine(); }
         public static string[] GetPortNames() { return SerialPort.GetPortNames(); }
-
         public void Dispose()
         {
             _serialPort?.Close();
+        }
+    }
+
+    public class SerialWrapper2
+    {
+        public List<string> AvaliableSerialPorts { get; set; }
+
+        public SerialWrapper2()
+        {
+            //Populate with some data
+            AvaliableSerialPorts = new List<string> { "COM1", "COM2", "COM3" };
         }
     }
 }

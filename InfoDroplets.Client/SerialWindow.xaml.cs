@@ -19,9 +19,21 @@ namespace InfoDroplets.Client
     /// </summary>
     public partial class SerialWindow : Window
     {
+        public string SelectedSerialPort { get; set; }
         public SerialWindow()
         {
-            InitializeComponent();
+            InitializeComponent();           
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
+        }
+
+        private void bt_submit_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedSerialPort = cb_portOptions.SelectedItem.ToString();
+            DialogResult = true;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using InfoDroplets.Client;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,9 @@ namespace InfoDropletsClient
         public MainWindow()
         {
             InitializeComponent();
+            SerialWindow serialSetupWindow = new SerialWindow();
+            if(serialSetupWindow.ShowDialog() == true)
+                lb_selectedPort.Content = serialSetupWindow.SelectedSerialPort;
         }
     }
 }
