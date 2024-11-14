@@ -6,7 +6,34 @@
         xmlns:local="clr-namespace:InfoDropletsClient"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Label Name="lb_selectedPort" Content="{Binding }"/>
+        <Grid x:Name="grid_main">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="9*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+            <Style TargetType="Control" x:Key="MainRowActions">
+                <Setter Property="Padding" Value="3,3,3,3" />
+                <Setter Property="Margin" Value="5,5,5,5"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style>
+        </Grid.Resources>
+
+        <StackPanel x:Name="sp_actions"  Orientation="Horizontal" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,10,0">
+            <Label Content="Droplet:" Style="{StaticResource MainRowActions}"/>
+            <ComboBox x:Name="cb_dropletselector" ItemsSource="{Binding Items}" SelectedIndex="0" Style="{StaticResource MainRowActions}"/>
+            <Button x:Name="bt_version" Content="Version" Style="{StaticResource MainRowActions}"/>
+            <Button x:Name="bt_ping" Content="Ping" Style="{StaticResource MainRowActions}"/>
+            <Button x:Name="bt_reset" Content="Reset" Style="{StaticResource MainRowActions}"/>
+        </StackPanel>
+        <Grid x:Name="grid_droplet" Grid.Row="1" Grid.ColumnSpan="2" Background="AliceBlue">
+
+        </Grid>
     </Grid>
 </Window>
