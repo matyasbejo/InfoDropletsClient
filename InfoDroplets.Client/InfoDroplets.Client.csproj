@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InfoDroplets.Logic\InfoDroplets.Logic.csproj" />
     <ProjectReference Include="..\InfoDroplets.Utils\InfoDroplets.Utils.csproj" />
   </ItemGroup>
 
