@@ -50,19 +50,45 @@ namespace InfoDroplets.Logic
             Droplet droplet = Read(id);
             droplet.LastData = GetLastData(id);
             droplet.Position = new GpsPos(droplet.LastData.Latitude, droplet.LastData.Longitude, droplet.LastData.Elevation);
-            if(gnuPos != null) droplet.DistanceFromGNU = GetDistanceFromGnu(id, gnuPos);
+            if (gnuPos != null) droplet.DistanceFromGNU = GetDistanceFromGnu(id, gnuPos);
 
             repo.Update(droplet);
         }
         #endregion
 
         #region Non CRUD
-        public List<TrackingEntry> GetLastDataPair(int dropletId)
+        public DropletMovementStatus GetMovementStatus(int dropletId)
         {
-            var lastMesurement = this.Read(dropletId).Measurements?.TakeLast(2);
-            if (lastMesurement == null)
+            var TrackingEntries = GetLastDatas(dropletId, 8);
+            var middleIndex = TrackingEntries.Count / 2;
+            List<double> firstHalf = TrackingEntries.GetRange(0, middleIndex).Select(d => d.Elevation).ToList();
+            List<double> secondHalf = TrackingEntries.GetRange(middleIndex+1,TrackingEntries.Count-(middleIndex-1)).Select(d => d.Elevation).ToList();
+            if (firstHalf.Average() < secondHalf.Average())
+            {
+                return DropletMovementStatus.Rising;
+            }
+            else if (firstHalf.Average() > secondHalf.Average())
+            {
+                return DropletMovementStatus.Falling;
+            }
+            return DropletMovementStatus.Stationary;
+        }
+
+        public int GetSpeed(int dropletId)
+        {
+            var data = GetLastDatas(dropletId, 4);
+            TrackingEntry pos1 = data.First();
+            TrackingEntry pos2 = data.Last();
+            return 69; //TODO
+        }
+        List<TrackingEntry> GetLastDatas(int dropletId, int dataCount)
+        {
+            var lastMesurements = this.Read(dropletId).Measurements?.TakeLast(dataCount);
+            if (lastMesurements == null)
                 throw new ArgumentNullException("Droplet has no data");
-            else return lastMesurement.ToList();
+            else if (lastMesurements.Count() < 2)
+                throw new ArgumentException("Droplet has not enough data");
+            else return lastMesurements.ToList();
         }
 
         public virtual void SendCommand(int dropletId, RadioCommand commandType)
@@ -76,7 +102,6 @@ namespace InfoDroplets.Logic
         {
             CommandGenerated?.Invoke(this, new CommandEventArgs(input));
         }
-
         string GenerateCommand(int dropletId, RadioCommand command)
         {
             switch (command)
