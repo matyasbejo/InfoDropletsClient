@@ -1,9 +1,9 @@
-﻿
+﻿using InfoDroplets.Utils.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace InfoDroplets.Models
 {
-    public class GpsPos
+    public class GpsPos : IGpsPos
     {
         #region Properties
         [Required]
@@ -28,7 +28,7 @@ namespace InfoDroplets.Models
 
         public GpsPos()
         {
-               
+
         }
 
         public override string ToString()

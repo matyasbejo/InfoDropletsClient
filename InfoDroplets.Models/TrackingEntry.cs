@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Metrics;
+using InfoDroplets.Utils.Interfaces;
 
 namespace InfoDroplets.Models
 {
-    public class TrackingEntry : GpsPos
+    public class TrackingEntry : IGpsPos
     {
         #region properties
         [Key]
@@ -22,9 +23,15 @@ namespace InfoDroplets.Models
 
         [Required]
         public DateTime Time { get; private set; }
+
+        public double Elevation { get; private set; }
+
+        public double Latitude { get; private set; }
+
+        public double Longitude { get; private set; }
         #endregion
 
-        public TrackingEntry(int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time) : base(latitude,longitude,elevation)
+        public TrackingEntry(int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time)
         {
             DropletId = dropletId;
             SatelliteCount = satelliteCount;

@@ -1,13 +1,14 @@
 ﻿using InfoDroplets.Models;
 using InfoDroplets.Repository;
 using InfoDroplets.Utils.Enums;
+using InfoDroplets.Utils.Interfaces;
 using InfoDroplets.Utils.SerialCommunication;
 using System.Timers;
 
 namespace InfoDroplets.Logic
 {
-    public class DropletLogic
-    {
+    public class DropletLogic : IDropletLogic
+    { 
         IRepository<Droplet> repo;
         public event CommandGeneratedEventHandler CommandGenerated;
         public DropletLogic(IRepository<Droplet> repo)
@@ -18,7 +19,7 @@ namespace InfoDroplets.Logic
         #region CRUD
         public void Create(Droplet item)
         {
-           repo.Create(item);
+            repo.Create(item);
         }
 
         public void Delete(Droplet item)
@@ -45,7 +46,7 @@ namespace InfoDroplets.Logic
             repo.Update(item);
         }
 
-        public void UpdateDropletStatus(int id, GpsPos gnuPos = null)
+        public void UpdateDropletStatus(int id, IGpsPos gnuPos = null)
         {
             Droplet droplet = Read(id);
             droplet.LastData = GetLastData(id);
@@ -123,7 +124,7 @@ namespace InfoDroplets.Logic
             }
         }
 
-        double GetDistanceFromGnu(int id, GpsPos gnuPos)
+        double GetDistanceFromGnu(int id, IGpsPos gnuPos)
         {
             GpsPos dropletPos = Read(id).Position;
 
@@ -139,7 +140,7 @@ namespace InfoDroplets.Logic
                 throw new ArgumentNullException("Droplet has no data");
             else return lastMesurement;
         }
-        static double HaversineDistance(GpsPos pos1, GpsPos pos2)
+        static double HaversineDistance(IGpsPos pos1, IGpsPos pos2)
         {
             double earthRadius = 6378;
             double degreesToRadians = 0.0174532925;
