@@ -6,19 +6,27 @@ namespace InfoDroplets.Logic
     public class TrackingEntryLogic
     {
         IRepository<TrackingEntry> repo;
+        IRepository<Droplet> dropletRepo;
 
-        public TrackingEntryLogic(IRepository<TrackingEntry> repo)
+        public TrackingEntryLogic(IRepository<TrackingEntry> teRepo, IRepository<Droplet> dropletRepo)
         {
-            this.repo = repo;
+            this.repo = teRepo;
+            this.dropletRepo = dropletRepo;
         }
 
         public void Create(string data)
         {
             string allowedCharacters = "0123456789;.:";
             data = data.Trim();
-            if (data.Split(";").Count() != 6 || data.Any(c => !allowedCharacters.Contains(c)))
+            var argumentList = data.Split(";");
+            if (argumentList.Count() != 6 || data.Any(c => !allowedCharacters.Contains(c)))
                 throw new ArgumentException($"Input error: {data}");
 
+            int newDropletId = int.Parse(argumentList[0]);
+            if(dropletRepo.ReadAll().Count(droplet => droplet.Id == newDropletId) != 1)
+            {
+                dropletRepo.Create(new Droplet(newDropletId));
+            }
             repo.Create(new TrackingEntry(data));
         }
 

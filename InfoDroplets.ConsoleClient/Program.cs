@@ -10,13 +10,16 @@ namespace InfoDroplets.ConsoleClient
     {
         static void Main(string[] args)
         {
+            List<int> list = new List<int>();
+            var last = list.TakeLast(4);
+
             ClientDbContext ctx = new ClientDbContext();
 
             DropletRepository dropletRepository = new DropletRepository(ctx);
             TrackingEntryRepository trackingEntryRepository = new TrackingEntryRepository(ctx);
 
             DropletLogic dropletLogic = new DropletLogic(dropletRepository);
-            TrackingEntryLogic trackingEntryLogic = new TrackingEntryLogic(trackingEntryRepository);
+            TrackingEntryLogic trackingEntryLogic = new TrackingEntryLogic(trackingEntryRepository,dropletRepository);
 
             SerialWrapper sw = new SerialWrapper(new System.IO.Ports.SerialPort());
 
