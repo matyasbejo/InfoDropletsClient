@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Metrics;
 using InfoDroplets.Utils.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace InfoDroplets.Models
 {
@@ -24,10 +25,13 @@ namespace InfoDroplets.Models
         [Required]
         public DateTime Time { get; private set; }
 
+        [Required]
         public double Elevation { get; private set; }
 
+        [Required]
         public double Latitude { get; private set; }
 
+        [Required]
         public double Longitude { get; private set; }
         #endregion
 
