@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InfoDroplets.Utils.Enums;
+using InfoDroplets.Utils.Interfaces;
 
 namespace InfoDroplets.Models
 {
@@ -23,11 +24,10 @@ namespace InfoDroplets.Models
 
         public double? DistanceFromGNU { get; set; }
 
-        public TrackingEntry? LastData { get; set; }
-
-        public GpsPos? Position { get; set; }
+        public virtual TrackingEntry? LastData { get; set; }
 
         public virtual ICollection<TrackingEntry>? Measurements { get; set; }
+
         #endregion
 
         public Droplet(int id, DropletVersion version = DropletVersion.Mk3_1)

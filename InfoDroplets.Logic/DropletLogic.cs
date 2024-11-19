@@ -50,7 +50,6 @@ namespace InfoDroplets.Logic
         {
             Droplet droplet = Read(id);
             droplet.LastData = GetLastData(id);
-            droplet.Position = new GpsPos(droplet.LastData.Latitude, droplet.LastData.Longitude, droplet.LastData.Elevation);
             if (gnuPos != null) droplet.DistanceFromGNU = GetDistanceFromGnu(id, gnuPos);
 
             repo.Update(droplet);
@@ -126,7 +125,8 @@ namespace InfoDroplets.Logic
 
         double GetDistanceFromGnu(int id, IGpsPos gnuPos)
         {
-            GpsPos dropletPos = Read(id).Position;
+            Droplet droplet = Read(id);
+            GpsPos dropletPos = new GpsPos(droplet.LastData.Latitude, droplet.LastData.Longitude, droplet.LastData.Elevation);
 
             double DistanceSphere = HaversineDistance(dropletPos, gnuPos);
             double AltitudeDelta = dropletPos.Elevation - gnuPos.Elevation;
