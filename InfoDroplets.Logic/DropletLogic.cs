@@ -52,7 +52,7 @@ namespace InfoDroplets.Logic
             droplet.LastData = GetLastData(id);
             if (gnuPos != null) droplet.DistanceFromGNU = GetDistanceFromGnu(id, gnuPos);
 
-            repo.Update(droplet);
+            Update(droplet);
         }
         #endregion
 
@@ -62,7 +62,7 @@ namespace InfoDroplets.Logic
             var TrackingEntries = GetLastDatas(dropletId, 8);
             var middleIndex = TrackingEntries.Count / 2;
             List<double> firstHalf = TrackingEntries.GetRange(0, middleIndex).Select(d => d.Elevation).ToList();
-            List<double> secondHalf = TrackingEntries.GetRange(middleIndex+1,TrackingEntries.Count-(middleIndex-1)).Select(d => d.Elevation).ToList();
+            List<double> secondHalf = TrackingEntries.GetRange(middleIndex,TrackingEntries.Count-(middleIndex)).Select(d => d.Elevation).ToList();
             if (firstHalf.Average() < secondHalf.Average())
             {
                 return DropletMovementStatus.Rising;
@@ -97,7 +97,6 @@ namespace InfoDroplets.Logic
 
             CommandGenerated?.Invoke(this, new CommandEventArgs(command));
         }
-
         public virtual void SendCommand(string input)
         {
             CommandGenerated?.Invoke(this, new CommandEventArgs(input));
@@ -122,7 +121,6 @@ namespace InfoDroplets.Logic
                     throw new NotImplementedException("Command unknown");
             }
         }
-
         double GetDistanceFromGnu(int id, IGpsPos gnuPos)
         {
             Droplet droplet = Read(id);
@@ -132,10 +130,9 @@ namespace InfoDroplets.Logic
             double AltitudeDelta = dropletPos.Elevation - gnuPos.Elevation;
             return Math.Sqrt(Math.Pow(DistanceSphere, 2) + Math.Pow(AltitudeDelta, 2));
         }
-
-        TrackingEntry GetLastData(int dropletId)
+        public TrackingEntry GetLastData(int dropletId)
         {
-            var lastMesurement = this.Read(dropletId).Measurements?.LastOrDefault();
+            var lastMesurement = Read(dropletId).Measurements?.LastOrDefault();
             if (lastMesurement == null)
                 throw new ArgumentNullException("Droplet has no data");
             else return lastMesurement;
