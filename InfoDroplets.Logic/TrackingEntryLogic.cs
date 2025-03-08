@@ -23,7 +23,7 @@ namespace InfoDroplets.Logic
                 throw new ArgumentException($"Input error: {data}");
 
             int newDropletId = int.Parse(argumentList[0]);
-            if(dropletRepo.ReadAll().Count(droplet => droplet.Id == newDropletId) != 1)
+            if(dropletRepo.ReadAll().Count(droplet => droplet.Id == newDropletId) == 0)
             {
                 dropletRepo.Create(new Droplet(newDropletId));
             }
