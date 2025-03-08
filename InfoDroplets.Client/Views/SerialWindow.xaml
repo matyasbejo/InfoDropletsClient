@@ -5,9 +5,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InfoDroplets.Client"
+        xmlns:vms="clr-namespace:InfoDroplets.Client.ViewModels"
         mc:Ignorable="d"
-        Title="SerialWindow" Height="450" Width="800"
-        DataContext="InfoDroplets.Utils.SerialWrapper">
+        Title="SerialWindow" Height="450" Width="800">
+
+    <Window.DataContext>
+        <vms:SerialWindowViewModel/>
+    </Window.DataContext>
     
     <Grid Background="AliceBlue">
         <Grid.ColumnDefinitions>
@@ -29,16 +33,17 @@
                 <Setter Property="FontFamily" Value="Helvetica"/>
                 <Setter Property="FontSize" Value="20"/>
             </Style>
-            <ObjectDataProvider x:Key="SerialWrapperProvider" ObjectType="{x:Type s:SerialWrapper}"/>
         </Grid.Resources>
 
         <Label x:Name="lb_title" Content="Info-Droplet Client V1.0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Helvetica" FontSize="30"/>
 
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Background="White" CornerRadius="5"  DataContext="{StaticResource SerialWrapperProvider}">
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Background="White" CornerRadius="5">
             <StackPanel >
-                <Label x:Name="lb_selectPortName" Content="Select serial port:" HorizontalAlignment="Center" Style="{StaticResource SerialLoginStyle}"/>
-                <ComboBox x:Name="cb_portOptions" ItemsSource="{Binding AvaliableSerialPorts}" SelectedIndex="0" Style="{StaticResource SerialLoginStyle}"/>
-                <Button x:Name="bt_submit" Content="Start" Style="{StaticResource SerialLoginStyle}" IsCancel="True" Click="bt_submit_Click"/>
+                <Label x:Name="lb_serialPort" Content="Serial port:" HorizontalAlignment="Center" Style="{StaticResource SerialLoginStyle}"/>
+                <ComboBox x:Name="cb_portOptions" ItemsSource="{Binding SerialPorts}" SelectedIndex="0" Style="{StaticResource SerialLoginStyle}" SelectedItem="{Binding SelectedPort}"/>
+                <Label x:Name="lb_baudRate" Content="Baud rate:" HorizontalAlignment="Center" Style="{StaticResource SerialLoginStyle}"/>
+                <ComboBox x:Name="cb_BaudRateOptions" ItemsSource="{Binding PossibleBaudRates}" SelectedIndex="1" Style="{StaticResource SerialLoginStyle}" SelectedItem="{Binding SelectedBaudRate}"/>
+                <Button x:Name="bt_submit" Content="Start" Style="{StaticResource SerialLoginStyle}" IsCancel="True" Command="{Binding SubmitCommand}"/>
             </StackPanel>
         </Border>
     </Grid>
