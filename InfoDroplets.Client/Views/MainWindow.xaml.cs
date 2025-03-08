@@ -1,4 +1,5 @@
 ﻿using InfoDroplets.Client;
+using InfoDroplets.Client.ViewModels;
 using System.ComponentModel;
 using System.Text;
 using System.Windows;
@@ -31,11 +32,8 @@ namespace InfoDropletsClient
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this;
-            Items = new List<string>();
-            Items.Add("1");
-            Items.Add("2");
-            Items.Add("3");
+            SerialWindow serialWindow = new SerialWindow();
+            serialWindow.ShowDialog();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
