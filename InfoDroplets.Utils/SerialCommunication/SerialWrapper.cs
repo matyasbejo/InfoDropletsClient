@@ -6,24 +6,19 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InfoDroplets.Utils.Interfaces;
 
 namespace InfoDroplets.Utils.SerialCommunication
 {
-    public class SerialWrapper : IDisposable
+    public class SerialWrapper : ISerialWrapper
     {
         SerialPort _serialPort;
 
         public List<string> AvaliableSerialPorts { get; set; }
 
-        public SerialWrapper(SerialPort serialPort)
-        {
-            _serialPort = serialPort;
-            _serialPort.BaudRate = 9600;
-        }
-        
         public SerialWrapper()
         {
-            AvaliableSerialPorts = SerialPort.GetPortNames().ToList();
+            _serialPort = new SerialPort();
         }
 
         public void SendCommand(object sender, CommandEventArgs e)
@@ -62,9 +57,18 @@ namespace InfoDroplets.Utils.SerialCommunication
         {
             _serialPort.PortName = PortName;
         }
-        public void SetBaudeRate(int BaudeRate)
+        public void SetBaudeRate(int BaudeRate = 9600)
         {
             _serialPort.BaudRate = BaudeRate;
+        }
+
+        public string GetPortName()
+        {
+            return _serialPort.PortName;
+        }
+        public int GetBaudeRate()
+        {
+            return _serialPort.BaudRate;
         }
         public void WriteLine(string message)
         {
@@ -74,21 +78,10 @@ namespace InfoDroplets.Utils.SerialCommunication
         public void Open() { _serialPort.Open(); }
         public void Close() { _serialPort.Close(); }
         public string ReadLine() { return _serialPort.ReadLine(); }
-        public static string[] GetPortNames() { return SerialPort.GetPortNames(); }
+        public string[] GetPortNames() { return SerialPort.GetPortNames(); }
         public void Dispose()
         {
-            _serialPort?.Close();
-        }
-    }
-
-    public class SerialWrapper2
-    {
-        public List<string> AvaliableSerialPorts { get; set; }
-
-        public SerialWrapper2()
-        {
-            //Populate with some data
-            AvaliableSerialPorts = new List<string> { "COM1", "COM2", "COM3" };
+            _serialPort.Close();
         }
     }
 }
