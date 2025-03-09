@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using InfoDroplets.Utils.Enums;
 using InfoDroplets.Utils.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace InfoDroplets.Models
 {
@@ -21,7 +22,6 @@ namespace InfoDroplets.Models
         public DropletVersion Version { get; set; }
 
         public DropletMovementStatus? MovementStatus { get; set; }
-
         public double? DistanceFromGNU { get; set; }
 
         public virtual TrackingEntry? LastData { get; set; }
