@@ -19,5 +19,10 @@ namespace InfoDroplets.ResultExporter.Models
         internal double Elevation { get; private set; }
         internal double Latitude { get; private set; }
         internal double Longitude { get; private set; }
+
+        public override string ToString()
+        {
+            return $"[{Latitude}, {Longitude}, {Elevation}]";
+        }
     }
 }
