@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ResultExporter
+namespace InfoDroplets.ResultExporter.Models
 {
     internal class LogEntry
     {
-        public LogEntry(double elevation, double latitude, double longitude)
+        public LogEntry(double latitude, double longitude, double elevation)
         {
             Elevation = elevation;
             Latitude = latitude;
