@@ -60,10 +60,5 @@ namespace InfoDroplets.ResultExporter
                 else paths = aFiles;
             paths = paths.OrderBy(p => p).ToArray();
         }
-            }
-
-            paths = paths.OrderBy(p => p).ToArray();
-            return paths;
-        }
     }
 }
