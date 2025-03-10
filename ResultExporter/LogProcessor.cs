@@ -11,9 +11,12 @@ namespace InfoDroplets.ResultExporter
 {
     internal static class LogProcessor
     {
+        internal static List<List<LogEntry>> GlobalLogCollection { get; } = new List<List<LogEntry>>();
+        internal static List<List<LogEntry>> GlobalBreakCollection { get; } = new List<List<LogEntry>>();
+
         static string[] GetDataRowsFromFile(string path)
         {
-            if(!File.Exists(path)) throw new FileNotFoundException(path);
+            if (!File.Exists(path)) throw new FileNotFoundException(path);
 
             var FileLines = File.ReadAllLines(path);
 
@@ -21,7 +24,7 @@ namespace InfoDroplets.ResultExporter
 
             int IndexOfSeparator = Array.IndexOf(FileLines, "________;________;________;________;________;________");
 
-            string[] fileData = FileLines.Skip(IndexOfSeparator+1).ToArray();
+            string[] fileData = FileLines.Skip(IndexOfSeparator + 1).ToArray();
             return fileData;
         }
 
@@ -42,7 +45,7 @@ namespace InfoDroplets.ResultExporter
                 convertedValues.Add(new LogEntry(Lat, Long, El));
             }
 
-            List<LogEntry> result = convertedValues.Where(le => le.Latitude != 0 && le.Longitude != 0).Distinct().ToList();
+            List<LogEntry> result = convertedValues.Where(le => le.Latitude != 0 && le.Longitude != 0).Distinct().ToList(); //filter out [0,0,0] LogEntry-s
             return result;
         }
 
@@ -51,14 +54,46 @@ namespace InfoDroplets.ResultExporter
             var aFiles = paths.Where(p => p.Replace(".txt", "").Last() == 'a').ToArray();
             var bFiles = paths.Where(p => p.Replace(".txt", "").Last() == 'b').ToArray();
 
-                FileInfo aFileInfo = new FileInfo(aFiles[0]);
-                FileInfo bFileInfo = new FileInfo(bFiles[0]);
+            FileInfo aFileInfo = new FileInfo(aFiles[0]);
+            FileInfo bFileInfo = new FileInfo(bFiles[0]);
             if (!aFileInfo.Exists || aFileInfo.Length == 0)
-                    paths = bFiles;
+                paths = bFiles;
             else if (!bFileInfo.Exists || bFileInfo.Length == 0)
-                    paths = aFiles;
-                else paths = aFiles;
+                paths = aFiles;
+            else paths = aFiles;
+
             paths = paths.OrderBy(p => p).ToArray();
+        }
+
+        internal static bool ProcessFiles(string[] paths)
+        {
+            FilterABFiles(ref paths);
+            foreach (var path in paths)
+            {
+                var result = ProcessFile(path);
+                if (result != null && result.Count > 0)
+                {
+                    GlobalLogCollection.Add(result);
+
+                    LogEntry lastNewLogEntry = result.Last();
+                    LogEntry firstNewLogEntry = result.First();
+
+                    if (GlobalBreakCollection.Count > 0)
+                    {
+                        GlobalBreakCollection.Last().Add(firstNewLogEntry);
+                    }
+
+                    List<LogEntry> NewBreakList = new List<LogEntry>();
+                    GlobalBreakCollection.Add(NewBreakList);
+
+                    GlobalBreakCollection.Last().Add(lastNewLogEntry);
+                }
+            }
+
+            if (GlobalBreakCollection.Last().Count == 1)
+                GlobalBreakCollection.Remove(GlobalBreakCollection.Last());
+
+            return true;
         }
     }
 }
