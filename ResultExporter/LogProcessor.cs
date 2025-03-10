@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace InfoDroplets.ResultExporter
 {
-    internal static class LogFileProcessor
+    internal static class LogProcessor
     {
         static string[] GetDataRowsFromFile(string path)
         {
