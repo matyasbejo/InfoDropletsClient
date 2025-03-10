@@ -46,28 +46,20 @@ namespace InfoDroplets.ResultExporter
             return result;
         }
 
-        static string[] FilterABFiles(ref string[] paths)
+        static void FilterABFiles(ref string[] paths)
         {
             var aFiles = paths.Where(p => p.Replace(".txt", "").Last() == 'a').ToArray();
             var bFiles = paths.Where(p => p.Replace(".txt", "").Last() == 'b').ToArray();
 
-            if (aFiles.Length == 0)
-            {
-                paths = bFiles;
-            }
-            else if (bFiles.Length == 0)
-            {
-                paths = aFiles;
-            }
-            else
-            {
                 FileInfo aFileInfo = new FileInfo(aFiles[0]);
                 FileInfo bFileInfo = new FileInfo(bFiles[0]);
-                if (aFileInfo.Length == 0)
+            if (!aFileInfo.Exists || aFileInfo.Length == 0)
                     paths = bFiles;
-                else if (bFileInfo.Length == 0)
+            else if (!bFileInfo.Exists || bFileInfo.Length == 0)
                     paths = aFiles;
                 else paths = aFiles;
+            paths = paths.OrderBy(p => p).ToArray();
+        }
             }
 
             paths = paths.OrderBy(p => p).ToArray();
