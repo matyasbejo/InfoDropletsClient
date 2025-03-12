@@ -28,10 +28,8 @@ namespace InfoDroplets.ResultExporter
             return fileData;
         }
 
-        static List<LogEntry> ProcessFile(string path)
+        static List<LogEntry> ProcessFile(string[] fileData)
         {
-            var fileData = GetDataRowsFromFile(path);
-
             List<LogEntry> convertedValues = new List<LogEntry>();
             foreach (string row in fileData)
             {
@@ -70,7 +68,8 @@ namespace InfoDroplets.ResultExporter
             FilterABFiles(ref paths);
             foreach (var path in paths)
             {
-                var result = ProcessFile(path);
+                var fileData = GetDataRowsFromFile(path);
+                var result = ProcessFile(fileData);
                 if (result != null && result.Count > 0)
                 {
                     GlobalLogCollection.Add(result);
