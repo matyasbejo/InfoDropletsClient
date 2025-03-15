@@ -122,5 +122,15 @@ namespace InfoDroplets.ResultExporter
 
             return centerPos;
         }
+
+        internal static int GetMaxElevation()
+        {
+            if (GlobalLogCollection.Count() == 0)
+                throw new Exception("Can't select Elevation, because collection is empty.");
+
+            double maxPossibleElevation = 30_000;
+            double maxElevation = GlobalLogCollection.SelectMany(innerList => innerList).Where(pos => pos.Elevation < maxPossibleElevation).Select(pos => pos.Elevation).Max();
+            return Convert.ToInt32(Math.Ceiling(maxElevation * 1.1));
+        }
     }
 }
