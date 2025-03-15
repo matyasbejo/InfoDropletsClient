@@ -89,5 +89,38 @@ namespace InfoDroplets.ResultExporter
 
             return true;
         }
+
+        internal static LogEntry GetMapCenterPos()
+        {
+            if (GlobalLogCollection.Count() == 0)
+                throw new Exception("Can't select map center position, because collection is empty.");
+
+            LogEntry centerPos;
+            var maxPossibleCentrePoint = new LogEntry(50.457907, 30.559462, 0);
+            var minPossibleCentrePoint = new LogEntry(44.411419, 8.915747, 0);
+            try
+            {
+                var maxLat = GlobalLogCollection.SelectMany(innerList => innerList).Select(pos => pos.Latitude).Max();
+                var minLat = GlobalLogCollection.SelectMany(innerList => innerList).Select(pos => pos.Latitude).Min();
+                var avgLat = (minLat + maxLat) / 2;
+
+                var maxLong = GlobalLogCollection.SelectMany(innerList => innerList).Select(pos => pos.Longitude).Max();
+                var minLong = GlobalLogCollection.SelectMany(innerList => innerList).Select(pos => pos.Longitude).Min();
+                var avgLong = (minLong + maxLong) / 2;
+
+                centerPos = new LogEntry(avgLat, avgLong , 0);
+                if (centerPos.Latitude > maxPossibleCentrePoint.Latitude || centerPos.Longitude > maxPossibleCentrePoint.Longitude ||
+                    centerPos.Latitude < minPossibleCentrePoint.Latitude || centerPos.Longitude < minPossibleCentrePoint.Longitude)
+                    throw new ArgumentOutOfRangeException("Unrealistic centerpoint calculated for hungarian test flight.");
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                centerPos = GlobalLogCollection.SelectMany(innerList => innerList).Where(pos => (
+                    pos.Latitude > maxPossibleCentrePoint.Latitude || pos.Longitude > pos.Longitude ||
+                    pos.Latitude < minPossibleCentrePoint.Latitude || pos.Longitude < minPossibleCentrePoint.Longitude)).First();
+            }
+
+            return centerPos;
+        }
     }
 }
