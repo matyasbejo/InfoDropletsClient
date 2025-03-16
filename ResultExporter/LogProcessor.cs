@@ -1,6 +1,7 @@
 ﻿using InfoDroplets.ResultExporter.Models;
 using System.Data;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace InfoDroplets.ResultExporter
 {
@@ -8,6 +9,8 @@ namespace InfoDroplets.ResultExporter
     {
         internal static List<List<LogEntry>> GlobalLogCollection { get; } = new List<List<LogEntry>>();
         internal static List<List<LogEntry>> GlobalBreakCollection { get; } = new List<List<LogEntry>>();
+
+        internal static int DropletNumber;
 
         static string[] GetDataRowsFromFile(string path)
         {
@@ -87,6 +90,8 @@ namespace InfoDroplets.ResultExporter
             if (GlobalBreakCollection.Last().Count == 1)
                 GlobalBreakCollection.Remove(GlobalBreakCollection.Last());
 
+            DropletNumber = GetDropletNumber(paths[0]);
+
             return true;
         }
 
@@ -131,6 +136,21 @@ namespace InfoDroplets.ResultExporter
             double maxPossibleElevation = 30_000;
             double maxElevation = GlobalLogCollection.SelectMany(innerList => innerList).Where(pos => pos.Elevation < maxPossibleElevation).Select(pos => pos.Elevation).Max();
             return Convert.ToInt32(Math.Ceiling(maxElevation * 1.1));
+        }
+
+        internal static int GetDropletNumber(string path)
+        {
+            Match match = Regex.Match(System.IO.Path.GetFileName(path), @"L(\d{1,2})");
+
+            if (match.Success)
+            {
+                int deviceId = int.Parse(match.Groups[1].Value);
+                return deviceId;
+            }
+            else
+            {
+                throw new Exception("Device ID not found.");
+            }
         }
     }
 }
