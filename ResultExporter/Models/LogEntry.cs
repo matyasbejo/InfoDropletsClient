@@ -22,7 +22,7 @@ namespace InfoDroplets.ResultExporter.Models
 
         public override string ToString()
         {
-            return $"[{Latitude}, {Longitude}, {Elevation}]";
+            return $"[{Math.Round(Latitude,6)}, {Math.Round(Longitude, 6)}, {Math.Round(Elevation, 1)}]";
         }
     }
 }
