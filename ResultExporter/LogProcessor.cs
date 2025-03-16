@@ -7,10 +7,29 @@ namespace InfoDroplets.ResultExporter
 {
     internal static class LogProcessor
     {
-        internal static List<List<LogEntry>> GlobalLogCollection { get; } = new List<List<LogEntry>>();
-        internal static List<List<LogEntry>> GlobalBreakCollection { get; } = new List<List<LogEntry>>();
+        internal static List<List<LogEntry>> GlobalLogCollection { get; private set;  } = new List<List<LogEntry>>();
+        internal static List<List<LogEntry>> GlobalBreakCollection { get; private set; } = new List<List<LogEntry>>();
+        internal static int DropletNumber { get; private set; }
+        internal static int ElevationRange { get; private set; }
+        internal static LogEntry? CenterPos { get; private set; }
 
-        internal static int DropletNumber;
+        internal static bool Execute(string[] paths)
+        {
+            try
+            {
+                FilterABFiles(ref paths);
+                GetDropletNumber(paths[0]);
+                ProcessFiles(paths);
+                GetMapCenterPos();
+                GetElevationRange();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+            return true;
+        }
 
         static string[] GetDataRowsFromFile(string path)
         {
@@ -45,7 +64,7 @@ namespace InfoDroplets.ResultExporter
             return result;
         }
 
-        static void FilterABFiles(ref string[] paths)
+        static bool FilterABFiles(ref string[] paths)
         {
             var aFiles = paths.Where(p => p.Replace(".txt", "").Last() == 'a').ToArray();
             var bFiles = paths.Where(p => p.Replace(".txt", "").Last() == 'b').ToArray();
@@ -59,11 +78,12 @@ namespace InfoDroplets.ResultExporter
             else paths = aFiles;
 
             paths = paths.OrderBy(p => p).ToArray();
+
+            return true;
         }
 
-        internal static bool ProcessFiles(string[] paths)
+        static bool ProcessFiles(string[] paths)
         {
-            FilterABFiles(ref paths);
             foreach (var path in paths)
             {
                 var fileData = GetDataRowsFromFile(path);
@@ -90,17 +110,15 @@ namespace InfoDroplets.ResultExporter
             if (GlobalBreakCollection.Last().Count == 1)
                 GlobalBreakCollection.Remove(GlobalBreakCollection.Last());
 
-            DropletNumber = GetDropletNumber(paths[0]);
-
             return true;
         }
 
-        internal static LogEntry GetMapCenterPos()
+        static bool GetMapCenterPos()
         {
-            if (GlobalLogCollection.Count() == 0)
+            if (GlobalLogCollection.SelectMany(innerList => innerList).Count() == 0)
                 throw new Exception("Can't select map center position, because collection is empty.");
 
-            LogEntry centerPos;
+            LogEntry? centerPos;
             var maxPossibleCentrePoint = new LogEntry(50.457907, 30.559462, 0);
             var minPossibleCentrePoint = new LogEntry(44.411419, 8.915747, 0);
             try
@@ -122,30 +140,36 @@ namespace InfoDroplets.ResultExporter
             {
                 centerPos = GlobalLogCollection.SelectMany(innerList => innerList).Where(pos => (
                     pos.Latitude > maxPossibleCentrePoint.Latitude || pos.Longitude > pos.Longitude ||
-                    pos.Latitude < minPossibleCentrePoint.Latitude || pos.Longitude < minPossibleCentrePoint.Longitude)).First();
+                    pos.Latitude < minPossibleCentrePoint.Latitude || pos.Longitude < minPossibleCentrePoint.Longitude)).FirstOrDefault();
+                if (centerPos == null)
+                    return false;
             }
 
-            return centerPos;
+            CenterPos = centerPos;
+            return true;
         }
 
-        internal static int GetMaxElevation()
+        static bool GetElevationRange()
         {
             if (GlobalLogCollection.Count() == 0)
                 throw new Exception("Can't select Elevation, because collection is empty.");
 
             double maxPossibleElevation = 30_000;
-            double maxElevation = GlobalLogCollection.SelectMany(innerList => innerList).Where(pos => pos.Elevation < maxPossibleElevation).Select(pos => pos.Elevation).Max();
-            return Convert.ToInt32(Math.Ceiling(maxElevation * 1.1));
+            double maxElevationInLogs = GlobalLogCollection.SelectMany(innerList => innerList).Where(pos => pos.Elevation < maxPossibleElevation).Select(pos => pos.Elevation).Max();
+            int elevationRange = Convert.ToInt32(Math.Ceiling(maxElevationInLogs * 1.1));
+            ElevationRange = elevationRange;
+            return true;
         }
 
-        internal static int GetDropletNumber(string path)
+        static bool GetDropletNumber(string path)
         {
             Match match = Regex.Match(System.IO.Path.GetFileName(path), @"L(\d{1,2})");
 
             if (match.Success)
             {
-                int deviceId = int.Parse(match.Groups[1].Value);
-                return deviceId;
+                int dropletNumber = int.Parse(match.Groups[1].Value);
+                DropletNumber = dropletNumber;
+                return false;
             }
             else
             {
