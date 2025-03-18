@@ -75,7 +75,7 @@ namespace ResultExporter
                 output += $"{entry.ToString()},";
             }
             output = output.TrimEnd(',');
-            output += "});";
+            output += "]});";
 
             return output;
         }
