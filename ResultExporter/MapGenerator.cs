@@ -1,4 +1,5 @@
 ﻿using InfoDroplets.ResultExporter.Models;
+using System.IO;
 using System.Windows.Markup.Localizer;
 
 namespace ResultExporter
@@ -18,13 +19,28 @@ namespace ResultExporter
             };
         }
 
-        internal static void PrepareValues(int deviceId, int yMax, double ctrLng, double ctrLat)
+        internal static bool CreateMap(int deviceId, int yMax, double ctrLng, double ctrLat, List<List<LogEntry>> logEntries, List<List<LogEntry>> breakEntries)
         {
-            string title = $"Droplet{deviceId} flight path {DateTime.Today.ToString("yyyy.MM.dd")}";
+            if (!FillDictionary(deviceId, yMax, ctrLng, ctrLat))
+                return false;
+
+            var NewFileContent = CreateFileContent(logEntries, breakEntries);
+            if(NewFileContent.Contains("_RE_"))
+                return false;
+
+            File.WriteAllText("output.html", NewFileContent);
+            return true;
+        }
+
+        static bool FillDictionary(int deviceId, int yMax, double ctrLng, double ctrLat)
+        {
+            string title = $"L{deviceId}-{DateTime.Today.ToString("d")}";
             CustomFileValues["_RE_TITLE_"] = title;
             CustomFileValues["_RE_YMAX_"] = yMax.ToString();
             CustomFileValues["_RE_CTR_LNG_"] = ctrLng.ToString();
             CustomFileValues["_RE_CTR_LAT_"] = ctrLat.ToString();
+
+            return true;
         }
 
         static string CreateFileContent(List<List<LogEntry>> logEntries, List<List<LogEntry>> breakEntries)
@@ -35,7 +51,6 @@ namespace ResultExporter
             {
                 MapContent = MapContent.Replace(item.Key, item.Value);
             }
-            output += "\r\n\t\t\t\tGV_Draw_Track(t);\r\n\t\t\t\t\r\n\t\t\t\t t = 1; GV_Add_Track_to_Tracklist({ bullet: '- ', name: trk[t].info.name, desc: trk[t].info.desc, color: trk[t].info.color, number: t });\r\n\r\n";
 
             string logSegmentKey = "_RE_LOGSEGMENT_";
             string breakSegmentKey = "_RE_BREAKSEGMENT_";
