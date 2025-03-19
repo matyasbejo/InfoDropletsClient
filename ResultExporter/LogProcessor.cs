@@ -66,8 +66,8 @@ namespace InfoDroplets.ResultExporter
 
         static bool FilterABFiles(ref string[] paths)
         {
-            var aFiles = paths.Where(p => p.Replace(".txt", "").Last() == 'a').ToArray();
-            var bFiles = paths.Where(p => p.Replace(".txt", "").Last() == 'b').ToArray();
+            var aFiles = paths.Where(p => p.ToLower().Replace(".txt", "").Last() == 'a').ToArray();
+            var bFiles = paths.Where(p => p.ToLower().Replace(".txt", "").Last() == 'b').ToArray();
 
             FileInfo aFileInfo = new FileInfo(aFiles[0]);
             FileInfo bFileInfo = new FileInfo(bFiles[0]);
