@@ -48,7 +48,7 @@ namespace ResultExporter
             return MapContent;
         }
 
-        static List<string> GenerateTrack(List<List<LogEntry>> entries)
+        static string GenerateSegments(List<List<LogEntry>> entries)
         {
             List<string> trackSegments = new List<string>();
 
