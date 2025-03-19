@@ -50,13 +50,13 @@ namespace ResultExporter
 
         static string GenerateSegments(List<List<LogEntry>> entries)
         {
-            List<string> trackSegments = new List<string>();
-
+            string output = "";
             foreach (var entryList in entries)
             {
-                trackSegments.Add(GenerateTrackSegment(entryList));
+                output += $"\t\t\t\t{GenerateTrackSegment(entryList)} \r\n";
             }
-            return trackSegments;
+            output += "\r\n";
+            return output;
         }
 
         static string GenerateTrackSegment(List<LogEntry> entryList)
