@@ -27,33 +27,25 @@ namespace ResultExporter
             CustomFileValues["_RE_CTR_LAT_"] = ctrLat.ToString();
         }
 
-        internal static string GenerateGV_MapFunctionString(List<List<LogEntry>> logEntries, List<List<LogEntry>> breakEntries)
+        static string CreateFileContent(List<List<LogEntry>> logEntries, List<List<LogEntry>> breakEntries)
         {
-            if (logEntries == null || logEntries.Count == 0)
-                throw new Exception("There are no logEntries to write in GV_Map function!");
-
-            string output = "\t\t\tfunction GV_Map() {\r\n\t\t\t\tGV_Setup_Map();\r\n\t\t\t\t\r\n\t\t\t\t// Track #1\r\n\t\t\t\tt = 1; trk[t] = {info:[],segments:[]};\r\n\t\t\t\ttrk[t].info.name = 'data'; trk[t].info.desc = ''; trk[t].info.clickable = true;\r\n\t\t\t\ttrk[t].info.color = '#e60000'; trk[t].info.width = 3; trk[t].info.opacity = 0.9; trk[t].info.hidden = false; trk[t].info.z_index = null;\r\n\t\t\t\ttrk[t].info.outline_color = 'black'; trk[t].info.outline_width = 0; trk[t].info.fill_color = '#e60000'; trk[t].info.fill_opacity = 0;\r\n\t\t\t\ttrk[t].info.elevation = true;\r\n";
-            
-            List<string> logTrack = GenerateTrack(logEntries);
-            foreach (string segment in logTrack)
+            string sampleMapPath = Path.GetFullPath(@"..\..\..\SampleMap.html");
+            var MapContent = File.ReadAllText(sampleMapPath);
+            foreach (var item in CustomFileValues)
             {
-                output += $"\t\t\t\t{segment}\r\n";
+                MapContent = MapContent.Replace(item.Key, item.Value);
             }
             output += "\r\n\t\t\t\tGV_Draw_Track(t);\r\n\t\t\t\t\r\n\t\t\t\t t = 1; GV_Add_Track_to_Tracklist({ bullet: '- ', name: trk[t].info.name, desc: trk[t].info.desc, color: trk[t].info.color, number: t });\r\n\r\n";
 
-            if (breakEntries != null || breakEntries.Count != 0)
-            {
-                output += "                // Track #2\r\n                t = 2; trk[t] = { info: [], segments: [] };\r\n                trk[t].info.name = 'breaks'; trk[t].info.desc = ''; trk[t].info.clickable = true;\r\n                trk[t].info.color = '#53a238'; trk[t].info.width = 3; trk[t].info.opacity = 0.7; trk[t].info.hidden = false; trk[t].info.z_index = null;\r\n                trk[t].info.outline_color = 'black'; trk[t].info.outline_width = 0; trk[t].info.fill_color = '#e60000'; trk[t].info.fill_opacity = 0;\r\n                trk[t].info.elevation = true;\r\n";
-                List<string> breakTrack = GenerateTrack(breakEntries);
-                foreach (string segment in breakTrack)
-                {
-                    output += $"\t\t\t\t{segment}\r\n";
-                }
-                output += "\r\n                GV_Draw_Track(t);\r\n\r\n                t = 2; GV_Add_Track_to_Tracklist({ bullet: '- ', name: trk[t].info.name, desc: trk[t].info.desc, color: trk[t].info.color, number: t });\r\n";
-            }
+            string logSegmentKey = "_RE_LOGSEGMENT_";
+            string breakSegmentKey = "_RE_BREAKSEGMENT_";
 
-            output += "\t\t\t\t\t\t\t\t\r\n\t\t\t\tGV_Finish_Map();\t\t\r\n\t\t\t}\r\n";
-            return output;
+            string logSegmentsContent = GenerateSegments(logEntries);
+            string breakSegmentsContent = GenerateSegments(breakEntries);
+
+            MapContent = MapContent.Replace(logSegmentKey, logSegmentsContent);
+            MapContent = MapContent.Replace(breakSegmentKey, breakSegmentsContent);
+            return MapContent;
         }
 
         static List<string> GenerateTrack(List<List<LogEntry>> entries)
