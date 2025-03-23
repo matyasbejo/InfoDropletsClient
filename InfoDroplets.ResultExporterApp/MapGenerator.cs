@@ -1,15 +1,19 @@
 ﻿using InfoDroplets.ResultExporter.Models;
+using InfoDroplets.ResultExporterApp;
 using System.IO;
 using System.Windows.Markup.Localizer;
 
 namespace ResultExporterApp
 {
-    internal static class MapGenerator
+    internal class MapGenerator
     {
-        internal static Dictionary<string, string> CustomFileValues { get; }
+        internal Dictionary<string, string> CustomFileValues { get; }
+        internal LogProcessor logProcessor { get; private set; }
 
-        static MapGenerator()
+        public MapGenerator(LogProcessor logprocessor)
         {
+            this.logProcessor = logprocessor;
+
             CustomFileValues = new Dictionary<string, string>
             {
                 { "_RE_TITLE_", String.Empty },
@@ -19,20 +23,22 @@ namespace ResultExporterApp
             };
         }
 
-        internal static bool CreateMap(int deviceId, int yMax, double ctrLng, double ctrLat, List<List<LogEntry>> logEntries, List<List<LogEntry>> breakEntries)
+        internal bool CreateMap(string outputFolder)
         {
-            if (!FillDictionary(deviceId, yMax, ctrLng, ctrLat))
+            if (!FillDictionary(logProcessor.DropletNumber, logProcessor.ElevationRange, logProcessor.CenterPos.Longitude, logProcessor.CenterPos.Latitude))
                 return false;
 
-            var NewFileContent = CreateFileContent(logEntries, breakEntries);
+            var NewFileContent = CreateFileContent(logProcessor.LogCollection, logProcessor.BreakCollection);
             if(NewFileContent.Contains("_RE_"))
                 return false;
 
-            File.WriteAllText($"Flight analytics L{deviceId} - {DateTime.Today.ToString("dd.MM.yyyy.")}.html", NewFileContent); //todo file output location selection 
+            string newFileName = $"Flight analytics L{logProcessor.DropletNumber} - {DateTime.Today.ToString("dd.MM.yyyy.")}.html";
+            
+            File.WriteAllText(Path.Combine(outputFolder, newFileName), NewFileContent);
             return true;
         }
 
-        static bool FillDictionary(int deviceId, int yMax, double ctrLng, double ctrLat)
+        bool FillDictionary(int deviceId, int yMax, double ctrLng, double ctrLat)
         {
             string title = $"L{deviceId}-{DateTime.Today.ToString("d")}";
             CustomFileValues["_RE_TITLE_"] = title;
@@ -43,7 +49,7 @@ namespace ResultExporterApp
             return true;
         }
 
-        static string CreateFileContent(List<List<LogEntry>> logEntries, List<List<LogEntry>> breakEntries)
+        string CreateFileContent(List<List<LogEntry>> logEntries, List<List<LogEntry>> breakEntries)
         {
             string sampleMapPath = Path.GetFullPath(@"..\..\..\SampleMap.html");
             var MapContent = File.ReadAllText(sampleMapPath);
@@ -63,7 +69,7 @@ namespace ResultExporterApp
             return MapContent;
         }
 
-        static string GenerateSegments(List<List<LogEntry>> entries)
+        string GenerateSegments(List<List<LogEntry>> entries)
         {
             string output = "";
             foreach (var entryList in entries)
@@ -74,7 +80,7 @@ namespace ResultExporterApp
             return output;
         }
 
-        static string GenerateTrackSegment(List<LogEntry> entryList)
+        string GenerateTrackSegment(List<LogEntry> entryList)
         {
             string output = "trk[t].segments.push({ points:[";
             foreach (var entry in entryList)

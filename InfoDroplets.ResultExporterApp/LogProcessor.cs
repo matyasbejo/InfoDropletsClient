@@ -5,15 +5,22 @@ using System.Text.RegularExpressions;
 
 namespace InfoDroplets.ResultExporterApp
 {
-    internal static class LogProcessor
+    internal class LogProcessor
     {
-        internal static List<List<LogEntry>> GlobalLogCollection { get; private set;  } = new List<List<LogEntry>>();
-        internal static List<List<LogEntry>> GlobalBreakCollection { get; private set; } = new List<List<LogEntry>>();
-        internal static int DropletNumber { get; private set; }
-        internal static int ElevationRange { get; private set; }
-        internal static LogEntry? CenterPos { get; private set; }
+        internal List<List<LogEntry>> LogCollection { get; private set;  } = new List<List<LogEntry>>();
+        internal List<List<LogEntry>> BreakCollection { get; private set; } = new List<List<LogEntry>>();
+        internal int DropletNumber { get; private set; }
+        internal int ElevationRange { get; private set; }
+        internal LogEntry? CenterPos { get; private set; }
 
-        internal static bool Execute(string[] paths)
+        string[] paths;
+
+        public LogProcessor(string[] paths)
+        {
+            this.paths = paths;
+        }
+
+        internal bool Execute()
         {
             try
             {
@@ -31,7 +38,7 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        static string[] GetDataRowsFromFile(string path)
+        string[] GetDataRowsFromFile(string path)
         {
             if (!File.Exists(path)) throw new FileNotFoundException(path);
 
@@ -45,7 +52,7 @@ namespace InfoDroplets.ResultExporterApp
             return fileData;
         }
 
-        static List<LogEntry> ProcessFile(string[] fileData)
+        List<LogEntry> ProcessFile(string[] fileData)
         {
             List<LogEntry> convertedValues = new List<LogEntry>();
             foreach (string row in fileData)
@@ -64,25 +71,25 @@ namespace InfoDroplets.ResultExporterApp
             return result;
         }
 
-        static bool FilterABFiles(ref string[] paths)
+        bool FilterABFiles(ref string[] paths)
         {
-            var aFiles = paths.Where(p => p.ToLower().Replace(".txt", "").Last() == 'a').ToArray();
-            var bFiles = paths.Where(p => p.ToLower().Replace(".txt", "").Last() == 'b').ToArray();
+            var aLogFiles = paths.Where(p => p.ToLower().Replace(".txt", "").Last() == 'a').ToArray();
+            var bLogFiles = paths.Where(p => p.ToLower().Replace(".txt", "").Last() == 'b').ToArray();
 
-            FileInfo aFileInfo = new FileInfo(aFiles[0]);
-            FileInfo bFileInfo = new FileInfo(bFiles[0]);
+            FileInfo aFileInfo = new FileInfo(aLogFiles[0]);
+            FileInfo bFileInfo = new FileInfo(bLogFiles[0]);
             if (!aFileInfo.Exists || aFileInfo.Length == 0)
-                paths = bFiles;
+                paths = bLogFiles;
             else if (!bFileInfo.Exists || bFileInfo.Length == 0)
-                paths = aFiles;
-            else paths = aFiles;
+                paths = aLogFiles;
+            else paths = aLogFiles;
 
             paths = paths.OrderBy(p => p).ToArray();
 
             return true;
         }
 
-        static bool ProcessFiles(string[] paths)
+        bool ProcessFiles(string[] paths)
         {
             foreach (var path in paths)
             {
@@ -90,32 +97,32 @@ namespace InfoDroplets.ResultExporterApp
                 var result = ProcessFile(fileData);
                 if (result != null && result.Count > 0)
                 {
-                    GlobalLogCollection.Add(result);
+                    LogCollection.Add(result);
 
                     LogEntry lastNewLogEntry = result.Last();
                     LogEntry firstNewLogEntry = result.First();
 
-                    if (GlobalBreakCollection.Count > 0)
+                    if (BreakCollection.Count > 0)
                     {
-                        GlobalBreakCollection.Last().Add(firstNewLogEntry);
+                        BreakCollection.Last().Add(firstNewLogEntry);
                     }
 
                     List<LogEntry> NewBreakList = new List<LogEntry>();
-                    GlobalBreakCollection.Add(NewBreakList);
+                    BreakCollection.Add(NewBreakList);
 
-                    GlobalBreakCollection.Last().Add(lastNewLogEntry);
+                    BreakCollection.Last().Add(lastNewLogEntry);
                 }
             }
 
-            if (GlobalBreakCollection.Last().Count == 1)
-                GlobalBreakCollection.Remove(GlobalBreakCollection.Last());
+            if (BreakCollection.Last().Count == 1)
+                BreakCollection.Remove(BreakCollection.Last());
 
             return true;
         }
 
-        static bool GetMapCenterPos()
+        bool GetMapCenterPos()
         {
-            if (GlobalLogCollection.SelectMany(innerList => innerList).Count() == 0)
+            if (LogCollection.SelectMany(innerList => innerList).Count() == 0)
                 throw new Exception("Can't select map center position, because collection is empty.");
 
             LogEntry? centerPos;
@@ -123,12 +130,12 @@ namespace InfoDroplets.ResultExporterApp
             var minPossibleCentrePoint = new LogEntry(44.411419, 8.915747, 0);
             try
             {
-                var maxLat = GlobalLogCollection.SelectMany(innerList => innerList).Select(pos => pos.Latitude).Max();
-                var minLat = GlobalLogCollection.SelectMany(innerList => innerList).Select(pos => pos.Latitude).Min();
+                var maxLat = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Latitude).Max();
+                var minLat = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Latitude).Min();
                 var avgLat = (minLat + maxLat) / 2;
 
-                var maxLong = GlobalLogCollection.SelectMany(innerList => innerList).Select(pos => pos.Longitude).Max();
-                var minLong = GlobalLogCollection.SelectMany(innerList => innerList).Select(pos => pos.Longitude).Min();
+                var maxLong = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Longitude).Max();
+                var minLong = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Longitude).Min();
                 var avgLong = (minLong + maxLong) / 2;
 
                 centerPos = new LogEntry(avgLat, avgLong , 0);
@@ -138,7 +145,7 @@ namespace InfoDroplets.ResultExporterApp
             }
             catch (ArgumentOutOfRangeException)
             {
-                centerPos = GlobalLogCollection.SelectMany(innerList => innerList).Where(pos => (
+                centerPos = LogCollection.SelectMany(innerList => innerList).Where(pos => (
                     pos.Latitude > maxPossibleCentrePoint.Latitude || pos.Longitude > pos.Longitude ||
                     pos.Latitude < minPossibleCentrePoint.Latitude || pos.Longitude < minPossibleCentrePoint.Longitude)).FirstOrDefault();
                 if (centerPos == null)
@@ -149,19 +156,19 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        static bool GetElevationRange()
+        bool GetElevationRange()
         {
-            if (GlobalLogCollection.Count() == 0)
+            if (LogCollection.Count() == 0)
                 throw new Exception("Can't select Elevation, because collection is empty.");
 
             double maxPossibleElevation = 30_000;
-            double maxElevationInLogs = GlobalLogCollection.SelectMany(innerList => innerList).Where(pos => pos.Elevation < maxPossibleElevation).Select(pos => pos.Elevation).Max();
+            double maxElevationInLogs = LogCollection.SelectMany(innerList => innerList).Where(pos => pos.Elevation < maxPossibleElevation).Select(pos => pos.Elevation).Max();
             int elevationRange = Convert.ToInt32(Math.Ceiling(maxElevationInLogs * 1.1));
             ElevationRange = elevationRange;
             return true;
         }
 
-        static bool GetDropletNumber(string path)
+        bool GetDropletNumber(string path)
         {
             Match match = Regex.Match(System.IO.Path.GetFileName(path), @"L(\d{1,2})");
 
