@@ -22,11 +22,11 @@
         </Grid.RowDefinitions>
         
         <Label x:Name="LogLabel" Content="Log folder:" VerticalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="0" />
-        <TextBox x:Name="LogTextBox" Text="teszt" Focusable="False" VerticalContentAlignment="Center" TextWrapping="NoWrap" Margin="10" Grid.Row="0" Grid.Column="1" />
-        <Button x:Name="LogBrowseButton" Content="Browse" Margin="10" Grid.Row="0" Grid.Column="2" />
+        <TextBox x:Name="LogTextBox" IsEnabled="False" VerticalContentAlignment="Center" TextWrapping="NoWrap" Margin="10" Grid.Row="0" Grid.Column="1" />
+        <Button x:Name="LogBrowseButton" Content="Browse" Margin="10" Click="LogBrowseButton_Click" Grid.Row="0" Grid.Column="2" />
         <Label x:Name="OutLabel" Content="Output folder:" VerticalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="0" />
-        <TextBox x:Name="OutTextBox" Text="teszt" Focusable="False" VerticalContentAlignment="Center" TextWrapping="NoWrap" Margin="10" Grid.Row="1" Grid.Column="1" />
-        <Button x:Name="OutBrowseButton" Content="Browse" Margin="10 " Grid.Row="1" Grid.Column="2" />
+        <TextBox x:Name="OutTextBox" IsEnabled="False" VerticalContentAlignment="Center" TextWrapping="NoWrap" Margin="10" Grid.Row="1" Grid.Column="1" />
+        <Button x:Name="OutBrowseButton" Content="Browse" Margin="10" Click="OutBrowseButton_Click"  Grid.Row="1" Grid.Column="2" />
         <Button x:Name="ExportButton" Content="Export" Margin="10,10,10,5" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"/>
         <ProgressBar x:Name="ExportProgressBar" Height="20" Margin="10,0,10,10" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Visibility="Visible"/>
     </Grid>

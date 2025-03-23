@@ -12,30 +12,54 @@ using System.Windows.Shapes;
 
 namespace InfoDroplets.ResultExporterApp
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        string DefaultLogPath = "E:\\";
+        string DefaultOutPath = "D:\\";
         public MainWindow()
         {
             InitializeComponent();
+            ExportButton.IsEnabled = false;
+            LogTextBox.Text = DefaultLogPath;
+            OutTextBox.Text = DefaultOutPath;
         }
 
-        private void teszt_Click(object sender, RoutedEventArgs e)
+        private void LogBrowseButton_Click(object sender, RoutedEventArgs e)
         {
-            string[] dummypaths =
+            var BrowseDialog = new FolderBrowserDialog()
             {
-                @"D:\UNI\_Szakdolgozat\TestData\L8_V0a.txt",
-                @"D:\UNI\_Szakdolgozat\TestData\L8_V0b.txt",
-                @"D:\UNI\_Szakdolgozat\TestData\L8_V1a.txt",
-                @"D:\UNI\_Szakdolgozat\TestData\L8_V1b.txt",
-                @"D:\UNI\_Szakdolgozat\TestData\L8_V2a.txt",
-                @"D:\UNI\_Szakdolgozat\TestData\L8_V2b.txt"
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                UseDescriptionForTitle = true,
+                Description = "Select log folder"
             };
 
-            LogProcessor.Execute(dummypaths);
-            MapGenerator.CreateMap(LogProcessor.DropletNumber, LogProcessor.ElevationRange, LogProcessor.CenterPos.Longitude, LogProcessor.CenterPos.Latitude, LogProcessor.GlobalLogCollection, LogProcessor.GlobalBreakCollection);
+            var result = BrowseDialog.ShowDialog();
+
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                var LogPath = BrowseDialog.SelectedPath;
+                LogTextBox.Text = LogPath;
+                ExportButton.IsEnabled = true;
+            }
+        }
+
+        private void OutBrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var BrowseDialog = new FolderBrowserDialog()
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                ShowNewFolderButton = true,
+                UseDescriptionForTitle = true,
+                Description = "Select export folder"
+            };
+
+            var result = BrowseDialog.ShowDialog();
+
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                var LogPath = BrowseDialog.SelectedPath;
+                OutTextBox.Text = LogPath;
+            }
         }
     }
 }
