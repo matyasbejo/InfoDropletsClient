@@ -60,6 +60,7 @@ namespace InfoDroplets.ResultExporterApp
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
             ExportButton.IsEnabled = false;
+            ForceUIToUpdate();
 
             var logpaths = Directory.GetFiles(LogTextBox.Text);
             var outputpath = OutTextBox.Text;
@@ -80,6 +81,20 @@ namespace InfoDroplets.ResultExporterApp
                 }
                 ExportButton.IsEnabled = true;
             }
+        }
+
+        void ForceUIToUpdate()
+        {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Render, new DispatcherOperationCallback(delegate (object parameter)
+            {
+                frame.Continue = false;
+                return null;
+            }), null);
+
+            Dispatcher.PushFrame(frame);
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
+                                          new Action(delegate { }));
         }
     }
 }
