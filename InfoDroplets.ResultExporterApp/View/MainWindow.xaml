@@ -27,7 +27,7 @@
         <Label x:Name="OutLabel" Content="Output folder:" VerticalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="0" />
         <TextBox x:Name="OutTextBox" IsEnabled="False" VerticalContentAlignment="Center" TextWrapping="NoWrap" Margin="10" Grid.Row="1" Grid.Column="1" />
         <Button x:Name="OutBrowseButton" Content="Browse" Margin="10" Click="OutBrowseButton_Click"  Grid.Row="1" Grid.Column="2" />
-        <Button x:Name="ExportButton" Content="Export" Margin="10,10,10,5" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"/>
+        <Button x:Name="ExportButton" Content="Export" Margin="10,10,10,5" Click="ExportButton_Click" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"/>
         <ProgressBar x:Name="ExportProgressBar" Height="20" Margin="10,0,10,10" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Visibility="Visible"/>
     </Grid>
 </Window>
