@@ -73,23 +73,23 @@ namespace InfoDroplets.ResultExporterApp
 
         bool FilterABFiles(ref string[] paths)
         {
-            var aLogFiles = paths.Where(p =>
+            var aFilePaths = paths.Where(p =>
                 Path.GetFileName(p).StartsWith("l", StringComparison.OrdinalIgnoreCase) &&
                 Path.GetFileName(p).ToLower().Replace(".txt", "").Last() == 'a'
             ).ToArray();
 
-            var bLogFiles = paths.Where(p =>
+            var bFilePaths = paths.Where(p =>
                 Path.GetFileName(p).StartsWith("l", StringComparison.OrdinalIgnoreCase) &&
                 Path.GetFileName(p).ToLower().Replace(".txt", "").Last() == 'b'
             ).ToArray();
 
-            FileInfo aFileInfo = new FileInfo(aLogFiles[0]);
-            FileInfo bFileInfo = new FileInfo(bLogFiles[0]);
+            FileInfo aFileInfo = new FileInfo(aFilePaths.Last());
+            FileInfo bFileInfo = new FileInfo(bFilePaths.Last());
             if (!aFileInfo.Exists || aFileInfo.Length == 0)
-                paths = bLogFiles;
+                paths = bFilePaths;
             else if (!bFileInfo.Exists || bFileInfo.Length == 0)
-                paths = aLogFiles;
-            else paths = aLogFiles;
+                paths = aFilePaths;
+            else paths = aFilePaths;
 
             paths = paths.OrderBy(p => p).ToArray();
 
