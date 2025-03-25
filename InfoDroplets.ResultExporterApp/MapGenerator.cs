@@ -23,19 +23,40 @@ namespace ResultExporterApp
             };
         }
 
-        internal bool CreateMap(string outputFolder)
+        internal bool Execute(string outputFolder)
         {
+            var newFilePath = GetNewFilePath(outputFolder);
+
+            if (!PrepareOutputFolder(newFilePath))
+                return false;
+
             if (!FillDictionary(logProcessor.DropletNumber, logProcessor.ElevationRange, logProcessor.CenterPos.Longitude, logProcessor.CenterPos.Latitude))
                 return false;
 
             var NewFileContent = CreateFileContent(logProcessor.LogCollection, logProcessor.BreakCollection);
             if(NewFileContent.Contains("_RE_"))
                 return false;
-
-            string newFileName = $"Flight analytics L{logProcessor.DropletNumber} - {DateTime.Today.ToString("dd.MM.yyyy.")}.html";
             
-            File.WriteAllText(Path.Combine(outputFolder, newFileName), NewFileContent);
-            return true;
+            File.WriteAllText(newFilePath, NewFileContent);
+
+            return File.Exists(newFilePath);
+        }
+
+        internal string GetNewFilePath(string outputFolder)
+        {
+            string newFileName = $"Flight analytics L{logProcessor.DropletNumber} - {DateTime.Today.ToString("dd.MM.yyyy.")}.html";
+            return Path.Combine(outputFolder, newFileName);
+        }
+
+        bool PrepareOutputFolder(string newFilePath)
+        {
+            if (File.Exists(newFilePath))
+            {
+                File.Delete(newFilePath);
+                Thread.Sleep(1000);
+            }
+
+            return !File.Exists(newFilePath);
         }
 
         bool FillDictionary(int deviceId, int yMax, double ctrLng, double ctrLat)
