@@ -22,19 +22,11 @@ namespace InfoDroplets.ResultExporterApp
 
         internal bool Execute()
         {
-            try
-            {
-                FilterABFiles(ref paths);
-                GetDropletNumber(paths[0]);
-                ProcessFiles(paths);
-                GetMapCenterPos();
-                GetElevationRange();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return false;
-            }
+            FilterABFiles(ref paths);
+            GetDropletNumber(paths[0]);
+            ProcessFiles(paths);
+            GetMapCenterPos();
+            GetElevationRange();
             return true;
         }
 
@@ -135,29 +127,19 @@ namespace InfoDroplets.ResultExporterApp
             LogEntry? centerPos;
             var maxPossibleCentrePoint = new LogEntry(50.457907, 30.559462, 0);
             var minPossibleCentrePoint = new LogEntry(44.411419, 8.915747, 0);
-            try
-            {
-                var maxLat = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Latitude).Max();
-                var minLat = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Latitude).Min();
-                var avgLat = (minLat + maxLat) / 2;
 
-                var maxLong = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Longitude).Max();
-                var minLong = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Longitude).Min();
-                var avgLong = (minLong + maxLong) / 2;
+            var maxLat = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Latitude).Max();
+            var minLat = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Latitude).Min();
+            var avgLat = (minLat + maxLat) / 2;
 
-                centerPos = new LogEntry(avgLat, avgLong , 0);
-                if (centerPos.Latitude > maxPossibleCentrePoint.Latitude || centerPos.Longitude > maxPossibleCentrePoint.Longitude ||
-                    centerPos.Latitude < minPossibleCentrePoint.Latitude || centerPos.Longitude < minPossibleCentrePoint.Longitude)
-                    throw new ArgumentOutOfRangeException("Unrealistic centerpoint calculated for hungarian test flight.");
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                centerPos = LogCollection.SelectMany(innerList => innerList).Where(pos => (
-                    pos.Latitude > maxPossibleCentrePoint.Latitude || pos.Longitude > pos.Longitude ||
-                    pos.Latitude < minPossibleCentrePoint.Latitude || pos.Longitude < minPossibleCentrePoint.Longitude)).FirstOrDefault();
-                if (centerPos == null)
-                    return false;
-            }
+            var maxLong = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Longitude).Max();
+            var minLong = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Longitude).Min();
+            var avgLong = (minLong + maxLong) / 2;
+
+            centerPos = new LogEntry(avgLat, avgLong , 0);
+            if (centerPos.Latitude > maxPossibleCentrePoint.Latitude || centerPos.Longitude > maxPossibleCentrePoint.Longitude ||
+                centerPos.Latitude < minPossibleCentrePoint.Latitude || centerPos.Longitude < minPossibleCentrePoint.Longitude)
+                throw new ArgumentOutOfRangeException("Unrealistic centerpoint calculated for hungarian test flight.");
 
             CenterPos = centerPos;
             return true;
@@ -183,7 +165,7 @@ namespace InfoDroplets.ResultExporterApp
             {
                 int dropletNumber = int.Parse(match.Groups[1].Value);
                 DropletNumber = dropletNumber;
-                return false;
+                return true;
             }
             else
             {

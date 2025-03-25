@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 using Window = System.Windows.Window;
 
 namespace InfoDroplets.ResultExporterApp
@@ -67,12 +68,19 @@ namespace InfoDroplets.ResultExporterApp
             LogProcessor processor = new LogProcessor(logpaths);
             MapGenerator generator = new MapGenerator(processor);
 
-            processor.Execute();
-            bool ExportSuceeded = generator.Execute(outputpath);
+            bool ExportSuceeded = false;
+            try
+            {
+                processor.Execute();
+                ExportSuceeded = generator.Execute(outputpath);
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show($"Fatal error:\n{ex.Message}{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+            }
 
-            if (!ExportSuceeded) 
-                System.Windows.MessageBox.Show("The log export failed.", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
-            else
+            if( ExportSuceeded )
             {
                 var result = System.Windows.MessageBox.Show("The log export was succesful. Do you want to open the file now?", "Success", MessageBoxButton.YesNo, MessageBoxImage.Information);
                 if (result == MessageBoxResult.Yes)

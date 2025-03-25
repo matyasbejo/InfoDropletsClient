@@ -27,15 +27,13 @@ namespace ResultExporterApp
         {
             var newFilePath = GetNewFilePath(outputFolder);
 
-            if (!PrepareOutputFolder(newFilePath))
-                return false;
+            PrepareOutputFolder(newFilePath);
 
-            if (!FillDictionary(logProcessor.DropletNumber, logProcessor.ElevationRange, logProcessor.CenterPos.Longitude, logProcessor.CenterPos.Latitude))
-                return false;
+            FillDictionary(logProcessor.DropletNumber, logProcessor.ElevationRange, logProcessor.CenterPos.Longitude, logProcessor.CenterPos.Latitude);
 
             var NewFileContent = CreateFileContent(logProcessor.LogCollection, logProcessor.BreakCollection);
-            if(NewFileContent.Contains("_RE_"))
-                return false;
+            if (NewFileContent.Contains("_RE_"))
+                throw new Exception("Map content creation failed");
             
             File.WriteAllText(newFilePath, NewFileContent);
 
