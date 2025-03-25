@@ -68,12 +68,15 @@ namespace InfoDroplets.ResultExporterApp
             var aFilePaths = paths.Where(p =>
                 Path.GetFileName(p).StartsWith("l", StringComparison.OrdinalIgnoreCase) &&
                 Path.GetFileName(p).ToLower().Replace(".txt", "").Last() == 'a'
-            ).ToArray();
+            )?.ToArray();
 
             var bFilePaths = paths.Where(p =>
                 Path.GetFileName(p).StartsWith("l", StringComparison.OrdinalIgnoreCase) &&
                 Path.GetFileName(p).ToLower().Replace(".txt", "").Last() == 'b'
-            ).ToArray();
+            )?.ToArray();
+
+            if (aFilePaths.Length == 0 && bFilePaths.Length == 0)
+                throw new Exception("Folder contains no valid log files");
 
             FileInfo aFileInfo = new FileInfo(aFilePaths.Last());
             FileInfo bFileInfo = new FileInfo(bFilePaths.Last());
