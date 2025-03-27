@@ -1,5 +1,6 @@
 ﻿using InfoDroplets.ResultExporter.Models;
 using InfoDroplets.ResultExporterApp;
+using System;
 using System.IO;
 using System.Windows.Markup.Localizer;
 
@@ -25,19 +26,25 @@ namespace ResultExporterApp
 
         internal bool Execute(string outputFolder)
         {
+            GlobalLabelHelper.Instance.LabelText = "Prepare environment....";
             var newFilePath = GetNewFilePath(outputFolder);
-
             PrepareOutputFolder(newFilePath);
-
             FillDictionary(logProcessor.DropletNumber, logProcessor.ElevationRange, logProcessor.CenterPos.Longitude, logProcessor.CenterPos.Latitude);
 
+            GlobalLabelHelper.Instance.LabelText = "Generate file content....";
             var NewFileContent = CreateFileContent(logProcessor.LogCollection, logProcessor.BreakCollection);
             if (NewFileContent.Contains("_RE_"))
                 throw new Exception("Map content creation failed");
-            
+
+            GlobalLabelHelper.Instance.LabelText = "Write content to file....";
             File.WriteAllText(newFilePath, NewFileContent);
 
-            return File.Exists(newFilePath);
+            if(File.Exists(newFilePath))
+            {
+                GlobalLabelHelper.Instance.LabelText = "[Success] Map created";
+                return true;
+            }
+            return false;
         }
 
         internal string GetNewFilePath(string outputFolder)

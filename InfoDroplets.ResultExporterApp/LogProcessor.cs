@@ -22,11 +22,22 @@ namespace InfoDroplets.ResultExporterApp
 
         internal bool Execute()
         {
+            GlobalLabelHelper.Instance.LabelText = "Selecting a/b file version...";
             FilterABFiles(ref paths);
+
+            GlobalLabelHelper.Instance.LabelText = "Getting droplet id...";
             GetDropletNumber(paths[0]);
-            ProcessFiles(paths);
+
+            GlobalLabelHelper.Instance.LabelText = "Processing position data in log files...";
+            ProcessValuesOfFiles(paths);
+
+            GlobalLabelHelper.Instance.LabelText = "Calculating center position of map...";
             GetMapCenterPos();
-            GetElevationRange();
+
+            GlobalLabelHelper.Instance.LabelText = "Calculating upper limit of elevation function...";
+            GetElevationUpperLimit();
+
+            GlobalLabelHelper.Instance.LabelText = "[Success] Logfiles processed successfully";
             return true;
         }
 
@@ -91,7 +102,7 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        bool ProcessFiles(string[] paths)
+        bool ProcessValuesOfFiles(string[] paths)
         {
             foreach (var path in paths)
             {
@@ -148,7 +159,7 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        bool GetElevationRange()
+        bool GetElevationUpperLimit()
         {
             if (LogCollection.Count() == 0)
                 throw new Exception("Can't select Elevation, because collection is empty.");

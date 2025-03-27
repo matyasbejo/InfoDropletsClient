@@ -12,16 +12,19 @@ namespace InfoDroplets.ResultExporterApp
     {
         string DefaultLogPath = "D:\\UNI\\_Szakdolgozat\\TestData";
         string DefaultOutPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
         public MainWindow()
         {
             InitializeComponent();
             ExportButton.IsEnabled = false;
             LogTextBox.Text = DefaultLogPath;
             OutTextBox.Text = DefaultOutPath;
+            DataContext = this;
         }
 
         private void LogBrowseButton_Click(object sender, RoutedEventArgs e)
         {
+            GlobalLabelHelper.Instance.LabelText = "Selecting log folder...";
             var BrowseDialog = new FolderBrowserDialog()
             {
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
@@ -36,17 +39,21 @@ namespace InfoDroplets.ResultExporterApp
                 var LogPath = BrowseDialog.SelectedPath;
                 LogTextBox.Text = LogPath;
                 ExportButton.IsEnabled = true;
+                GlobalLabelHelper.Instance.LabelText = "Log folder selected";
             }
+            else
+                GlobalLabelHelper.Instance.LabelText = "Log folder selection cancelled";
         }
 
         private void OutBrowseButton_Click(object sender, RoutedEventArgs e)
         {
+            GlobalLabelHelper.Instance.LabelText = "Selecting output folder...";
             var BrowseDialog = new FolderBrowserDialog()
             {
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 ShowNewFolderButton = true,
                 UseDescriptionForTitle = true,
-                Description = "Select export folder"
+                Description = "Select output folder"
             };
 
             var result = BrowseDialog.ShowDialog();
@@ -55,23 +62,31 @@ namespace InfoDroplets.ResultExporterApp
             {
                 var LogPath = BrowseDialog.SelectedPath;
                 OutTextBox.Text = LogPath;
+                GlobalLabelHelper.Instance.LabelText = "Output folder selected";
             }
+            else
+                GlobalLabelHelper.Instance.LabelText = "Output folder selection cancelled";
         }
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            ExportButton.IsEnabled = false;
-            ForceUIToUpdate();
+            GlobalLabelHelper.Instance.LabelText = "Start execute....";
 
             var logpaths = Directory.GetFiles(LogTextBox.Text);
             var outputpath = OutTextBox.Text;
+
             LogProcessor processor = new LogProcessor(logpaths);
             MapGenerator generator = new MapGenerator(processor);
 
             bool ExportSuceeded = false;
             try
             {
+                GlobalLabelHelper.Instance.LabelText = "Start log file processing....";
                 processor.Execute();
+
+                Thread.Sleep(500);
+
+                GlobalLabelHelper.Instance.LabelText = "Start file export....";
                 ExportSuceeded = generator.Execute(outputpath);
             }
             catch (Exception ex) 
@@ -89,20 +104,6 @@ namespace InfoDroplets.ResultExporterApp
                 }
                 ExportButton.IsEnabled = true;
             }
-        }
-
-        void ForceUIToUpdate()
-        {
-            DispatcherFrame frame = new DispatcherFrame();
-            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Render, new DispatcherOperationCallback(delegate (object parameter)
-            {
-                frame.Continue = false;
-                return null;
-            }), null);
-
-            Dispatcher.PushFrame(frame);
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
-                                          new Action(delegate { }));
         }
     }
 }
