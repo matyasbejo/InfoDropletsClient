@@ -20,13 +20,15 @@ namespace InfoDroplets.ResultExporterApp
             this.paths = paths;
         }
 
+        public LogProcessor() { }
+    
         public bool Execute()
         {
             GlobalLabelHelper.Instance.LabelText = "Selecting a/b file version...";
             FilterABFiles(ref paths);
 
             GlobalLabelHelper.Instance.LabelText = "Getting droplet id...";
-            GetDropletNumber(paths[0]);
+            DropletNumber = GetDropletNumber(paths[0]);
 
             GlobalLabelHelper.Instance.LabelText = "Processing position data in log files...";
             ProcessValuesOfFiles(paths);
@@ -171,15 +173,14 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        public bool GetDropletNumber(string path)
+        public int GetDropletNumber(string path)
         {
-            Match match = Regex.Match(System.IO.Path.GetFileName(path), @"L(\d{1,2})");
+            Match match = Regex.Match(System.IO.Path.GetFileName(path), @"^.*L(\d{1,2})(?!\d)");
 
             if (match.Success)
             {
                 int dropletNumber = int.Parse(match.Groups[1].Value);
-                DropletNumber = dropletNumber;
-                return true;
+                return dropletNumber;
             }
             else
             {
