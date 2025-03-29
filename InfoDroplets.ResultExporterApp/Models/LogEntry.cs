@@ -24,5 +24,13 @@ namespace InfoDroplets.ResultExporter.Models
         {
             return $"[{Math.Round(Latitude,6)}, {Math.Round(Longitude, 6)}, {Math.Round(Elevation, 1)}]";
         }
+
+        public override bool Equals(object? obj)
+        { 
+            LogEntry? le = obj as LogEntry;
+            if (le?.Latitude == this.Latitude && le?.Longitude == this.Longitude && le?.Elevation == this.Elevation)
+                return true;
+            else return false;
+        }
     }
 }
