@@ -4,14 +4,13 @@ using NUnit.Framework;
 namespace InfoDroplets.ResultExporterApp.Tester
 {
     [TestFixture]
-    public class LogProcessorTester
+    internal class LogProcessorTester
     {
-        #region FilterAB tester
-
         [Test, TestCaseSource(typeof(FilterABTestData), nameof(FilterABTestData.TestCases))]
         public void FilterABFilesTester(string[] paths, int? expectedFileCount, Type expectedException)
         {
-            var lp = new LogProcessor(paths);
+            var lp = new LogProcessor();
+
             if (expectedException != null)
             {
                 Assert.Throws(expectedException, () => lp.FilterABFiles(ref paths));
@@ -22,9 +21,24 @@ namespace InfoDroplets.ResultExporterApp.Tester
                 Assert.That(expectedFileCount, Is.EqualTo(paths.Count()));
             }
         }
+
+        [Test, TestCaseSource(typeof(GetDropletNumberTestData), nameof(GetDropletNumberTestData.TestCases))]
+        public void GetDropletNumberTester(string path, int? expectedDropletNumber, Type expectedException)
+        {
+            var lp = new LogProcessor();
+
+            if (expectedException != null)
+            {
+                Assert.Throws(expectedException, () => lp.GetDropletNumber(path));
+            } 
+            else
+            {
+                Assert.That(lp.GetDropletNumber(path), Is.EqualTo(expectedDropletNumber));
+            }
+        }
     }
 
-    public class FilterABTestData
+    internal class FilterABTestData
     {
         static string[] emptySdArray = new string[] { };
         static string[] ABLogsArray = new string[]
@@ -90,5 +104,17 @@ namespace InfoDroplets.ResultExporterApp.Tester
         }
     }
 
-    #endregion
+    internal class GetDropletNumberTestData
+    {
+        public static IEnumerable<object[]> TestCases()
+        {
+            yield return new object[] { @"D:\UNI\_Szakdolgozat\TestData\L8_V0a.txt", 8, null }; //expected input
+            yield return new object[] { @"D:\UNI\_Szakdolgozat\TestData\L8_V0b.txt", 8, null }; //expected input
+            yield return new object[] { @"D:\UNI\_Szakdolgozat\TestData\L1_V21a.txt", 1, null }; //expected input
+            yield return new object[] { @"D:\UNI\_Szakdolgozat\TestData\L10_V21a.txt", 10, null }; //expected input
+            yield return new object[] { @"D:\UNI\_Szakdolgozat\TestData\L100_V21a.txt", null, typeof(Exception) }; //expected to fail (too long id)
+            yield return new object[] { @"D:\UNI\_Szakdolgozat\TestData\R10_V0a.txt", null, typeof(Exception) }; //expected to fail (radio)
+            yield return new object[] { @"D:\UNI\_Szakdolgozat\TestData\kicskacsa.quack", null, typeof(Exception) }; //expected to fail (not log)
+        }
+    }
 }
