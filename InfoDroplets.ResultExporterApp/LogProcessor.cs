@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace InfoDroplets.ResultExporterApp
 {
-    internal class LogProcessor
+    public class LogProcessor
     {
         internal List<List<LogEntry>> LogCollection { get; private set;  } = new List<List<LogEntry>>();
         internal List<List<LogEntry>> BreakCollection { get; private set; } = new List<List<LogEntry>>();
@@ -20,7 +20,7 @@ namespace InfoDroplets.ResultExporterApp
             this.paths = paths;
         }
 
-        internal bool Execute()
+        public bool Execute()
         {
             GlobalLabelHelper.Instance.LabelText = "Selecting a/b file version...";
             FilterABFiles(ref paths);
@@ -41,7 +41,7 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        string[] GetDataRowsFromFile(string path)
+        public string[] GetDataRowsFromFile(string path)
         {
             if (!File.Exists(path)) throw new FileNotFoundException(path);
 
@@ -55,14 +55,13 @@ namespace InfoDroplets.ResultExporterApp
             return fileData;
         }
 
-        List<LogEntry> ProcessFile(string[] fileData)
+        public List<LogEntry> ProcessFile(string[] fileData)
         {
             List<LogEntry> convertedValues = new List<LogEntry>();
             foreach (string row in fileData)
             {
                 var rowData = row.Split(';');
                 if (rowData.Count() != 6) throw new Exception($"The line {row} is not a valid LogEntry.");
-
                 var Lat = double.Parse(rowData[3]);
                 var Long = double.Parse(rowData[4]);
                 var El = double.Parse(rowData[5]);
@@ -74,7 +73,7 @@ namespace InfoDroplets.ResultExporterApp
             return result;
         }
 
-        bool FilterABFiles(ref string[] paths)
+        public bool FilterABFiles(ref string[] paths)
         {
             var aFilePaths = paths.Where(p =>
                 Path.GetFileName(p).StartsWith("l", StringComparison.OrdinalIgnoreCase) &&
@@ -89,11 +88,12 @@ namespace InfoDroplets.ResultExporterApp
             if (aFilePaths.Length == 0 && bFilePaths.Length == 0)
                 throw new Exception("Folder contains no valid log files");
 
-            FileInfo aFileInfo = new FileInfo(aFilePaths.Last());
-            FileInfo bFileInfo = new FileInfo(bFilePaths.Last());
-            if (!aFileInfo.Exists || aFileInfo.Length == 0)
+            FileInfo? aFileInfo = aFilePaths.Length == 0 ? null : new FileInfo(aFilePaths.Last());
+            FileInfo? bFileInfo = aFilePaths.Length == 0 ? null : new FileInfo(aFilePaths.Last());
+
+            if (aFileInfo == null || !aFileInfo.Exists || aFileInfo.Length == 0)
                 paths = bFilePaths;
-            else if (!bFileInfo.Exists || bFileInfo.Length == 0)
+            else if (bFileInfo == null || !bFileInfo.Exists || bFileInfo.Length == 0)
                 paths = aFilePaths;
             else paths = aFilePaths;
 
@@ -102,7 +102,7 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        bool ProcessValuesOfFiles(string[] paths)
+        public bool ProcessValuesOfFiles(string[] paths)
         {
             foreach (var path in paths)
             {
@@ -133,7 +133,7 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        bool GetMapCenterPos()
+        public bool GetMapCenterPos()
         {
             if (LogCollection.SelectMany(innerList => innerList).Count() == 0)
                 throw new Exception("Can't select map center position, because collection is empty.");
@@ -159,7 +159,7 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        bool GetElevationUpperLimit()
+        public bool GetElevationUpperLimit()
         {
             if (LogCollection.Count() == 0)
                 throw new Exception("Can't select Elevation, because collection is empty.");
@@ -171,7 +171,7 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        bool GetDropletNumber(string path)
+        public bool GetDropletNumber(string path)
         {
             Match match = Regex.Match(System.IO.Path.GetFileName(path), @"L(\d{1,2})");
 
