@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace InfoDroplets.ResultExporter.Models
 {
-    internal class LogEntry
+    public class LogEntry
     {
         public LogEntry(double latitude, double longitude, double elevation)
         {
