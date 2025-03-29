@@ -77,12 +77,6 @@ namespace ResultExporterApp
 
         string CreateFileContent(List<List<LogEntry>> logEntries, List<List<LogEntry>> breakEntries)
         {
-            var sampleMapPath = Directory.GetCurrentDirectory();
-            for (int i = 0; i < 3; i++)
-            {
-                sampleMapPath = Directory.GetParent(sampleMapPath).FullName;
-            }
-
             foreach (var item in CustomFileValues)
             {
                 MapContent = MapContent.Replace(item.Key, item.Value);
