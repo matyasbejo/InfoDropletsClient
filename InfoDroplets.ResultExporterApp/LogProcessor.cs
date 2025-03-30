@@ -30,11 +30,20 @@ namespace InfoDroplets.ResultExporterApp
             GlobalLabelHelper.Instance.LabelText = "Getting droplet id...";
             DropletNumber = GetDropletNumber(paths[0]);
 
+            GlobalLabelHelper.Instance.LabelText = "Reading logfiles...";
+            List<string[]> AllFilesLines = new List<string[]>();
+            foreach (string path in paths)
+            {
+                if (!File.Exists(path))
+                    throw new FileNotFoundException($"Can't find log file: {path}");
+                AllFilesLines.Add(File.ReadAllLines(path));
+            }
+
             GlobalLabelHelper.Instance.LabelText = "Processing position data in log files...";
-            ProcessValuesOfFiles(paths);
+            ProcessFiles(AllFilesLines);
 
             GlobalLabelHelper.Instance.LabelText = "Calculating center position of map...";
-            GetMapCenterPos();
+            CenterPos = GetMapCenterPos(); //TODO: összes teszt megírása. Ez pl tesztelhető lesz ha kap egy minimális mock??? databaset.
 
             GlobalLabelHelper.Instance.LabelText = "Calculating upper limit of elevation function...";
             GetElevationUpperLimit();
@@ -43,17 +52,13 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        public string[] GetDataRowsFromFile(string path)
+        public string[] GetDataRowsFromFileLines(string[] fileLines)
         {
-            if (!File.Exists(path)) throw new FileNotFoundException(path);
+            if (fileLines.Length == 0 || fileLines[0] != "Developed by Soprobotics.") throw new Exception("The selected file is not a log entry");
 
-            var FileLines = File.ReadAllLines(path);
+            int IndexOfSeparator = Array.IndexOf(fileLines, "________;________;________;________;________;________");
 
-            if (FileLines[0] != "Developed by Soprobotics.") throw new Exception("The selected file is not a log entry");
-
-            int IndexOfSeparator = Array.IndexOf(FileLines, "________;________;________;________;________;________");
-
-            string[] fileData = FileLines.Skip(IndexOfSeparator + 1).ToArray();
+            string[] fileData = fileLines.Skip(IndexOfSeparator + 1).ToArray();
             return fileData;
         }
 
@@ -104,11 +109,11 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        public bool ProcessValuesOfFiles(string[] paths)
+        public bool ProcessFiles(List<string[]> allFilesLines)
         {
-            foreach (var path in paths)
+            foreach (string[] fileLines in allFilesLines)
             {
-                var fileData = GetDataRowsFromFile(path);
+                var fileData = GetDataRowsFromFileLines(fileLines);
                 var result = ProcessFile(fileData);
                 if (result != null && result.Count > 0)
                 {
@@ -135,7 +140,7 @@ namespace InfoDroplets.ResultExporterApp
             return true;
         }
 
-        public bool GetMapCenterPos()
+        public LogEntry GetMapCenterPos()
         {
             if (LogCollection.SelectMany(innerList => innerList).Count() == 0)
                 throw new Exception("Can't select map center position, because collection is empty.");
@@ -157,8 +162,7 @@ namespace InfoDroplets.ResultExporterApp
                 centerPos.Latitude < minPossibleCentrePoint.Latitude || centerPos.Longitude < minPossibleCentrePoint.Longitude)
                 throw new ArgumentOutOfRangeException("Unrealistic centerpoint calculated for hungarian test flight.");
 
-            CenterPos = centerPos;
-            return true;
+            return centerPos;
         }
 
         public bool GetElevationUpperLimit()
