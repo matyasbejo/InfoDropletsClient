@@ -7,11 +7,11 @@ namespace InfoDroplets.ResultExporterApp
 {
     public class LogProcessor
     {
-        internal List<List<LogEntry>> LogCollection { get; private set;  } = new List<List<LogEntry>>();
-        internal List<List<LogEntry>> BreakCollection { get; private set; } = new List<List<LogEntry>>();
-        internal int DropletNumber { get; private set; }
-        internal int ElevationRange { get; private set; }
-        internal LogEntry? CenterPos { get; private set; }
+        public List<List<LogEntry>> LogCollection { get; private set;  } = new List<List<LogEntry>>();
+        public List<List<LogEntry>> BreakCollection { get; private set; } = new List<List<LogEntry>>();
+        public int DropletNumber { get; private set; }
+        public int ElevationLimit { get; private set; }
+        public LogEntry? CenterPos { get; private set; }
 
         string[] paths;
 
@@ -28,7 +28,7 @@ namespace InfoDroplets.ResultExporterApp
             FilterABFiles(ref paths);
 
             GlobalLabelHelper.Instance.LabelText = "Getting droplet id...";
-            DropletNumber = GetDropletNumber(paths[0]);
+            GetDropletNumber(paths[0]);
 
             GlobalLabelHelper.Instance.LabelText = "Reading logfiles...";
             List<string[]> AllFilesLines = new List<string[]>();
@@ -46,13 +46,13 @@ namespace InfoDroplets.ResultExporterApp
             CenterPos = GetMapCenterPos(); //TODO: összes teszt megírása. Ez pl tesztelhető lesz ha kap egy minimális mock??? databaset.
 
             GlobalLabelHelper.Instance.LabelText = "Calculating upper limit of elevation function...";
-            GetElevationUpperLimit();
+            ElevationLimit = GetElevationLimit();
 
             GlobalLabelHelper.Instance.LabelText = "[Success] Logfiles processed successfully";
             return true;
         }
 
-        public string[] GetDataRowsFromFileLines(string[] fileLines)
+        internal string[] GetDataRowsFromFileLines(string[] fileLines)
         {
             if (fileLines.Length == 0 || fileLines[0] != "Developed by Soprobotics.") throw new Exception("The selected file is not a log entry");
 
@@ -62,7 +62,7 @@ namespace InfoDroplets.ResultExporterApp
             return fileData;
         }
 
-        public List<LogEntry> ProcessFile(string[] fileData)
+        internal List<LogEntry> ProcessFile(string[] fileData)
         {
             List<LogEntry> convertedValues = new List<LogEntry>();
             foreach (string row in fileData)
@@ -115,7 +115,7 @@ namespace InfoDroplets.ResultExporterApp
             {
                 var fileData = GetDataRowsFromFileLines(fileLines);
                 var result = ProcessFile(fileData);
-                if (result != null && result.Count > 0)
+                if (result != null && result.Count != 0)
                 {
                     LogCollection.Add(result);
 
@@ -134,8 +134,11 @@ namespace InfoDroplets.ResultExporterApp
                 }
             }
 
-            if (BreakCollection.Last().Count == 1)
+            if (BreakCollection.Count != 0 && BreakCollection.Last().Count == 1)
                 BreakCollection.Remove(BreakCollection.Last());
+
+            if (LogCollection.Count == 0)
+                throw new Exception("There were no valid log entry-s in the selected file(s).");
 
             return true;
         }
@@ -165,26 +168,25 @@ namespace InfoDroplets.ResultExporterApp
             return centerPos;
         }
 
-        public bool GetElevationUpperLimit()
+        public int GetElevationLimit()
         {
-            if (LogCollection.Count() == 0)
-                throw new Exception("Can't select Elevation, because collection is empty.");
-
-            double maxPossibleElevation = 30_000;
-            double maxElevationInLogs = LogCollection.SelectMany(innerList => innerList).Where(pos => pos.Elevation < maxPossibleElevation).Select(pos => pos.Elevation).Max();
-            int elevationRange = Convert.ToInt32(Math.Ceiling(maxElevationInLogs * 1.1));
-            ElevationRange = elevationRange;
-            return true;
+            double maxPossibleElevation = 60_000;
+            if (LogCollection.SelectMany(innerlist => innerlist).Any(pos => pos.Elevation > maxPossibleElevation))
+                throw new Exception("Unrealistic elevation data in logfile.");
+            double maxElevationInLogs = LogCollection.SelectMany(innerList => innerList).Select(pos => pos.Elevation).Max();
+            int elevationLimit = Convert.ToInt32(Math.Ceiling(maxElevationInLogs * 1.1));
+            return elevationLimit;
         }
 
-        public int GetDropletNumber(string path)
+        public bool GetDropletNumber(string path)
         {
-            Match match = Regex.Match(System.IO.Path.GetFileName(path), @"^.*L(\d{1,2})(?!\d)");
+            Match match = Regex.Match(System.IO.Path.GetFileName(path), @"^.*[LR](\d{1,2})(?!\d)");
 
             if (match.Success)
             {
                 int dropletNumber = int.Parse(match.Groups[1].Value);
-                return dropletNumber;
+                DropletNumber = dropletNumber;
+                return true;
             }
             else
             {
