@@ -81,7 +81,7 @@ namespace InfoDroplets.ResultExporterApp
             var outputpath = OutTextBox.Text;
 
             LogProcessor processor = new LogProcessor(logpaths);
-            MapGenerator generator = new MapGenerator(processor);
+            MapGenerator generator = new MapGenerator();
 
             bool ExportSuceeded = false;
             try
@@ -92,6 +92,7 @@ namespace InfoDroplets.ResultExporterApp
                 Thread.Sleep(500);
 
                 GlobalLabelHelper.Instance.LabelText = "Start file export....";
+                generator.PrepareValues(processor.DropletNumber,processor.ElevationLimit,processor.CenterPos.Longitude,processor.CenterPos.Latitude, processor.LogCollection, processor.BreakCollection);
                 ExportSuceeded = generator.Execute(outputpath);
             }
             catch (Exception ex) 
