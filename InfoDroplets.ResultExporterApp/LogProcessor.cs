@@ -96,7 +96,7 @@ namespace InfoDroplets.ResultExporterApp
                 throw new Exception("Folder contains no valid log files");
 
             FileInfo? aFileInfo = aFilePaths.Length == 0 ? null : new FileInfo(aFilePaths.Last());
-            FileInfo? bFileInfo = aFilePaths.Length == 0 ? null : new FileInfo(aFilePaths.Last());
+            FileInfo? bFileInfo = bFilePaths.Length == 0 ? null : new FileInfo(bFilePaths.Last());
 
             if (aFileInfo == null || !aFileInfo.Exists || aFileInfo.Length == 0)
                 paths = bFilePaths;
