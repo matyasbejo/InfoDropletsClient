@@ -1,7 +1,6 @@
 ﻿using ResultExporterApp;
 using System.IO;
 using System.Windows;
-using System.Windows.Threading;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using Window = System.Windows.Window;
@@ -25,9 +24,12 @@ namespace InfoDroplets.ResultExporterApp
         private void LogBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             GlobalLabelHelper.Instance.LabelText = "Selecting log folder...";
+
+            DirectoryInfo logpathDirInfo = new DirectoryInfo(LogTextBox.Text);
             var BrowseDialog = new FolderBrowserDialog()
             {
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                InitialDirectory = logpathDirInfo.Exists? logpathDirInfo.FullName : 
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 UseDescriptionForTitle = true,
                 Description = "Select log folder"
             };
@@ -48,9 +50,12 @@ namespace InfoDroplets.ResultExporterApp
         private void OutBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             GlobalLabelHelper.Instance.LabelText = "Selecting output folder...";
+
+            DirectoryInfo outpathDirInfo = new DirectoryInfo(OutTextBox.Text);
             var BrowseDialog = new FolderBrowserDialog()
             {
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                InitialDirectory = outpathDirInfo.Exists ? outpathDirInfo.FullName :
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 ShowNewFolderButton = true,
                 UseDescriptionForTitle = true,
                 Description = "Select output folder"
