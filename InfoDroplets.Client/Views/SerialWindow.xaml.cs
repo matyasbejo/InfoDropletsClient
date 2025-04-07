@@ -22,5 +22,10 @@ namespace InfoDroplets.Client
         {
             DialogResult = true;
         }
+
+        private void cb_BaudRateOptions_GiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+
+        }
     }
 }

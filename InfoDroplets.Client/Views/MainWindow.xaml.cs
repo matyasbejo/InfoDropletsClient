@@ -1,4 +1,6 @@
-﻿using InfoDroplets.Client;
+﻿using GMap.NET;
+using GMap.NET.MapProviders;
+using InfoDroplets.Client;
 using InfoDroplets.Client.ViewModels;
 using System.ComponentModel;
 using System.Text;
@@ -11,35 +13,41 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static GMap.NET.Entity.OpenStreetMapRouteEntity;
 
 namespace InfoDropletsClient
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window
     {
-        private List<string> _items;
-        public List<string> Items
-        {
-            get { return _items; }
-            set
-            {
-                _items = value;
-                OnPropertyChanged(nameof(Items));
-            }
-        }
+        double lat = 47.533835;
+        double lng = 19.033115;
+
         public MainWindow()
         {
             InitializeComponent();
-            SerialWindow serialWindow = new SerialWindow();
-            serialWindow.ShowDialog();
+
+            myMap.CacheLocation = Environment.CurrentDirectory + "\\GMapCache2\\";
+            myMap.MapProvider = GMapProviders.OpenStreetMap;
+            myMap.MinZoom = 1;
+            myMap.MaxZoom = 20;
+            myMap.Zoom = 14;
+            myMap.ShowCenter = true;
+            myMap.DragButton = System.Windows.Input.MouseButton.Left;
+            myMap.CanDragMap = false;
+            myMap.MouseWheelZoomType = MouseWheelZoomType.ViewCenter;
+            myMap.FillEmptyTiles = true;
+            myMap.Position = new PointLatLng(lat, lng);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+        private void movemap_btn_Click(object sender, RoutedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            lat += 0.0015;
+            lng += 0.0015;
+
+            myMap.Position = new PointLatLng(lat, lng);
         }
     }
 }

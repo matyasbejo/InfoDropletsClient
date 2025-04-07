@@ -4,36 +4,72 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InfoDropletsClient"
+        xmlns:map="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-        <Grid x:Name="grid_main">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="9*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.Resources>
-            <Style TargetType="Control" x:Key="MainRowActions">
-                <Setter Property="Padding" Value="3,3,3,3" />
-                <Setter Property="Margin" Value="5,5,5,5"/>
-                <Setter Property="FontSize" Value="16"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-            </Style>
-        </Grid.Resources>
+        Title="MainWindow" Height="675" Width="1200">
 
-        <StackPanel x:Name="sp_actions"  Orientation="Horizontal" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,10,0">
-            <Label Content="Droplet:" Style="{StaticResource MainRowActions}"/>
-            <ComboBox x:Name="cb_dropletselector" ItemsSource="{Binding Items}" SelectedIndex="0" Style="{StaticResource MainRowActions}"/>
-            <Button x:Name="bt_version" Content="Version" Style="{StaticResource MainRowActions}"/>
-            <Button x:Name="bt_ping" Content="Ping" Style="{StaticResource MainRowActions}"/>
-            <Button x:Name="bt_reset" Content="Reset" Style="{StaticResource MainRowActions}"/>
-        </StackPanel>
-        <Grid x:Name="grid_droplet" Grid.Row="1" Grid.ColumnSpan="2" Background="AliceBlue">
+    <Grid Background="#F2F2F2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        </Grid>
+        <Grid.RowDefinitions>
+            <!-- Top toolbar row -->
+            <RowDefinition Height="1*"/>
+            <!-- Main content row -->
+            <RowDefinition Height="8*"/>
+        </Grid.RowDefinitions>
+
+        <Border x:Name="NavbarArea" Background="#E6E6E6" Margin="7" CornerRadius="10" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid Grid.Row="0" Background="#E0E0E0" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Buttons -->
+                <Button Content="Ping" Width="75" Margin="5,0"/>
+                <Button Content="Get Version" Grid.Column="1" Width="100" Margin="5,0"/>
+                <Button Content="Restart" Grid.Column="2" Width="80" Margin="5,0"/>
+
+                <!-- Balloon Selector -->
+                <ComboBox Grid.Column="3" Width="200" Margin="15,0"
+                      VerticalAlignment="Center"
+                       
+                      Text="Select Balloon"/>
+            </Grid>
+        </Border>
+
+        <Border x:Name="MapArea" Background="#E0E0E0" Margin="7" CornerRadius="10" Grid.Column="0" Grid.Row="1" Padding="3">
+            <map:GMapControl x:Name="myMap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True"/>
+        </Border>
+
+        <Border x:Name="DetailsArea" Background="#D9D9D9" Margin="7" CornerRadius="10" Padding="10" Grid.Column="1" Grid.Row="2">
+            <StackPanel>
+                <TextBlock Text="🎈 Droplet #1" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Altitude:" FontWeight="Bold"/>
+                <TextBlock Text="12,345 m" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Speed:" FontWeight="Bold"/>
+                <TextBlock Text="23.5 km/h" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Latitude:" FontWeight="Bold"/>
+                <TextBlock Text="51.509865" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Longitude:" FontWeight="Bold"/>
+                <TextBlock Text="-0.118092" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Signal Quality:" FontWeight="Bold"/>
+                <ProgressBar Value="70" Maximum="100" Height="20" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Status:" FontWeight="Bold"/>
+                <TextBlock Text="🟢 Live - Receiving Telemetry" Foreground="Green" Margin="0,0,0,10"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
