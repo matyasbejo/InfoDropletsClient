@@ -52,15 +52,16 @@ namespace InfoDroplets.Logic
             Droplet droplet = Read(id);
             try
             {
-                if (gnuPos != null) droplet.DistanceFromGNU = GetDistanceFromGnu(id, gnuPos);
-                droplet.MovementStatus = GetMovementStatus(GetLastXEntries(droplet.Id, 5));
-                droplet.SpeedKmH = GetSpeed(GetLastXEntries(droplet.Id, 5));
                 droplet.LastData = GetLatestEntry(id);
+                droplet.MovementStatus = GetMovementStatus(GetLastXEntries(droplet.Id, 5));
+                droplet.SpeedKmH = GetSpeedKmH(GetLastXEntries(droplet.Id, 5));
+                droplet.LastUpdated = droplet.LastData.Time;
+                if (gnuPos != null) droplet.DistanceFromGNU = GetDistanceFromGnu(id, gnuPos);
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message + e.StackTrace);
-            } 
+            }
 
             Update(droplet);
         }
@@ -80,11 +81,13 @@ namespace InfoDroplets.Logic
             return DropletMovementStatus.Stationary;
         }
 
-        public int GetSpeed(List<TrackingEntry> trackingEntries)
+        public double GetSpeedKmH(List<TrackingEntry> trackingEntries)
         {
             TrackingEntry pos1 = trackingEntries.First();
             TrackingEntry pos2 = trackingEntries.Last();
-            return 69; //TODO
+            var DistanceMetersDelta = HaversineDistanceKm(pos1, pos2);
+            var ElapsedSeconds = (pos2.Time - pos1.Time).TotalHours;
+            return Math.Round(DistanceMetersDelta / ElapsedSeconds, 2);
         }
         List<TrackingEntry> GetLastXEntries(int dropletId, int maxEntryCount, int minEntryCount = 2)
         {
@@ -132,9 +135,9 @@ namespace InfoDroplets.Logic
             Droplet droplet = Read(id);
             GpsPos dropletPos = new GpsPos(droplet.LastData.Latitude, droplet.LastData.Longitude, droplet.LastData.Elevation);
 
-            double DistanceSphere = HaversineDistance(dropletPos, gnuPos);
+            double DistanceSphere = HaversineDistanceKm(dropletPos, gnuPos);
             double AltitudeDelta = dropletPos.Elevation - gnuPos.Elevation;
-            return Math.Sqrt(Math.Pow(DistanceSphere, 2) + Math.Pow(AltitudeDelta, 2));
+            return Math.Round(Math.Sqrt(Math.Pow(DistanceSphere, 2) + Math.Pow(AltitudeDelta, 2)), 3);
         }
         public TrackingEntry GetLatestEntry(int dropletId)
         {
@@ -143,7 +146,7 @@ namespace InfoDroplets.Logic
                 throw new ArgumentNullException("Droplet has no data");
             else return lastMesurement;
         }
-        static double HaversineDistance(IGpsPos pos1, IGpsPos pos2)
+        static double HaversineDistanceKm(IGpsPos pos1, IGpsPos pos2)
         {
             double earthRadius = 6378;
             double degreesToRadians = 0.0174532925;

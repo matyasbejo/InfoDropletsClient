@@ -13,12 +13,12 @@ namespace InfoDroplets.Logic
         void Delete(Droplet item);
         TrackingEntry GetLatestEntry(int dropletId);
         DropletMovementStatus GetMovementStatus(List<TrackingEntry> trackingEntries);
-        int GetSpeed(List<TrackingEntry> trackingEntries);
+        double GetSpeedKmH(List<TrackingEntry> trackingEntries);
         Droplet Read(int id);
         IQueryable<Droplet> ReadAll();
         void SendCommand(int dropletId, RadioCommand commandType);
         void SendCommand(string input);
         void Update(Droplet item);
-        void UpdateDropletStatus(int id, IGpsPos gnuPos = null);
+        void UpdateDropletStatus(int id, IGpsPos? gnuPos = null);
     }
 }
