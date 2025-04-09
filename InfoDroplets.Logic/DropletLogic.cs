@@ -8,8 +8,9 @@ using System.Timers;
 namespace InfoDroplets.Logic
 {
     public class DropletLogic : IDropletLogic
-    { 
+    {
         IRepository<Droplet> repo;
+
         public event CommandGeneratedEventHandler CommandGenerated;
         public DropletLogic(IRepository<Droplet> repo)
         {
@@ -46,47 +47,52 @@ namespace InfoDroplets.Logic
             repo.Update(item);
         }
 
-        public void UpdateDropletStatus(int id, IGpsPos gnuPos = null)
+        public void UpdateDropletStatus(int id, IGpsPos? gnuPos = null)
         {
             Droplet droplet = Read(id);
-            droplet.LastData = GetLastData(id);
-            if (gnuPos != null) droplet.DistanceFromGNU = GetDistanceFromGnu(id, gnuPos);
+            try
+            {
+                if (gnuPos != null) droplet.DistanceFromGNU = GetDistanceFromGnu(id, gnuPos);
+                droplet.MovementStatus = GetMovementStatus(GetLastXEntries(droplet.Id, 5));
+                droplet.SpeedKmH = GetSpeed(GetLastXEntries(droplet.Id, 5));
+                droplet.LastData = GetLatestEntry(id);
+            }
+            catch (Exception e) 
+            {
+                Console.WriteLine(e.Message + e.StackTrace);
+            } 
 
             Update(droplet);
         }
         #endregion
 
         #region Non CRUD
-        public DropletMovementStatus GetMovementStatus(int dropletId)
+        public DropletMovementStatus GetMovementStatus(List<TrackingEntry> trackingEntries)
         {
-            var TrackingEntries = GetLastDatas(dropletId, 8);
-            var middleIndex = TrackingEntries.Count / 2;
-            List<double> firstHalf = TrackingEntries.GetRange(0, middleIndex).Select(d => d.Elevation).ToList();
-            List<double> secondHalf = TrackingEntries.GetRange(middleIndex,TrackingEntries.Count-(middleIndex)).Select(d => d.Elevation).ToList();
-            if (firstHalf.Average() < secondHalf.Average())
+            if (trackingEntries.First().Elevation < trackingEntries.Last().Elevation)
             {
                 return DropletMovementStatus.Rising;
             }
-            else if (firstHalf.Average() > secondHalf.Average())
+            else if (trackingEntries.First().Elevation > trackingEntries.Last().Elevation)
             {
                 return DropletMovementStatus.Falling;
             }
             return DropletMovementStatus.Stationary;
         }
 
-        public int GetSpeed(int dropletId)
+        public int GetSpeed(List<TrackingEntry> trackingEntries)
         {
-            var data = GetLastDatas(dropletId, 4);
-            TrackingEntry pos1 = data.First();
-            TrackingEntry pos2 = data.Last();
+            TrackingEntry pos1 = trackingEntries.First();
+            TrackingEntry pos2 = trackingEntries.Last();
             return 69; //TODO
         }
-        List<TrackingEntry> GetLastDatas(int dropletId, int dataCount)
+        List<TrackingEntry> GetLastXEntries(int dropletId, int maxEntryCount, int minEntryCount = 2)
         {
-            var lastMesurements = this.Read(dropletId).Measurements?.TakeLast(dataCount);
-            if (lastMesurements == null)
+            var lastMesurements = this.Read(dropletId).Measurements?.TakeLast(maxEntryCount);
+
+            if (lastMesurements == null || lastMesurements.Count() == 0)
                 throw new ArgumentNullException("Droplet has no data");
-            else if (lastMesurements.Count() < 2)
+            else if (lastMesurements.Count() < minEntryCount)
                 throw new ArgumentException("Droplet has not enough data");
             else return lastMesurements.ToList();
         }
@@ -130,7 +136,7 @@ namespace InfoDroplets.Logic
             double AltitudeDelta = dropletPos.Elevation - gnuPos.Elevation;
             return Math.Sqrt(Math.Pow(DistanceSphere, 2) + Math.Pow(AltitudeDelta, 2));
         }
-        public TrackingEntry GetLastData(int dropletId)
+        public TrackingEntry GetLatestEntry(int dropletId)
         {
             var lastMesurement = Read(dropletId).Measurements?.LastOrDefault();
             if (lastMesurement == null)
