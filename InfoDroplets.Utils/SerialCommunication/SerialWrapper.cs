@@ -10,7 +10,7 @@ using InfoDroplets.Utils.Interfaces;
 
 namespace InfoDroplets.Utils.SerialCommunication
 {
-    public class SerialWrapper : ISerialWrapper
+    public class SerialWrapper : ISerialWrapper, IDisposable
     {
         SerialPort _serialPort;
 
@@ -78,7 +78,8 @@ namespace InfoDroplets.Utils.SerialCommunication
         public void Open() { _serialPort.Open(); }
         public void Close() { _serialPort.Close(); }
         public string ReadLine() { return _serialPort.ReadLine(); }
-        public string[] GetPortNames() { return SerialPort.GetPortNames(); }
+        public static string[] GetPortNames() { return SerialPort.GetPortNames(); }
+
         public void Dispose()
         {
             _serialPort.Close();
