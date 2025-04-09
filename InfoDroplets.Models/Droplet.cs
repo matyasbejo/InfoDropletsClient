@@ -18,22 +18,18 @@ namespace InfoDroplets.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
-        [Range(0,5)]
-        public DropletVersion Version { get; set; }
-
         public DropletMovementStatus? MovementStatus { get; set; }
         public double? DistanceFromGNU { get; set; }
-
+        public double? SpeedKmH { get; set; }
+        public virtual ICollection<TrackingEntry> Measurements { get; set; }
         public virtual TrackingEntry? LastData { get; set; }
-
-        public virtual ICollection<TrackingEntry>? Measurements { get; set; }
+        public DateTime? LastUpdated { get; set; }
 
         #endregion
 
-        public Droplet(int id, DropletVersion version = DropletVersion.Mk3_1)
+        public Droplet(int id)
         {
             this.Id = id;
-            this.Version = version;
         }
 
         public override string ToString()
