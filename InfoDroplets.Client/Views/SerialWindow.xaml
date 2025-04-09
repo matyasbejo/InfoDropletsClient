@@ -7,49 +7,74 @@
         xmlns:local="clr-namespace:InfoDroplets.Client"
         xmlns:vms="clr-namespace:InfoDroplets.Client.ViewModels"
         mc:Ignorable="d"
-        Title="SerialWindow" Height="380" Width="676"
+        Title="SerialWindow" Height="340" Width="700"
         Background="AliceBlue">
     <Window.DataContext>
         <vms:SerialWindowViewModel/>
     </Window.DataContext>
-
-    <Grid Margin="20">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="4*"/>
-        </Grid.ColumnDefinitions>
-
+    
+    <Grid Background="#F2F2F2" Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid.Resources>
-            <Style TargetType="Control" x:Key="SerialLoginStyle">
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Margin" Value="15"/>
-                <Setter Property="FontSize" Value="24"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-            </Style>
-            
-            <Style TargetType="Label" x:Key="LabelStyle">
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Margin" Value="15"/>
-                <Setter Property="FontSize" Value="24"/>
-                <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                <Setter Property="HorizontalContentAlignment" Value="Right"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="Padding" Value="0,0,15,0"/>
-            </Style>
-        </Grid.Resources>
+        <Border Background="#E6E6E6" CornerRadius="10" Margin="0,0,0,10" Padding="10">
+            <TextBlock Text="🔌 Connect to Serial Port" 
+                       FontSize="22" FontWeight="Bold" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"/>
+        </Border>
 
-        <Label x:Name="lb_title" Content="Info-Droplet Client V1.0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalContentAlignment="Center" FontSize="30" Height="50"/>
-        <Label x:Name="lb_serialPort" Content="Serial port:" Style="{StaticResource LabelStyle}" Grid.Row="1" Margin="0,15,0,15"/>
-        <ComboBox x:Name="cb_portOptions" ItemsSource="{Binding SerialPorts}" SelectedIndex="0" Style="{StaticResource SerialLoginStyle}" SelectedItem="{Binding SelectedPort}" Grid.Row="1" Grid.Column="1" Padding="10,0,0,0" Margin="15,15,15,15"/>
-        <Label x:Name="lb_baudRate" Content="Baud rate:" Style="{StaticResource LabelStyle}" Grid.Row="2" Margin="0,15,0,15"/>
-        <ComboBox x:Name="cb_BaudRateOptions" ItemsSource="{Binding PossibleBaudRates}" SelectedIndex="1" Style="{StaticResource SerialLoginStyle}" SelectedItem="{Binding SelectedBaudRate}" Grid.Row="2" Grid.Column="1" Padding="10,0,0,0" Margin="15,15,15,15"/>
-        <Button x:Name="bt_submit" Content="Start" Style="{StaticResource SerialLoginStyle}" IsCancel="True" Command="{Binding SubmitCommand}" Grid.Row="3" Grid.ColumnSpan="2" Margin="15,15,15,15"/>
+        <!-- Content Area -->
+        <Border Background="#D9D9D9" CornerRadius="10" Padding="20" Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="54*"/>
+                    <RowDefinition Height="41*"/>
+                    <RowDefinition Height="41*"/>
+                    <RowDefinition Height="60*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Title -->
+                <TextBlock Text="Info-Droplet Client V1.0"
+                           Grid.ColumnSpan="2"
+                           FontSize="26"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,20"/>
+
+                <!-- Serial Port -->
+                <TextBlock Text="Serial Port:" Grid.Row="1" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+                <ComboBox x:Name="cb_portOptions" Grid.Row="1" Grid.Column="1" Margin="5" Padding="5"
+                          VerticalAlignment="Stretch"
+                          ItemsSource="{Binding SerialPorts}"
+                          SelectedItem="{Binding SelectedPort}"
+                          FontSize="16"/>
+
+                <!-- Baud Rate -->
+                <TextBlock Text="Baud Rate:" Grid.Row="2" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+                <ComboBox x:Name="cb_BaudRateOptions" Grid.Row="2" Grid.Column="1" Margin="5" Padding="5"
+                          VerticalAlignment="Stretch"
+                          ItemsSource="{Binding PossibleBaudRates}"
+                          SelectedItem="{Binding SelectedBaudRate}"
+                          FontSize="16"/>
+
+                <!-- Submit Button -->
+                <Button x:Name="bt_submit" Content="Start"
+                        Grid.Row="3" Grid.ColumnSpan="2" Margin="0,15,0,0"
+                        FontSize="16" FontWeight="Bold"
+                        Command="{Binding SubmitCommand}"
+                        Background="#4CAF50" Foreground="White"
+                        BorderBrush="#388E3C" BorderThickness="1"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Cursor="Hand"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
