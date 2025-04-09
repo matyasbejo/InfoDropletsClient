@@ -58,7 +58,7 @@ namespace InfoDroplets.Client.ViewModels
         {
             this.PossibleBaudRates = new ObservableCollection<int>{ 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
             serialWrapper = new SerialWrapper();
-            var PortNamesList = serialWrapper.GetPortNames();
+            var PortNamesList = SerialWrapper.GetPortNames();
 
             SerialPorts = new ObservableCollection<string>();
             foreach (var item in PortNamesList)
