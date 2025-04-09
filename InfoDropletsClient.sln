@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InfoDropletsClient", "InfoD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoDroplets.ResultExporterApp", "InfoDroplets.ResultExporterApp\InfoDroplets.ResultExporterApp.csproj", "{78A075D4-5BBA-45BE-836C-54A033C5A72B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoDroplets.ResultExporterApp.Tester", "InfoDroplets.ResultExporterApp.Tester\InfoDroplets.ResultExporterApp.Tester.csproj", "{737D048C-6052-4638-A710-D8D2AD8FB97F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoDroplets.ResultExporterApp.Tests", "InfoDroplets.ResultExporterApp.Tester\InfoDroplets.ResultExporterApp.Tests.csproj", "{737D048C-6052-4638-A710-D8D2AD8FB97F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
