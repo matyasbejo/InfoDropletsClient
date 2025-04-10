@@ -6,15 +6,20 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InfoDroplets.Utils.Interfaces;
 
 namespace InfoDroplets.Utils.SerialCommunication
 {
-    public class SerialWrapper : ISerialWrapper, IDisposable
+    public class SerialWrapper : IDisposable, ISerialWrapper
     {
         SerialPort _serialPort;
 
-        public List<string> AvaliableSerialPorts { get; set; }
+        public List<string> AvaliableSerialPorts
+        {
+            get
+            {
+                return SerialPort.GetPortNames().ToList();
+            }
+        }
 
         public SerialWrapper()
         {
@@ -78,7 +83,6 @@ namespace InfoDroplets.Utils.SerialCommunication
         public void Open() { _serialPort.Open(); }
         public void Close() { _serialPort.Close(); }
         public string ReadLine() { return _serialPort.ReadLine(); }
-        public static string[] GetPortNames() { return SerialPort.GetPortNames(); }
 
         public void Dispose()
         {

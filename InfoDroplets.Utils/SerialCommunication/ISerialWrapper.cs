@@ -1,10 +1,8 @@
-﻿using InfoDroplets.Utils.SerialCommunication;
-
-namespace InfoDroplets.Utils.Interfaces
+﻿namespace InfoDroplets.Utils.SerialCommunication
 {
     public interface ISerialWrapper
     {
-        List<string> AvaliableSerialPorts { get; set; }
+        List<string> AvaliableSerialPorts { get; }
 
         void Close();
         void Dispose();
