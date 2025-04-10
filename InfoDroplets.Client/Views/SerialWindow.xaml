@@ -7,13 +7,13 @@
         xmlns:local="clr-namespace:InfoDroplets.Client"
         xmlns:vms="clr-namespace:InfoDroplets.Client.ViewModels"
         mc:Ignorable="d"
-        Title="SerialWindow" Height="340" Width="700"
+        Title="SerialWindow" Height="350" Width="700"
         Background="AliceBlue">
     <Window.DataContext>
         <vms:SerialWindowViewModel/>
     </Window.DataContext>
     
-    <Grid Background="#F2F2F2" Margin="10">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -54,6 +54,8 @@
                           VerticalAlignment="Stretch"
                           ItemsSource="{Binding SerialPorts}"
                           SelectedItem="{Binding SelectedPort}"
+                          SelectedIndex="0"
+                          VerticalContentAlignment="Center"
                           FontSize="16"/>
 
                 <!-- Baud Rate -->
@@ -62,13 +64,15 @@
                           VerticalAlignment="Stretch"
                           ItemsSource="{Binding PossibleBaudRates}"
                           SelectedItem="{Binding SelectedBaudRate}"
+                          SelectedIndex="1"
+                          VerticalContentAlignment="Center"
                           FontSize="16"/>
 
                 <!-- Submit Button -->
                 <Button x:Name="bt_submit" Content="Start"
                         Grid.Row="3" Grid.ColumnSpan="2" Margin="0,15,0,0"
                         FontSize="16" FontWeight="Bold"
-                        Command="{Binding SubmitCommand}"
+                        Command="{Binding StartCommand, Mode=OneWay}"
                         Background="#4CAF50" Foreground="White"
                         BorderBrush="#388E3C" BorderThickness="1"
                         HorizontalAlignment="Stretch"

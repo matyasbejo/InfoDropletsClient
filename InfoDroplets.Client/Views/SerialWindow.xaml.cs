@@ -12,20 +12,5 @@ namespace InfoDroplets.Client
         {
             InitializeComponent();
         }
-
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = true;
-        }
-
-        private void bt_submit_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-        }
-
-        private void cb_BaudRateOptions_GiveFeedback(object sender, GiveFeedbackEventArgs e)
-        {
-
-        }
     }
 }

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using InfoDroplets.Logic;
 using InfoDroplets.Models;
 using InfoDroplets.Utils.SerialCommunication;
+using InfoDropletsClient;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -15,56 +16,47 @@ namespace InfoDroplets.Client.ViewModels
 {
     public class SerialWindowViewModel: ObservableRecipient
     {
-        SerialWrapper serialWrapper;
-        DropletLogic dropletLogic;
-
-        public ObservableCollection<Droplet> DropletDetails { get; set; }
-
+        ISerialWrapper serialWrapper;
         public ObservableCollection<string> SerialPorts { get; set; }
 
         public ObservableCollection<int> PossibleBaudRates { get; set; }
 
-        private string selectedPort;
+        public ICommand StartCommand {  get; set; }
 
+        private string selectedPort;
         public string SelectedPort
         {
             get { return selectedPort; }
             set
             {
-                if (SetProperty(ref selectedPort, value))
-                {
-                    selectedPort = value;
-                    serialWrapper.SetPortName(value);
-                }
+                SetProperty(ref selectedPort, value);
+                (StartCommand as RelayCommand).NotifyCanExecuteChanged();
             }
         }
 
         private int selectedBaudRate;
-
         public int SelectedBaudRate
         {
             get { return selectedBaudRate; }
             set
             {
-                if (SetProperty(ref selectedBaudRate, value))
-                {
-                    selectedBaudRate = value;
-                    serialWrapper.SetBaudeRate(value);
-                }
+                SetProperty(ref selectedBaudRate, value);
+                (StartCommand as RelayCommand).NotifyCanExecuteChanged();
             }
         }
 
         public SerialWindowViewModel()
         {
-            this.PossibleBaudRates = new ObservableCollection<int>{ 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
+            PossibleBaudRates = new ObservableCollection<int>{ 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
             serialWrapper = new SerialWrapper();
-            var PortNamesList = SerialWrapper.GetPortNames();
+            var PortNamesList = serialWrapper.AvaliableSerialPorts;
+            SerialPorts = new ObservableCollection<string>(PortNamesList);
 
-            SerialPorts = new ObservableCollection<string>();
-            foreach (var item in PortNamesList)
-            {
-                SerialPorts.Add(item);
-            }
+            StartCommand = new RelayCommand
+                (
+                    () => { },
+                    () => selectedBaudRate != 0 && selectedPort != null
+                );
         }
 
         public static bool IsInDesignMode
