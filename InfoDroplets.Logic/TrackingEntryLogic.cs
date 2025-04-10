@@ -3,15 +3,13 @@ using InfoDroplets.Repository;
 
 namespace InfoDroplets.Logic
 {
-    public class TrackingEntryLogic
+    public class TrackingEntryLogic : ITrackingEntryLogic
     {
         IRepository<TrackingEntry> repo;
-        IRepository<Droplet> dropletRepo;
 
-        public TrackingEntryLogic(IRepository<TrackingEntry> teRepo, IRepository<Droplet> dropletRepo)
+        public TrackingEntryLogic(IRepository<TrackingEntry> teRepo)
         {
             this.repo = teRepo;
-            this.dropletRepo = dropletRepo;
         }
 
         public void Create(string data)
@@ -22,17 +20,17 @@ namespace InfoDroplets.Logic
             if (argumentList.Count() != 6 || data.Any(c => !allowedCharacters.Contains(c)))
                 throw new ArgumentException($"Input error: {data}");
 
-            int newDropletId = int.Parse(argumentList[0]);
-            if(dropletRepo.ReadAll().Count(droplet => droplet.Id == newDropletId) == 0)
-            {
-                dropletRepo.Create(new Droplet(newDropletId));
-            }
+            int LogEntryDropletId = int.Parse(argumentList[0]); 
+            bool isFirstDropletInCollection = !ReadAll().Any(d => d.DropletId == LogEntryDropletId);
+
             repo.Create(new TrackingEntry(data));
+            if (isFirstDropletInCollection)
+                throw new NullReferenceException($"Droplet {LogEntryDropletId} does not exist");
         }
 
         protected void Create(TrackingEntry item)
         {
-           repo.Create(item);
+            repo.Create(item);
         }
 
         public void Delete(TrackingEntry item)
