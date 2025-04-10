@@ -9,28 +9,28 @@ namespace InfoDroplets.Logic
 {
     public class DropletLogic : IDropletLogic
     {
-        IRepository<Droplet> repo;
+        IRepository<Droplet> dropletRepo;
 
         public event CommandGeneratedEventHandler CommandGenerated;
         public DropletLogic(IRepository<Droplet> repo)
         {
-            this.repo = repo;
+            this.dropletRepo = repo;
         }
 
         #region CRUD
         public void Create(Droplet item)
         {
-            repo.Create(item);
+            dropletRepo.Create(item);
         }
 
         public void Delete(Droplet item)
         {
-            repo.Delete(item);
+            dropletRepo.Delete(item);
         }
 
         public Droplet Read(int id)
         {
-            var DataEntry = repo.Read(id);
+            var DataEntry = dropletRepo.Read(id);
             if (DataEntry == null)
                 throw new ArgumentException("Droplet doesn't exist");
 
@@ -39,12 +39,12 @@ namespace InfoDroplets.Logic
 
         public IQueryable<Droplet> ReadAll()
         {
-            return repo.ReadAll();
+            return dropletRepo.ReadAll();
         }
 
         public void Update(Droplet item)
         {
-            repo.Update(item);
+            dropletRepo.Update(item);
         }
 
         public void UpdateDropletStatus(int id, IGpsPos? gnuPos = null)
