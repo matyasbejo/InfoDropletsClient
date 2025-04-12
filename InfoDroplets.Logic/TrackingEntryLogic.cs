@@ -1,4 +1,5 @@
-﻿using InfoDroplets.Models;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using InfoDroplets.Models;
 using InfoDroplets.Repository;
 
 namespace InfoDroplets.Logic
@@ -6,10 +7,12 @@ namespace InfoDroplets.Logic
     public class TrackingEntryLogic : ITrackingEntryLogic
     {
         IRepository<TrackingEntry> repo;
+        IMessenger messenger;
 
-        public TrackingEntryLogic(IRepository<TrackingEntry> teRepo)
+        public TrackingEntryLogic(IMessenger messenger, IRepository<TrackingEntry> teRepo)
         {
             this.repo = teRepo;
+            this.messenger = messenger;
         }
 
         public void Create(string data)

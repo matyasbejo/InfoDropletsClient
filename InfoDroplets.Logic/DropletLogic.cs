@@ -1,4 +1,5 @@
-﻿using InfoDroplets.Models;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using InfoDroplets.Models;
 using InfoDroplets.Repository;
 using InfoDroplets.Utils.Enums;
 using InfoDroplets.Utils.Interfaces;
@@ -10,11 +11,13 @@ namespace InfoDroplets.Logic
     public class DropletLogic : IDropletLogic
     {
         IRepository<Droplet> dropletRepo;
+        IMessenger messenger;
 
         public event CommandGeneratedEventHandler CommandGenerated;
-        public DropletLogic(IRepository<Droplet> repo)
+        public DropletLogic(IMessenger messenger, IRepository<Droplet> repository)
         {
-            this.dropletRepo = repo;
+            this.messenger = messenger;
+            dropletRepo = repository;
         }
 
         #region CRUD
@@ -160,6 +163,7 @@ namespace InfoDroplets.Logic
 
             return earthRadius * h2;
         }
+
         #endregion
     }
 }

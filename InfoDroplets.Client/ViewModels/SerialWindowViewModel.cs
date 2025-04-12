@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using InfoDroplets.Logic;
 using InfoDroplets.Models;
@@ -44,8 +45,12 @@ namespace InfoDroplets.Client.ViewModels
                 (StartCommand as RelayCommand).NotifyCanExecuteChanged();
             }
         }
+        public SerialWindowViewModel() : this(IsInDesignMode? null : Ioc.Default.GetService<ISerialWrapper>())
+        {
+            
+        }
 
-        public SerialWindowViewModel()
+        public SerialWindowViewModel(ISerialWrapper wrapper)
         {
             PossibleBaudRates = new ObservableCollection<int>{ 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
             serialWrapper = new SerialWrapper();
