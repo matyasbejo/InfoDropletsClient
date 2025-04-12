@@ -1,11 +1,14 @@
-﻿namespace InfoDroplets.Utils.SerialCommunication
+﻿using System.IO.Ports;
+
+namespace InfoDroplets.Utils.SerialCommunication
 {
     public interface ISerialWrapper
     {
         List<string> AvaliableSerialPorts { get; }
 
+        event SerialDataReceivedEventHandler WrapperDataReceived;
+
         void Close();
-        void Dispose();
         int GetBaudeRate();
         string GetPortName();
         void Open();

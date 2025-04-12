@@ -12,6 +12,7 @@ namespace InfoDroplets.Utils.SerialCommunication
     public class SerialWrapper : IDisposable, ISerialWrapper
     {
         SerialPort _serialPort;
+        public event SerialDataReceivedEventHandler WrapperDataReceived;
 
         public List<string> AvaliableSerialPorts
         {
@@ -24,6 +25,12 @@ namespace InfoDroplets.Utils.SerialCommunication
         public SerialWrapper()
         {
             _serialPort = new SerialPort();
+            _serialPort.DataReceived += Wrapper_DataReceived;
+        }
+
+        private void Wrapper_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            WrapperDataReceived?.Invoke(this, e);
         }
 
         public void SendCommand(object sender, CommandEventArgs e)
@@ -84,7 +91,7 @@ namespace InfoDroplets.Utils.SerialCommunication
         public void Close() { _serialPort.Close(); }
         public string ReadLine() { return _serialPort.ReadLine(); }
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             _serialPort.Close();
         }

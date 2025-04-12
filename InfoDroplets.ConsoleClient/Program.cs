@@ -1,46 +1,58 @@
-﻿using System;
-using InfoDroplets.Logic;
+﻿using InfoDroplets.Logic;
 using InfoDroplets.Models;
 using InfoDroplets.Repository;
 using InfoDroplets.Utils.SerialCommunication;
+using System.IO.Ports;
 
 namespace InfoDroplets.ConsoleClient
 {
     internal class Program
     {
+        static ISerialWrapper sw {  get; set; }
+        static ITrackingEntryLogic trackingEntryLogic { get; set; }
+        static IDropletLogic dropletLogic { get; set; }
         static void Main(string[] args)
         {
-            List<int> list = new List<int>();
-            var last = list.TakeLast(4);
-
             ClientDbContext ctx = new ClientDbContext();
 
-            DropletRepository dropletRepository = new DropletRepository(ctx);
-            TrackingEntryRepository trackingEntryRepository = new TrackingEntryRepository(ctx);
+            IRepository<Droplet> dropletRepository = new DropletRepository(ctx);
+            IRepository<TrackingEntry> trackingEntryRepository = new TrackingEntryRepository(ctx);
 
-            DropletLogic dropletLogic = new DropletLogic(dropletRepository);
-            TrackingEntryLogic trackingEntryLogic = new TrackingEntryLogic(trackingEntryRepository,dropletRepository);
+            dropletLogic = new DropletLogic(null, dropletRepository);
+            trackingEntryLogic = new TrackingEntryLogic(null, trackingEntryRepository);
 
-            SerialWrapper sw = new SerialWrapper(new System.IO.Ports.SerialPort());
+            sw = new SerialWrapper();
 
-            dropletLogic.CommandGenerated += sw.SendCommand;
+            var a = sw.AvaliableSerialPorts;
 
-            var a = SerialWrapper.GetPortNames();
-            sw.SetPortName("COM4");
+            sw.SetPortName("COM5");
             sw.SafeOpen();
 
             dropletLogic.CommandGenerated += sw.SendCommand;
+            sw.WrapperDataReceived += OnDataReceived;
 
-            while (true)
+            while (true) { }
+        }
+
+        static void OnDataReceived(object sender, EventArgs e)
+        {
+            var line = sw.ReadLine();
+            try
             {
-                var line = sw.ReadLine();
                 try
                 {
                     trackingEntryLogic.Create(line);
-                    Console.WriteLine($"Added: {line}");
                 }
-                catch (Exception e){ Console.WriteLine(e.Message); }
+                catch (NullReferenceException ex)
+                {
+                    var newDropletId = int.Parse(line.Trim().Split(';')[0]);
+                    dropletLogic.Create(new Droplet(newDropletId));
+                    Console.WriteLine($"Droplet {newDropletId} added.");
+                }
+                dropletLogic.UpdateDropletStatus(8, new GpsPos(47.500429, 19.084596, 100));
+                Console.WriteLine($"Added: {line}");
             }
+            catch (Exception ex) { Console.WriteLine(ex.Message); }
         }
     }
 }
