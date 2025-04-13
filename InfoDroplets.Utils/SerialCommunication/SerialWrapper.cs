@@ -14,6 +14,9 @@ namespace InfoDroplets.Utils.SerialCommunication
         SerialPort _serialPort;
         public event SerialDataReceivedEventHandler WrapperDataReceived;
 
+
+        public string SelectedSerialPort { get; set; }
+        public int SelectedBaudRate { get; set; }
         public List<string> AvaliableSerialPorts
         {
             get
@@ -88,7 +91,11 @@ namespace InfoDroplets.Utils.SerialCommunication
             Console.WriteLine($"message sent: {message}");
         }
         public void Open() { _serialPort.Open(); }
-        public void Close() { _serialPort.Close(); }
+        public void SafeClose() 
+        {
+            if (_serialPort.IsOpen)
+                _serialPort.Close();
+        }
         public string ReadLine() { return _serialPort.ReadLine(); }
 
         void IDisposable.Dispose()

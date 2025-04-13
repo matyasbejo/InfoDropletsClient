@@ -5,10 +5,12 @@ namespace InfoDroplets.Utils.SerialCommunication
     public interface ISerialWrapper
     {
         List<string> AvaliableSerialPorts { get; }
+        int SelectedBaudRate { get; set; }
+        string SelectedSerialPort { get; set; }
 
         event SerialDataReceivedEventHandler WrapperDataReceived;
 
-        void Close();
+        void SafeClose();
         int GetBaudeRate();
         string GetPortName();
         void Open();
