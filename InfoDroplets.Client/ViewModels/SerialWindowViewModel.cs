@@ -8,10 +8,9 @@ using InfoDropletsClient;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Markup;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace InfoDroplets.Client.ViewModels
 {
@@ -52,14 +51,22 @@ namespace InfoDroplets.Client.ViewModels
 
         public SerialWindowViewModel(ISerialWrapper wrapper)
         {
+            serialWrapper = wrapper;
             PossibleBaudRates = new ObservableCollection<int>{ 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
-            serialWrapper = new SerialWrapper();
             var PortNamesList = serialWrapper.AvaliableSerialPorts;
             SerialPorts = new ObservableCollection<string>(PortNamesList);
 
             StartCommand = new RelayCommand
                 (
-                    () => { },
+                    () => 
+                    {
+                        serialWrapper.SelectedBaudRate = SelectedBaudRate;
+                        serialWrapper.SelectedSerialPort = SelectedPort;
+                        serialWrapper.SetBaudeRate(SelectedBaudRate);
+                        serialWrapper.SetPortName(SelectedPort);
+                        serialWrapper.SafeOpen();
+                        Messenger.Send("PortSetupDone", "SerialPortInfo");
+                    },
                     () => selectedBaudRate != 0 && selectedPort != null
                 );
         }

@@ -28,8 +28,8 @@ namespace InfoDropletsClient
         public MainWindow()
         {
             InitializeComponent();
-            //SerialWindow sw = new SerialWindow();
-            //sw.ShowDialog();
+            SerialWindow sw = new SerialWindow();
+            sw.ShowDialog();
 
             myMap.CacheLocation = Environment.CurrentDirectory + "\\GMapCache2\\";
             myMap.MapProvider = GMapProviders.OpenStreetMap;

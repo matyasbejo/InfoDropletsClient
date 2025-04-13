@@ -54,7 +54,6 @@
                           VerticalAlignment="Stretch"
                           ItemsSource="{Binding SerialPorts}"
                           SelectedItem="{Binding SelectedPort}"
-                          SelectedIndex="0"
                           VerticalContentAlignment="Center"
                           FontSize="16"/>
 
@@ -69,7 +68,7 @@
                           FontSize="16"/>
 
                 <!-- Submit Button -->
-                <Button x:Name="bt_submit" Content="Start"
+                <Button x:Name="bt_submit" Content="Open"
                         Grid.Row="3" Grid.ColumnSpan="2" Margin="0,15,0,0"
                         FontSize="16" FontWeight="Bold"
                         Command="{Binding StartCommand, Mode=OneWay}"

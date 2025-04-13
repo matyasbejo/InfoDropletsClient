@@ -5,10 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InfoDropletsClient"
         xmlns:map="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
+        xmlns:vms="clr-namespace:InfoDroplets.Client.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="675" Width="1200">
+    <Window.DataContext>
+        <vms:MainWindowViewModel/>
+    </Window.DataContext>
 
-    <Window.Resources>
+        <Window.Resources>
         <Style TargetType="Button" x:Key="RCButton">
             <Setter Property="Height" Value="25"/>
             <Setter Property="Background" Value="#4CAF50"/>
@@ -17,6 +21,7 @@
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
     </Window.Resources>
+    
     <Grid Background="#F2F2F2">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -28,55 +33,45 @@
             <RowDefinition Height="1*"/>
             <!-- Main content row -->
             <RowDefinition Height="8*"/>
+            <!-- Status row -->
+            <RowDefinition Height="0.4*"/>
         </Grid.RowDefinitions>
 
         <Border x:Name="NavbarArea" Background="#E6E6E6" Margin="7" CornerRadius="10" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
-            <Grid Grid.Row="0" Background="#E0E0E0" VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Buttons -->
-                <Button Content="Reset" Style="{StaticResource RCButton}" Width="75" Margin="5,0"/>
-                
-
-                <!-- Balloon Selector -->
-                <ComboBox Grid.Column="3" Width="200" Margin="15,0"
-                      VerticalAlignment="Center"
-                       
-                      Text="Select Balloon"/>
-            </Grid>
+            <WrapPanel Margin="3">
+                <StackPanel Grid.Row="0" VerticalAlignment="Center">
+                    <Label x:Name="lb_SerialPort" Content="0{Binding SerialWrapper.SelectedSerialPort}" ContentStringFormat="Serial Port: {0}"/>
+                    <Label x:Name="lb_BaudRate" Content="0{Binding SerialWrapper.SelectedBaudRate}" ContentStringFormat="BaudRate: {0}"/>
+                </StackPanel>
+                <Button x:Name="bt_ChangeSerialSettings" Content="Change" Width="70" Command="{Binding ChangeSerialPortSettingsCommand}"/>
+            </WrapPanel>
         </Border>
 
         <Border x:Name="MapArea" Background="#E0E0E0" Margin="7" CornerRadius="10" Grid.Column="0" Grid.Row="1" Padding="3">
             <map:GMapControl x:Name="myMap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True"/>
         </Border>
 
-        <Border x:Name="DetailsArea" Background="#D9D9D9" Margin="7" CornerRadius="10" Padding="10" Grid.Column="1" Grid.Row="2">
+        <Border x:Name="DetailsArea" Background="#D9D9D9" Margin="7" CornerRadius="10" Padding="10" Grid.Column="1" Grid.Row="1">
             <StackPanel>
                 <TextBlock Text="🎈 Droplet #1" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Altitude:" FontWeight="Bold"/>
-                <TextBlock Text="12,345 m" Margin="0,0,0,10"/>
+                <TextBlock x:Name="tb_altitude" Text="12,345 m" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Speed:" FontWeight="Bold"/>
-                <TextBlock Text="23.5 km/h" Margin="0,0,0,10"/>
+                <TextBlock x:Name="tb_speed" Text="23.5 km/h" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Latitude:" FontWeight="Bold"/>
-                <TextBlock Text="51.509865" Margin="0,0,0,10"/>
+                <TextBlock x:Name="tb_latitude" Text="51.509865" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Longitude:" FontWeight="Bold"/>
-                <TextBlock Text="-0.118092" Margin="0,0,0,10"/>
-
-                <TextBlock Text="Signal Quality:" FontWeight="Bold"/>
-                <ProgressBar Value="70" Maximum="100" Height="20" Margin="0,0,0,10"/>
+                <TextBlock x:Name="tb_longitude" Text="-0.118092" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Status:" FontWeight="Bold"/>
-                <TextBlock Text="🟢 Live - Receiving Telemetry" Foreground="Green" Margin="0,0,0,10"/>
+                <TextBlock x:Name="tb_status" Text="Rising" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Last update:" FontWeight="Bold"/>
+                <TextBlock x:Name="tb_lastUpdate" Text="" Foreground="Green" Margin="0,0,0,10"/>
 
                 <Grid Background="DarkGray">
                     <Grid.ColumnDefinitions>
