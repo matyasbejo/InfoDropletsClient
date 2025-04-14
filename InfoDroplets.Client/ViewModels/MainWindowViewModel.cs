@@ -1,24 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using InfoDroplets.Logic;
 using InfoDroplets.Models;
 using InfoDroplets.Utils.SerialCommunication;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Interop;
 
 namespace InfoDroplets.Client.ViewModels
 {
     internal class MainWindowViewModel : ObservableRecipient
     {
         public ISerialWrapper SerialWrapper { get; set; }
-
-        IDropletLogic DropletLogic { get; set; }
-
+        public IDropletLogic DropletLogic { get; set; }
         ITrackingEntryLogic TrackingEntryLogic { get; set; }
         SerialWindow serialWindow { get; set; }
 
@@ -38,6 +33,10 @@ namespace InfoDroplets.Client.ViewModels
 
             serialWindow = new SerialWindow();
 
+            serialWindow.ShowDialog();
+            SerialWrapper.WrapperDataReceived += OnDataReceived;
+
+
             Messenger.Register<MainWindowViewModel, string, string>(this, "SerialPortInfo", (recipient, msg) =>
             {
                 OnPropertyChanged("serialWrapper");
@@ -49,8 +48,6 @@ namespace InfoDroplets.Client.ViewModels
                     SerialWrapper.SafeClose();
                     serialWindow.Show();
                 });
-
-            SerialWrapper.WrapperDataReceived += OnDataReceived;
         }
 
         public static bool IsInDesignMode
@@ -64,24 +61,27 @@ namespace InfoDroplets.Client.ViewModels
 
         void OnDataReceived(object sender, EventArgs e)
         {
-            var line = SerialWrapper.ReadLine();
-            try
+            if (SerialWrapper.IsOpen)
             {
+                var line = SerialWrapper.ReadLine();
                 try
                 {
-                    TrackingEntryLogic.Create(line);
+                    try
+                    {
+                        TrackingEntryLogic.Create(line);
+                    }
+                    catch (NullReferenceException ex)
+                    {
+                        var newDropletId = int.Parse(line.Trim().Split(';')[0]);
+                        DropletLogic.Create(new Droplet(newDropletId));
+                        //Console.WriteLine($"Droplet {newDropletId} added.");
+                    }
+                    DropletLogic.UpdateDropletStatus(8, new GpsPos(47.500429, 19.084596, 100));
+                    //Console.WriteLine($"Added: {line}");
                 }
-                catch (NullReferenceException ex)
-                {
-                    var newDropletId = int.Parse(line.Trim().Split(';')[0]);
-                    DropletLogic.Create(new Droplet(newDropletId));
-                    //Console.WriteLine($"Droplet {newDropletId} added.");
+                catch (Exception ex)
+                { //Console.WriteLine(ex.Message); }
                 }
-                DropletLogic.UpdateDropletStatus(8, new GpsPos(47.500429, 19.084596, 100));
-                //Console.WriteLine($"Added: {line}");
-            }
-            catch (Exception ex)
-            { //Console.WriteLine(ex.Message); }
             }
         }
     }
