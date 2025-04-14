@@ -13,7 +13,10 @@ namespace InfoDroplets.Client.ViewModels
     internal class MainWindowViewModel : ObservableRecipient
     {
         public ISerialWrapper SerialWrapper { get; set; }
-        public IDropletLogic DropletLogic { get; set; }
+
+        public Droplet? SelectedDroplet { get { return DropletLogic.Read(8); } }
+
+        IDropletLogic DropletLogic { get; set; }
         ITrackingEntryLogic TrackingEntryLogic { get; set; }
         SerialWindow serialWindow { get; set; }
 
@@ -50,15 +53,6 @@ namespace InfoDroplets.Client.ViewModels
                 });
         }
 
-        public static bool IsInDesignMode
-        {
-            get
-            {
-                var isInDesignModeProp = DesignerProperties.IsInDesignModeProperty;
-                return (bool)DependencyPropertyDescriptor.FromProperty(isInDesignModeProp, typeof(FrameworkElement)).Metadata.DefaultValue;
-            }
-        }
-
         void OnDataReceived(object sender, EventArgs e)
         {
             if (SerialWrapper.IsOpen)
@@ -77,11 +71,20 @@ namespace InfoDroplets.Client.ViewModels
                         //Console.WriteLine($"Droplet {newDropletId} added.");
                     }
                     DropletLogic.UpdateDropletStatus(8, new GpsPos(47.500429, 19.084596, 100));
+                    OnPropertyChanged("SelectedDroplet");
                     //Console.WriteLine($"Added: {line}");
                 }
                 catch (Exception ex)
                 { //Console.WriteLine(ex.Message); }
                 }
+            }
+        }
+        public static bool IsInDesignMode
+        {
+            get
+            {
+                var isInDesignModeProp = DesignerProperties.IsInDesignModeProperty;
+                return (bool)DependencyPropertyDescriptor.FromProperty(isInDesignModeProp, typeof(FrameworkElement)).Metadata.DefaultValue;
             }
         }
     }
