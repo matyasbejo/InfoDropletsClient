@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
+using GMap.NET;
 using InfoDroplets.Logic;
 using InfoDroplets.Models;
 using InfoDroplets.Utils.SerialCommunication;
@@ -15,6 +16,8 @@ namespace InfoDroplets.Client.ViewModels
         public ISerialWrapper SerialWrapper { get; set; }
 
         public Droplet? SelectedDroplet { get { return DropletLogic.Read(8); } }
+
+        public PointLatLng? MapCenterPos { get { return new PointLatLng(SelectedDroplet.LastData.Latitude, SelectedDroplet.LastData.Longitude); } }
 
         IDropletLogic DropletLogic { get; set; }
         ITrackingEntryLogic TrackingEntryLogic { get; set; }
@@ -72,6 +75,7 @@ namespace InfoDroplets.Client.ViewModels
                     }
                     DropletLogic.UpdateDropletStatus(8, new GpsPos(47.500429, 19.084596, 100));
                     OnPropertyChanged("SelectedDroplet");
+                    OnPropertyChanged("MapCenterPos");
                     //Console.WriteLine($"Added: {line}");
                 }
                 catch (Exception ex)

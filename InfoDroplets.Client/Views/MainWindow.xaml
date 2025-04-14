@@ -48,7 +48,7 @@
         </Border>
 
         <Border x:Name="MapArea" Background="#E0E0E0" Margin="7" CornerRadius="10" Grid.Column="0" Grid.Row="1" Padding="3">
-            <map:GMapControl x:Name="myMap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True"/>
+            <map:GMapControl x:Name="myMap" CenterPosition="{Binding MapCenterPos}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True"/>
         </Border>
 
         <Border x:Name="DetailsArea" Background="#D9D9D9" Margin="7" CornerRadius="10" Padding="10" Grid.Column="1" Grid.Row="1">
