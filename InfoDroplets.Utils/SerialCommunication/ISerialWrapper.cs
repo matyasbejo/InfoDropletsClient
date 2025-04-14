@@ -7,6 +7,7 @@ namespace InfoDroplets.Utils.SerialCommunication
         List<string> AvaliableSerialPorts { get; }
         int SelectedBaudRate { get; set; }
         string SelectedSerialPort { get; set; }
+        bool IsOpen { get; }
 
         event SerialDataReceivedEventHandler WrapperDataReceived;
 

@@ -24,6 +24,7 @@ namespace InfoDroplets.Utils.SerialCommunication
                 return SerialPort.GetPortNames().ToList();
             }
         }
+        public bool IsOpen { get { return _serialPort.IsOpen; } }
 
         public SerialWrapper()
         {
@@ -31,7 +32,7 @@ namespace InfoDroplets.Utils.SerialCommunication
             _serialPort.DataReceived += Wrapper_DataReceived;
         }
 
-        private void Wrapper_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        void Wrapper_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             WrapperDataReceived?.Invoke(this, e);
         }
@@ -76,7 +77,6 @@ namespace InfoDroplets.Utils.SerialCommunication
         {
             _serialPort.BaudRate = BaudeRate;
         }
-
         public string GetPortName()
         {
             return _serialPort.PortName;
