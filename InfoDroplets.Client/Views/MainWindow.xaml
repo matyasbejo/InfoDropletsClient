@@ -56,22 +56,24 @@
                 <TextBlock Text="🎈 Droplet #1" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Altitude:" FontWeight="Bold"/>
-                <TextBlock x:Name="tb_altitude" Text="12,345 m" Margin="0,0,0,10"/>
-
+                <TextBlock x:Name="tb_altitude" Text="{Binding SelectedDroplet.LastData.Elevation, StringFormat={}{0} m}" Margin="0,0,0,10"/>
                 <TextBlock Text="Speed:" FontWeight="Bold"/>
-                <TextBlock x:Name="tb_speed" Text="23.5 km/h" Margin="0,0,0,10"/>
+                <TextBlock x:Name="tb_speed" Text="{Binding SelectedDroplet.SpeedKmH, StringFormat={}{0} km/h}" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Latitude:" FontWeight="Bold"/>
-                <TextBlock x:Name="tb_latitude" Text="51.509865" Margin="0,0,0,10"/>
+                <TextBlock x:Name="tb_latitude" Text="{Binding SelectedDroplet.LastData.Latitude}" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Longitude:" FontWeight="Bold"/>
-                <TextBlock x:Name="tb_longitude" Text="-0.118092" Margin="0,0,0,10"/>
+                <TextBlock x:Name="tb_longitude" Text="{Binding SelectedDroplet.LastData.Longitude}" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Status:" FontWeight="Bold"/>
-                <TextBlock x:Name="tb_status" Text="Rising" Margin="0,0,0,10"/>
+                <TextBlock x:Name="tb_status" Text="{Binding SelectedDroplet.MovementStatus}" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Distance:" FontWeight="Bold"/>
+                <TextBlock x:Name="tb_distance" Text="{Binding SelectedDroplet.SpeedKmH, StringFormat={}{0} km}" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Last update:" FontWeight="Bold"/>
-                <TextBlock x:Name="tb_lastUpdate" Text="" Foreground="Green" Margin="0,0,0,10"/>
+                <TextBlock x:Name="tb_lastUpdate" Text="{Binding SelectedDroplet.LastUpdated}" Foreground="Green" Margin="0,0,0,10"/>
 
                 <Grid Background="DarkGray">
                     <Grid.ColumnDefinitions>
