@@ -24,6 +24,7 @@ namespace InfoDropletsClient
                     .AddSingleton<IRepository<Droplet>, DropletRepository>()
                     .AddSingleton<IRepository<TrackingEntry>, TrackingEntryRepository>()
                     .AddSingleton<IMessenger>(WeakReferenceMessenger.Default)
+                    .AddDbContext<ClientDbContext>()
                     .BuildServiceProvider()
             );
         }
