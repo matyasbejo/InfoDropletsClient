@@ -24,10 +24,12 @@ namespace InfoDroplets.Utils.SerialCommunication
                 return SerialPort.GetPortNames().ToList();
             }
         }
+        public List<int> AvaliableBaudRates { get; private set; }
         public bool IsOpen { get { return _serialPort.IsOpen; } }
 
         public SerialWrapper()
         {
+            AvaliableBaudRates = new List<int> { 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
             _serialPort = new SerialPort();
             _serialPort.DataReceived += Wrapper_DataReceived;
         }
@@ -96,7 +98,17 @@ namespace InfoDroplets.Utils.SerialCommunication
             if (_serialPort.IsOpen)
                 _serialPort.Close();
         }
-        public string ReadLine() { return _serialPort.ReadLine(); }
+        public string ReadLine() 
+        {
+            try 
+            {
+                return _serialPort.ReadLine();
+            }
+            catch (Exception ex) 
+            {
+                return "";
+            }
+        }
 
         void IDisposable.Dispose()
         {

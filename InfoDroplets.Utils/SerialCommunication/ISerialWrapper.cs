@@ -5,6 +5,8 @@ namespace InfoDroplets.Utils.SerialCommunication
     public interface ISerialWrapper
     {
         List<string> AvaliableSerialPorts { get; }
+
+        List<int> AvaliableBaudRates { get; }
         int SelectedBaudRate { get; set; }
         string SelectedSerialPort { get; set; }
         bool IsOpen { get; }

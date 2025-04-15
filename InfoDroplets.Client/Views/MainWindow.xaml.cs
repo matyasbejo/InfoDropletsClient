@@ -33,21 +33,13 @@ namespace InfoDropletsClient
             myMap.MapProvider = GMapProviders.OpenStreetMap;
             myMap.MinZoom = 1;
             myMap.MaxZoom = 20;
-            myMap.Zoom = 14;
+            myMap.Zoom = 16;
             myMap.ShowCenter = true;
             myMap.DragButton = System.Windows.Input.MouseButton.Left;
             myMap.CanDragMap = false;
             myMap.MouseWheelZoomType = MouseWheelZoomType.ViewCenter;
             myMap.FillEmptyTiles = true;
-            myMap.Position = new PointLatLng(lat, lng);
-        }
-
-        private void movemap_btn_Click(object sender, RoutedEventArgs e)
-        {
-            lat += 0.0015;
-            lng += 0.0015;
-
-            myMap.Position = new PointLatLng(lat, lng);
+            //myMap.Position = new PointLatLng(lat, lng);
         }
     }
 }
