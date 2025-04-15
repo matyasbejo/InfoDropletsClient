@@ -41,24 +41,39 @@
         </Grid.RowDefinitions>
 
         <Border x:Name="NavbarArea" Background="LightBlue" Margin="7" CornerRadius="10" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch">
-            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Left" Margin="3,2,0,2">
+            <Grid Margin="3,2,0,2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
+                <Grid x:Name="grid_SerialSettingsGrid" VerticalAlignment="Stretch" Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
 
-                <Label x:Name="lb_SerialPort" Content="Serial port:" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0"/>
-                <Label x:Name="lb_BaudRate" Content="Baud rate:" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0"/>
-                <ComboBox x:Name="cb_portOptions"  Width="110" Margin="1" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding SerialWrapper.AvaliableSerialPorts}" SelectedItem="{Binding SelectedPort}" IsEnabled="{Binding SerialWrapper.IsOpen, Converter={StaticResource BooleanNegationConverter}}"/>
-                <ComboBox x:Name="cb_BaudRateOptions"  Width="110" Margin="1" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SerialWrapper.AvaliableBaudRates}" SelectedIndex="1" SelectedItem="{Binding SelectedBaudRate}" IsEnabled="{Binding SerialWrapper.IsOpen, Converter={StaticResource BooleanNegationConverter}}"/>
-                <Button x:Name="bt_StartCommunication" Content="Start" Width="80" Command="{Binding StartSerialCommand}" Margin="1" Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"/>
-                <Button x:Name="bt_StopCommunication" Content="Stop" Width="80" Command="{Binding StopSerialCommand}" Margin="1" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"/>
+                    <Label x:Name="lb_SerialPort" Content="Serial port:" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+                    <Label x:Name="lb_BaudRate" Content="Baud rate:" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0"/>
+                    <ComboBox x:Name="cb_PortOptions"  Width="110" Margin="1" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding SerialWrapper.AvaliableSerialPorts}" SelectedItem="{Binding SelectedPort}" IsEnabled="{Binding SerialWrapper.IsOpen, Converter={StaticResource BooleanNegationConverter}}"/>
+                    <ComboBox x:Name="cb_BaudRateOptions"  Width="110" Margin="1" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SerialWrapper.AvaliableBaudRates}" SelectedIndex="1" SelectedItem="{Binding SelectedBaudRate}" IsEnabled="{Binding SerialWrapper.IsOpen, Converter={StaticResource BooleanNegationConverter}}"/>
+                    <Button x:Name="bt_StartCommunication" Content="Start" Width="80" Command="{Binding StartSerialCommand}" Margin="1" Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"/>
+                    <Button x:Name="bt_StopCommunication" Content="Stop" Width="80" Command="{Binding StopSerialCommand}" Margin="1" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"/>
+                </Grid>
+                <Grid x:Name="grid_DropletSelectorGrid" VerticalAlignment="Stretch" Grid.Column="2" Margin="0,8,10,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Monitored droplet: " FontSize="16" VerticalContentAlignment="Center" Grid.Column="0"/>
+                    <ComboBox x:Name="cb_AvaliableDroplets" FontSize="16" VerticalContentAlignment="Center" ItemsSource="{Binding AvaliableDropletIds}" SelectedIndex="0" SelectedItem="{Binding SelectedId}" Grid.Column="1"/>
+                </Grid>
             </Grid>
         </Border>
 
@@ -68,7 +83,7 @@
 
         <Border x:Name="DetailsArea" Background="#D9D9D9" Margin="7" CornerRadius="10" Padding="10" Grid.Column="1" Grid.Row="1">
             <StackPanel>
-                <TextBlock Text="🎈 Droplet #1" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                <TextBlock Text="{Binding SelectedDroplet.Id, StringFormat={}🎈 Droplet #{0},FallbackValue='Select a droplet to start'}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
 
                 <TextBlock Text="Altitude:" FontWeight="Bold"/>
                 <TextBlock x:Name="tb_altitude" Text="{Binding MapCenterPos, StringFormat={}{0} m}" Margin="0,0,0,10"/>

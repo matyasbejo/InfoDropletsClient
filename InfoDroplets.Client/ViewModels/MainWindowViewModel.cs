@@ -56,14 +56,22 @@ namespace InfoDroplets.Client.ViewModels
 
         #endregion
 
-        public Droplet? SelectedDroplet { get { return DropletLogic.Read(8); } }
-
-        public PointLatLng MapCenterPos
+        public List<int> AvaliableDropletIds
         {
-            get
+            get { return DropletLogic.ReadAllIds().ToList(); }
+        }
+
+        public int? SelectedId{ get; set; }
+
+        public Droplet? SelectedDroplet { 
+            get 
             {
-                return new PointLatLng(SelectedDroplet.LastData.Latitude, SelectedDroplet.LastData.Longitude);
-            }
+                if (SelectedId == null)
+                    return null;
+
+                else
+                    return DropletLogic.Read(SelectedId.Value); 
+            } 
         }
 
         IDropletLogic DropletLogic { get; set; }
@@ -122,18 +130,19 @@ namespace InfoDroplets.Client.ViewModels
                     try
                     {
                         TrackingEntryLogic.Create(line);
+                        var newDropletId = int.Parse(line.Trim().Split(';')[0]);
+
+                        DropletLogic.UpdateDropletStatus(newDropletId, new GpsPos(47.500429, 19.084596, 100));
+                        OnPropertyChanged("SelectedDroplet");
                     }
                     catch (NullReferenceException ex)
                     {
                         var newDropletId = int.Parse(line.Trim().Split(';')[0]);
                         DropletLogic.Create(new Droplet(newDropletId));
-                        //Console.WriteLine($"Droplet {newDropletId} added.");
+                        OnPropertyChanged("AvaliableDropletIds");
                     }
-                    DropletLogic.UpdateDropletStatus(8, new GpsPos(47.500429, 19.084596, 100));
                     OnPropertyChanged("MapCenterPos");
-                    OnPropertyChanged("SelectedDroplet");
-
-                    //Console.WriteLine($"Added: {line}");
+                    
                 }
                 catch (Exception ex)
                 { //Console.WriteLine(ex.Message); }
