@@ -23,6 +23,7 @@
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
         <converters:BooleanNegationConverter x:Key="BooleanNegationConverter"/>
+        <converters:InstanceToBooleanConverter x:Key="InstanceToBooleanConverter"/>
     </Window.Resources>
     
     <Grid Background="#F2F2F2">
@@ -72,7 +73,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="Monitored droplet: " FontSize="16" VerticalContentAlignment="Center" Grid.Column="0"/>
-                    <ComboBox x:Name="cb_AvaliableDroplets" FontSize="16" VerticalContentAlignment="Center" ItemsSource="{Binding AvaliableDropletIds}" SelectedIndex="0" SelectedItem="{Binding SelectedId}" Grid.Column="1"/>
+                    <ComboBox x:Name="cb_AvaliableDroplets" FontSize="16" VerticalContentAlignment="Center" IsEnabled="{Binding SerialWrapper.IsOpen}" ItemsSource="{Binding AvaliableDropletIds}" SelectedIndex="0" SelectedItem="{Binding SelectedId}" Grid.Column="1"/>
                 </Grid>
             </Grid>
         </Border>
@@ -111,12 +112,12 @@
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    
-                    <Button Content="File version" Style="{StaticResource RCButton}" Margin="4" Grid.Column="0"/>
-                    <Button Content="Ping" Style="{StaticResource RCButton}" Margin="4" Grid.Column="1">
+
+                    <Button Content="File version" Style="{StaticResource RCButton}" Margin="4" IsEnabled="{Binding SelectedDroplet, Converter={StaticResource InstanceToBooleanConverter}}" Grid.Column="0"/>
+                    <Button Content="Ping" Style="{StaticResource RCButton}" Margin="4" IsEnabled="{Binding SelectedDroplet, Converter={StaticResource InstanceToBooleanConverter}}" Grid.Column="1">
                         
                     </Button>
-                    <Button Content="Restart" Style="{StaticResource RCButton}" Margin="4" Grid.Column="2"/>
+                    <Button Content="Restart" Style="{StaticResource RCButton}" Margin="4" IsEnabled="{Binding SelectedDroplet, Converter={StaticResource InstanceToBooleanConverter}}" Grid.Column="2"/>
                 </Grid>
             </StackPanel>
         </Border>
