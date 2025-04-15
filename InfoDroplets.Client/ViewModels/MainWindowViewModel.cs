@@ -14,6 +14,8 @@ namespace InfoDroplets.Client.ViewModels
 {
     internal class MainWindowViewModel : ObservableRecipient
     {
+        #region Serial declarations
+
         private ISerialWrapper serialWrapper;
         public ISerialWrapper SerialWrapper
         {
@@ -51,6 +53,8 @@ namespace InfoDroplets.Client.ViewModels
         }
         public ICommand StartSerialCommand { get; set; }
         public ICommand StopSerialCommand { get; set; }
+
+        #endregion
 
         public Droplet? SelectedDroplet { get { return DropletLogic.Read(8); } }
 
