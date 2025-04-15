@@ -40,6 +40,11 @@ namespace InfoDroplets.Logic
             return DataEntry;
         }
 
+        public IQueryable<int> ReadAllIds()
+        {
+            return dropletRepo.ReadAll().Select(d => d.Id);
+        }
+
         public IQueryable<Droplet> ReadAll()
         {
             return dropletRepo.ReadAll();

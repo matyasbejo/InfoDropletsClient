@@ -16,6 +16,7 @@ namespace InfoDroplets.Logic
         double GetSpeedKmH(List<TrackingEntry> trackingEntries);
         Droplet Read(int id);
         IQueryable<Droplet> ReadAll();
+        IQueryable<int> ReadAllIds();
         void SendCommand(int dropletId, RadioCommand commandType);
         void SendCommand(string input);
         void Update(Droplet item);
