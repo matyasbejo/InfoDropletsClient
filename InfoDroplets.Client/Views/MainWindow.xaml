@@ -86,7 +86,7 @@
                 <TextBlock Text="{Binding SelectedDroplet.Id, StringFormat={}🎈 Droplet #{0},FallbackValue='Select a droplet to start'}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
 
                 <TextBlock Text="Altitude:" FontWeight="Bold"/>
-                <TextBlock x:Name="tb_altitude" Text="{Binding MapCenterPos, StringFormat={}{0} m}" Margin="0,0,0,10"/>
+                <TextBlock x:Name="tb_altitude" Text="{Binding SelectedDroplet.LastData.Elevation, StringFormat={}{0} m}" Margin="0,0,0,10"/>
                 <TextBlock Text="Speed:" FontWeight="Bold"/>
                 <TextBlock x:Name="tb_speed" Text="{Binding SelectedDroplet.SpeedKmH, StringFormat={}{0} km/h}" Margin="0,0,0,10"/>
 
