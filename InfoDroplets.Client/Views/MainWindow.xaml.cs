@@ -22,9 +22,6 @@ namespace InfoDropletsClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        double lat = 47.533835;
-        double lng = 19.033115;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -35,11 +32,23 @@ namespace InfoDropletsClient
             myMap.MaxZoom = 20;
             myMap.Zoom = 16;
             myMap.ShowCenter = true;
-            myMap.DragButton = System.Windows.Input.MouseButton.Left;
             myMap.CanDragMap = false;
             myMap.MouseWheelZoomType = MouseWheelZoomType.ViewCenter;
             myMap.FillEmptyTiles = true;
-            //myMap.Position = new PointLatLng(lat, lng);
+            myMap.Position = new PointLatLng(0, 0);
+
+            var vm = (MainWindowViewModel)DataContext;
+
+            vm.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(vm.MapPos))
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        myMap.Position = vm.MapPos;
+                    });
+                }
+            };
         }
     }
 }

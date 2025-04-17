@@ -10,6 +10,8 @@ using System.IO.Ports;
 using System.Windows;
 using System.Windows.Input;
 
+//Next: irány é-d-k-ny, magasság trend, mi legyen a dbcontext erorral
+
 namespace InfoDroplets.Client.ViewModels
 {
     internal class MainWindowViewModel : ObservableRecipient
@@ -58,11 +60,13 @@ namespace InfoDroplets.Client.ViewModels
 
         public List<int> AvaliableDropletIds
         {
-            get { return DropletLogic.ReadAllIds().ToList(); }
+            get 
+            {
+                return DropletLogic.ReadAllIds().ToList();
+            }
         }
 
         public int? SelectedId{ get; set; }
-
         public Droplet? SelectedDroplet { 
             get 
             {
@@ -73,6 +77,18 @@ namespace InfoDroplets.Client.ViewModels
                     return DropletLogic.Read(SelectedId.Value); 
             } 
         }
+
+        public PointLatLng MapPos
+        {
+            get { 
+                if(SelectedDroplet != null)
+                    return new PointLatLng(SelectedDroplet.LastData.Latitude, SelectedDroplet.LastData.Longitude); 
+                else
+                    return new PointLatLng(0,0);
+            }
+        }
+
+        public bool IsRCEnabled { get { return serialWrapper.IsOpen && AvaliableDropletIds.Count > 0; } }
 
         IDropletLogic DropletLogic { get; set; }
         ITrackingEntryLogic TrackingEntryLogic { get; set; }
@@ -98,7 +114,8 @@ namespace InfoDroplets.Client.ViewModels
                     serialWrapper.SafeOpen();
                     serialWrapper.WrapperDataReceived += OnDataReceived;
                     Messenger.Send("PortOpened", "SerialPortInfo");
-                    OnPropertyChanged("SerialWrapper");
+                    OnPropertyChanged("IsRCEnabled");
+
                     (StartSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                     (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                 },
@@ -107,9 +124,11 @@ namespace InfoDroplets.Client.ViewModels
             StopSerialCommand = new RelayCommand(
                 () =>
                 {
-                    serialWrapper.WrapperDataReceived -= OnDataReceived;
                     serialWrapper.SafeClose();
+                    serialWrapper.WrapperDataReceived -= OnDataReceived;
                     Messenger.Send("PortClosed", "SerialPortInfo");
+                    OnPropertyChanged("IsRCEnabled");
+
                     (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                     (StartSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                 },
@@ -134,18 +153,19 @@ namespace InfoDroplets.Client.ViewModels
 
                         DropletLogic.UpdateDropletStatus(newDropletId, new GpsPos(47.500429, 19.084596, 100));
                         OnPropertyChanged("SelectedDroplet");
+                        OnPropertyChanged("MapPos");
                     }
                     catch (NullReferenceException ex)
                     {
                         var newDropletId = int.Parse(line.Trim().Split(';')[0]);
                         DropletLogic.Create(new Droplet(newDropletId));
                         OnPropertyChanged("AvaliableDropletIds");
+                        OnPropertyChanged("IsRCEnabled");
                     }
-                    OnPropertyChanged("MapCenterPos");
-                    
                 }
                 catch (Exception ex)
-                { //Console.WriteLine(ex.Message); }
+                { 
+                    //Console.WriteLine(ex.Message); 
                 }
             }
         }
