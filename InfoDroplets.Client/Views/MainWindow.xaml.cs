@@ -22,10 +22,11 @@ namespace InfoDropletsClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        MainWindowViewModel vm;
         public MainWindow()
         {
             InitializeComponent();
-            
+
             myMap.CacheLocation = Environment.CurrentDirectory + "\\GMapCache2\\";
             myMap.MapProvider = GMapProviders.OpenStreetMap;
             myMap.MinZoom = 1;
@@ -37,18 +38,22 @@ namespace InfoDropletsClient
             myMap.FillEmptyTiles = true;
             myMap.Position = new PointLatLng(0, 0);
 
-            var vm = (MainWindowViewModel)DataContext;
+            vm = (MainWindowViewModel)DataContext;
 
-            vm.PropertyChanged += (s, e) =>
+            vm.PropertyChanged += RefreshMapOnUI;
+        }
+
+        void RefreshMapOnUI(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
             {
-                if (e.PropertyName == nameof(vm.MapPos))
-                {
+                case "MapPos":
                     Dispatcher.Invoke(() =>
                     {
                         myMap.Position = vm.MapPos;
                     });
-                }
-            };
+                    break;
+            }
         }
     }
 }
