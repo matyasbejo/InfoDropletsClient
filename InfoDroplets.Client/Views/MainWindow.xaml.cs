@@ -31,7 +31,7 @@ namespace InfoDropletsClient
             myMap.MapProvider = GMapProviders.OpenStreetMap;
             myMap.MinZoom = 1;
             myMap.MaxZoom = 20;
-            myMap.Zoom = 16;
+            myMap.Zoom = 13;
             myMap.ShowCenter = true;
             myMap.CanDragMap = false;
             myMap.MouseWheelZoomType = MouseWheelZoomType.ViewCenter;
