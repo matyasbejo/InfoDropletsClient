@@ -36,7 +36,7 @@ namespace InfoDropletsClient
             myMap.CanDragMap = false;
             myMap.MouseWheelZoomType = MouseWheelZoomType.ViewCenter;
             myMap.FillEmptyTiles = true;
-            myMap.Position = new PointLatLng(0, 0);
+            myMap.Position = new PointLatLng(46.180327, 19.011035);
 
             vm = (MainWindowViewModel)DataContext;
 
