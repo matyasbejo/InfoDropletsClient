@@ -20,7 +20,7 @@ namespace InfoDroplets.Utils.SerialCommunication
         string ReadLine();
         void Reset();
         void SafeOpen();
-        void SendCommand(object sender, CommandEventArgs e);
+        void SendCommand(object sender, CommandEventArgs e) { }
         void SetBaudeRate(int BaudeRate = 9600);
         void SetPortName(string PortName);
         void WriteLine(string message);
