@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using GMap.NET;
 using InfoDroplets.Logic;
 using InfoDroplets.Models;
+using InfoDroplets.Utils.Enums;
 using InfoDroplets.Utils.SerialCommunication;
 using System.ComponentModel;
 using System.IO.Ports;
@@ -53,8 +54,33 @@ namespace InfoDroplets.Client.ViewModels
                 (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
             }
         }
+
+        #endregion
+
+        #region Radio control declarations
+
         public ICommand StartSerialCommand { get; set; }
         public ICommand StopSerialCommand { get; set; }
+        public ICommand RCFullResetCommand { get; set; }
+        public ICommand RCPingCommand { get; set; }
+        public ICommand RCFileVersionCommand { get; set; }
+
+        private string rcStateMessage;
+
+        public string RcStateMessage
+        {
+            get
+            {
+                return rcStateMessage;
+            }
+            set 
+            {
+                RcStateUpdateTime = DateTime.Now.ToString("H:m:ss");
+                OnPropertyChanged("RcStateUpdateTime");
+                rcStateMessage = value;
+            } 
+        }
+        public string RcStateUpdateTime { get; set; }
 
         #endregion
 
@@ -65,7 +91,6 @@ namespace InfoDroplets.Client.ViewModels
                 return DropletLogic.ReadAllIds().ToList();
             }
         }
-
         public int? SelectedId{ get; set; }
         public Droplet? SelectedDroplet { 
             get 
@@ -77,7 +102,6 @@ namespace InfoDroplets.Client.ViewModels
                     return DropletLogic.Read(SelectedId.Value); 
             } 
         }
-
         public PointLatLng MapPos
         {
             get { 
@@ -87,7 +111,6 @@ namespace InfoDroplets.Client.ViewModels
                     return new PointLatLng(0,0);
             }
         }
-
         public bool IsRCEnabled { get { return serialWrapper.IsOpen && AvaliableDropletIds.Count > 0; } }
 
         IDropletLogic DropletLogic { get; set; }
@@ -119,7 +142,7 @@ namespace InfoDroplets.Client.ViewModels
                     (StartSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                     (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                 },
-                () => !serialWrapper.IsOpen && selectedBaudRate != 0 && selectedPort != null && selectedBaudRate != 921600);
+                () => !serialWrapper.IsOpen && selectedBaudRate != 0 && selectedPort != null);
 
             StopSerialCommand = new RelayCommand(
                 () =>
@@ -132,11 +155,28 @@ namespace InfoDroplets.Client.ViewModels
                     (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                     (StartSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                 },
-                () => serialWrapper.IsOpen && selectedBaudRate != 0 && selectedPort != null && selectedBaudRate != 4800);
+                () => serialWrapper.IsOpen);
+
+            RCFullResetCommand = new RelayCommand(
+                () => SendRcCommand(RadioCommand.FullReset)
+                //() => serialWrapper.IsOpen && AvaliableDropletIds.Count > 0
+                );
+            
+            RCFileVersionCommand = new RelayCommand(
+                () => SendRcCommand(RadioCommand.GetFileVersion)
+                //() => serialWrapper.IsOpen && AvaliableDropletIds.Count > 0
+                );
+            
+            RCPingCommand = new RelayCommand(
+                () => SendRcCommand(RadioCommand.Ping)
+                //() => serialWrapper.IsOpen && AvaliableDropletIds.Count > 0
+                );
 
             serialWrapper = wrapper;
             DropletLogic = dropletLogic;
             TrackingEntryLogic = trackingEntryLogic;
+            dropletLogic.CommandGenerated += wrapper.SendCommand;
+            rcStateMessage = "Information will be displayed here";
         }
 
         void OnDataReceived(object sender, EventArgs e)
@@ -162,13 +202,51 @@ namespace InfoDroplets.Client.ViewModels
                         OnPropertyChanged("AvaliableDropletIds");
                         OnPropertyChanged("IsRCEnabled");
                     }
+                    catch (ArgumentException ex)
+                    {
+                        var rcResponse = TryToGenerateRCResponse(line);
+                        if(rcResponse != string.Empty)
+                        {
+                            RcStateMessage = rcResponse;
+                            OnPropertyChanged("RcStateMessage");
+                        }
+                    }
                 }
                 catch (Exception ex)
-                { 
-                    //Console.WriteLine(ex.Message); 
+                {
+                    MessageBox.Show(ex.Message + ex.StackTrace,"Exception",MessageBoxButton.OK, MessageBoxImage.Error); 
                 }
             }
         }
+
+        string TryToGenerateRCResponse(string input)
+        {
+            if (!input.ToLower().Contains("rcresponse:"))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return input.Trim().Replace("RCRESPONSE:", "");
+            }
+        }
+
+        bool SendRcCommand(RadioCommand command)
+        {
+            if (command == RadioCommand.FullReset)
+            {
+                var result = MessageBox.Show("Are you sure you want to restart the device?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.No)
+                    return true;
+
+            }
+
+            DropletLogic.SendCommand(SelectedDroplet.Id, command);
+            RcStateMessage = $"{command} #{SelectedDroplet.Id} sent";
+            OnPropertyChanged("RcStateMessage");
+            return true;
+        }
+
         public static bool IsInDesignMode
         {
             get

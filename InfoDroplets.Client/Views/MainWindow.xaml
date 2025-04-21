@@ -7,6 +7,7 @@
         xmlns:map="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
         xmlns:vms="clr-namespace:InfoDroplets.Client.ViewModels"
         xmlns:converters="clr-namespace:InfoDroplets.Client.Converters"
+        xmlns:enums="clr-namespace:InfoDroplets.Utils.Enums;assembly=InfoDroplets.Utils"
         mc:Ignorable="d"
         Title="MainWindow" Height="675" Width="1200">
     
@@ -24,7 +25,7 @@
         </Style>
         <converters:BooleanNegationConverter x:Key="BooleanNegationConverter"/>
     </Window.Resources>
-    
+
     <Grid Background="#82817e">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2.5*"/>
@@ -35,12 +36,12 @@
             <!-- Top toolbar row -->
             <RowDefinition Height="1*"/>
             <!-- Main content row -->
-            <RowDefinition Height="8*"/>
+            <RowDefinition Height="7*"/>
             <!-- Status row -->
             <RowDefinition Height="0.37*"/>
         </Grid.RowDefinitions>
 
-        <Border x:Name="NavbarArea" Background="#d9d0c9" Margin="7" CornerRadius="10" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch">
+        <Border x:Name="NavbarArea" Background="#d9d0c9" Margin="7,14,7,7" CornerRadius="10" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch">
             <Grid Margin="3,2,0,2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -80,7 +81,7 @@
         <Border x:Name="MapArea" Background="#f2efe9" Margin="7" CornerRadius="10" Grid.Column="0" Grid.Row="1" Padding="3">
             <map:GMapControl x:Name="myMap" Margin="6" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True"/>
         </Border>
-        
+
         <Border x:Name="DetailsArea" Background="#f2efe9" Margin="7" CornerRadius="10" Padding="10" Grid.Column="1" Grid.Row="1">
             <Grid x:Name="grid_DetailsArea">
                 <Grid.RowDefinitions>
@@ -111,22 +112,31 @@
                     <TextBlock Text="Last update:" FontWeight="Bold"/>
                     <TextBlock x:Name="tb_lastUpdate" Text="{Binding SelectedDroplet.LastUpdated}" Foreground="Green" Margin="0,0,0,10"/>
                 </StackPanel>
-                <Grid x:Name="grid_rc" Grid.Row="2" HorizontalAlignment="Stretch">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
 
-                    <Button Content="File version" Style="{StaticResource RCButton}" Margin="0,5,2.5,5" IsEnabled="{Binding IsRCEnabled}" Grid.Row="0" Grid.Column="0"/>
-                    <Button Content="Ping" Style="{StaticResource RCButton}" Margin="2.5,5,2.5,5" IsEnabled="{Binding IsRCEnabled}" Grid.Row="0" Grid.Column="1"/>
-                    <Button Content="Restart" Style="{StaticResource RCButton}" Margin="2.5,5,0,5" IsEnabled="{Binding IsRCEnabled}" Grid.Row="0" Grid.Column="2"/>
-                    <TextBlock x:Name="tb_rcResponse" Text="" Grid.Row="1" Grid.ColumnSpan="3"/>
-                </Grid>
+                <StackPanel Grid.Row="2">
+                    <Grid x:Name="grid_buttonss_rc" HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Content="{x:Static enums:RadioCommand.GetFileVersion}" Command="{Binding RCFileVersionCommand}" Style="{StaticResource RCButton}" Margin="0,5,2.5,5" IsEnabled="{Binding IsRCEnabled}" Grid.Column="0"/>
+                        <Button Content="{x:Static enums:RadioCommand.Ping}" Command="{Binding RCPingCommand}" Style="{StaticResource RCButton}" Margin="2.5,5,2.5,5" IsEnabled="{Binding IsRCEnabled}" Grid.Column="1"/>
+                        <Button Content="{x:Static enums:RadioCommand.FullReset}" Command="{Binding RCFullResetCommand}" Style="{StaticResource RCButton}" Margin="2.5,5,0,5" IsEnabled="{Binding IsRCEnabled}" Grid.Column="2"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="RC Info: " FontWeight="Bold" Grid.Column="0"/>
+                        <TextBlock x:Name="tb_rcResponse" Text="{Binding RcStateMessage}" Grid.Column="1"/>
+                        <TextBlock x:Name="tb_rcResponseTime" Text="{Binding RcStateUpdateTime}" Grid.Column="3" FontStyle="Italic"/>
+                    </Grid>
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>
