@@ -11,6 +11,6 @@ namespace InfoDroplets.Utils.Enums
         FullReset,
         GpsReset,
         Ping,
-        GetVersion
+        GetFileVersion
     }
 }
