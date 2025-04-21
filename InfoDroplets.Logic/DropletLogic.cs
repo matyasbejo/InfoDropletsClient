@@ -128,7 +128,7 @@ namespace InfoDroplets.Logic
                 case RadioCommand.GpsReset:
                     return $"R{dropletId}";
 
-                case RadioCommand.GetVersion:
+                case RadioCommand.GetFileVersion:
                     return $"V{dropletId}";
 
                 case RadioCommand.Ping:
