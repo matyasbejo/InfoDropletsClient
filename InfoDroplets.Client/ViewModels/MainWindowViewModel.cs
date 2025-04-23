@@ -8,6 +8,7 @@ using InfoDroplets.Utils.Enums;
 using InfoDroplets.Utils.SerialCommunication;
 using System.ComponentModel;
 using System.IO.Ports;
+using System.Security;
 using System.Windows;
 using System.Windows.Input;
 
@@ -30,6 +31,10 @@ namespace InfoDroplets.Client.ViewModels
                 (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
             }
         }
+
+        public ICommand StartSerialCommand { get; set; }
+        public ICommand StopSerialCommand { get; set; }
+        public ICommand RefreshPortsCommand { get; set; }
 
         private string selectedPort;
         public string SelectedPort
@@ -59,8 +64,6 @@ namespace InfoDroplets.Client.ViewModels
 
         #region Radio control declarations
 
-        public ICommand StartSerialCommand { get; set; }
-        public ICommand StopSerialCommand { get; set; }
         public ICommand RCFullResetCommand { get; set; }
         public ICommand RCPingCommand { get; set; }
         public ICommand RCFileVersionCommand { get; set; }
@@ -140,6 +143,7 @@ namespace InfoDroplets.Client.ViewModels
                     Messenger.Send("PortOpened", "SerialPortInfo");
                     OnPropertyChanged("IsRCEnabled");
 
+                    (RefreshPortsCommand as RelayCommand).NotifyCanExecuteChanged();
                     (StartSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                     (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                 },
@@ -153,10 +157,18 @@ namespace InfoDroplets.Client.ViewModels
                     Messenger.Send("PortClosed", "SerialPortInfo");
                     OnPropertyChanged("IsRCEnabled");
 
+                    (RefreshPortsCommand as RelayCommand).NotifyCanExecuteChanged();
                     (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                     (StartSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                 },
                 () => serialWrapper.IsOpen);
+
+            RefreshPortsCommand = new RelayCommand(
+                () =>
+                {
+                    OnPropertyChanged("SerialWrapper");
+                },
+                () => !serialWrapper.IsOpen);
 
             RCFullResetCommand = new RelayCommand(
                 () => SendRcCommand(RadioCommand.FullReset),
