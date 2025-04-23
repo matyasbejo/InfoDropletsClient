@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 namespace InfoDroplets.ResultExporterApp.Tester
 {
     [TestFixture]
-    internal class MapGeneratorTester
+    internal class MapGeneratorTests
     {
         [Test, TestCaseSource(typeof(PrepareValuesTestData), nameof(PrepareValuesTestData.TestCases))]
         public void PrepareValuesTester(string TestCaseName, int deviceId, int yMax, double ctrLng, double ctrLat, List<List<LogEntry>> logCollection, List<List<LogEntry>> breakCollection, Type expectedException)

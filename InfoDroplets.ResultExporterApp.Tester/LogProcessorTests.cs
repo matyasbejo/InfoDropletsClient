@@ -5,7 +5,7 @@ using NUnit.Framework.Internal;
 namespace InfoDroplets.ResultExporterApp.Tester
 {
     [TestFixture]
-    internal class LogProcessorTester
+    internal class LogProcessorTests
     {
         [Test, TestCaseSource(typeof(FilterABTestData), nameof(FilterABTestData.TestCases))]
         public void FilterABFilesTester(string TestCaseName, string[] paths, int? expectedFileCount, Type expectedException)
