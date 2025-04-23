@@ -133,8 +133,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="RC Info: " FontWeight="Bold" Grid.Column="0"/>
-                        <TextBlock x:Name="tb_rcResponse" Text="{Binding RcStateMessage}" Grid.Column="1"/>
-                        <TextBlock x:Name="tb_rcResponseTime" Text="{Binding RcStateUpdateTime}" Grid.Column="3" FontStyle="Italic"/>
+                        <TextBlock x:Name="tb_rcResponse" Text="{Binding RcStateMessage}" Grid.Column="1" TextWrapping="NoWrap"/>
+                        <TextBlock x:Name="tb_rcResponseTime" Text="{Binding RcStateUpdateTime}" Grid.Column="3" FontStyle="Italic" Margin="5,0,0,0"/>
                     </Grid>
                 </StackPanel>
             </Grid>
