@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoDroplets.ResultExporter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoDroplets.ResultExporterApp.Tests", "InfoDroplets.ResultExporterApp.Tester\InfoDroplets.ResultExporterApp.Tests.csproj", "{737D048C-6052-4638-A710-D8D2AD8FB97F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoDroplets.Tests", "InfoDroplets.Tests\InfoDroplets.Tests.csproj", "{18AD124A-E804-4D66-8FBB-3475AAB427E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{737D048C-6052-4638-A710-D8D2AD8FB97F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{737D048C-6052-4638-A710-D8D2AD8FB97F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{737D048C-6052-4638-A710-D8D2AD8FB97F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18AD124A-E804-4D66-8FBB-3475AAB427E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18AD124A-E804-4D66-8FBB-3475AAB427E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18AD124A-E804-4D66-8FBB-3475AAB427E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18AD124A-E804-4D66-8FBB-3475AAB427E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +79,7 @@ Global
 		{35258D9E-0F53-4655-9B07-C2E9913473D2} = {0C1CABDE-26B3-4E26-AA26-5709E453F391}
 		{78A075D4-5BBA-45BE-836C-54A033C5A72B} = {C4D1F86E-8F28-4ED6-B4D9-2D7413807D71}
 		{737D048C-6052-4638-A710-D8D2AD8FB97F} = {C4D1F86E-8F28-4ED6-B4D9-2D7413807D71}
+		{18AD124A-E804-4D66-8FBB-3475AAB427E2} = {0C1CABDE-26B3-4E26-AA26-5709E453F391}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84081653-AF6D-4071-AFB5-16205DF1CF01}
