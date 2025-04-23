@@ -66,7 +66,7 @@ namespace InfoDroplets.Client.ViewModels
         public ICommand RCFileVersionCommand { get; set; }
 
         private string rcStateMessage;
-
+        private bool rcResponseReceived;
         public string RcStateMessage
         {
             get
@@ -81,6 +81,7 @@ namespace InfoDroplets.Client.ViewModels
             } 
         }
         public string RcStateUpdateTime { get; set; }
+        public bool RcButtonsEnabled { get; set; }
 
         #endregion
 
@@ -158,18 +159,18 @@ namespace InfoDroplets.Client.ViewModels
                 () => serialWrapper.IsOpen);
 
             RCFullResetCommand = new RelayCommand(
-                () => SendRcCommand(RadioCommand.FullReset)
-                //() => serialWrapper.IsOpen && AvaliableDropletIds.Count > 0
+                () => SendRcCommand(RadioCommand.FullReset),
+                () => RcButtonsEnabled
                 );
             
             RCFileVersionCommand = new RelayCommand(
-                () => SendRcCommand(RadioCommand.GetFileVersion)
-                //() => serialWrapper.IsOpen && AvaliableDropletIds.Count > 0
+                () => SendRcCommand(RadioCommand.GetFileVersion),
+                () => RcButtonsEnabled
                 );
             
             RCPingCommand = new RelayCommand(
-                () => SendRcCommand(RadioCommand.Ping)
-                //() => serialWrapper.IsOpen && AvaliableDropletIds.Count > 0
+                () => SendRcCommand(RadioCommand.Ping),
+                () => RcButtonsEnabled
                 );
 
             serialWrapper = wrapper;
@@ -177,6 +178,7 @@ namespace InfoDroplets.Client.ViewModels
             TrackingEntryLogic = trackingEntryLogic;
             dropletLogic.CommandGenerated += wrapper.SendCommand;
             rcStateMessage = "Information will be displayed here";
+            RcButtonsEnabled = true;
         }
 
         void OnDataReceived(object sender, EventArgs e)
@@ -207,6 +209,8 @@ namespace InfoDroplets.Client.ViewModels
                         var rcResponse = TryToGenerateRCResponse(line);
                         if(rcResponse != string.Empty)
                         {
+                            rcResponseReceived = true;
+
                             RcStateMessage = rcResponse;
                             OnPropertyChanged("RcStateMessage");
                         }
@@ -231,20 +235,43 @@ namespace InfoDroplets.Client.ViewModels
             }
         }
 
-        bool SendRcCommand(RadioCommand command)
+        async Task<bool> SendRcCommand(RadioCommand command)
         {
+
             if (command == RadioCommand.FullReset)
             {
                 var result = MessageBox.Show("Are you sure you want to restart the device?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.No)
                     return true;
-
             }
 
+            rcResponseReceived = false;
             DropletLogic.SendCommand(SelectedDroplet.Id, command);
+
+            ChangeAndNotifyRCCommands(false);
+
             RcStateMessage = $"{command} #{SelectedDroplet.Id} sent";
             OnPropertyChanged("RcStateMessage");
+            await Task.Delay(10000);
+
+            ChangeAndNotifyRCCommands(true);
+
+            if (!rcResponseReceived)
+            { 
+                RcStateMessage = $"Not ok: {command} #{SelectedDroplet.Id} failed";
+                OnPropertyChanged("RcStateMessage");
+                return false;
+            }
+
             return true;
+        }
+
+        void ChangeAndNotifyRCCommands(bool state)
+        {
+            RcButtonsEnabled = state;
+            (RCPingCommand as RelayCommand).NotifyCanExecuteChanged();
+            (RCFullResetCommand as RelayCommand).NotifyCanExecuteChanged();
+            (RCFileVersionCommand as RelayCommand).NotifyCanExecuteChanged();
         }
 
         public static bool IsInDesignMode
