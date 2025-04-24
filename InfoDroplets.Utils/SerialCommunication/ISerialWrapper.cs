@@ -19,7 +19,7 @@ namespace InfoDroplets.Utils.SerialCommunication
         void Open();
         string ReadLine();
         void Reset();
-        void SafeOpen();
+        bool SafeOpen();
         void SendCommand(object sender, CommandEventArgs e) { }
         void SetBaudeRate(int BaudeRate = 9600);
         void SetPortName(string PortName);

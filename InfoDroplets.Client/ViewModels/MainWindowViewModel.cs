@@ -138,14 +138,19 @@ namespace InfoDroplets.Client.ViewModels
                 {
                     serialWrapper.SetBaudeRate(selectedBaudRate);
                     serialWrapper.SetPortName(selectedPort);
-                    serialWrapper.SafeOpen();
                     serialWrapper.WrapperDataReceived += OnDataReceived;
-                    Messenger.Send("PortOpened", "SerialPortInfo");
-                    OnPropertyChanged("IsRCEnabled");
+                    bool success = serialWrapper.SafeOpen();
+                    if (success)
+                    {
+                        Messenger.Send("PortOpened", "SerialPortInfo");
+                        OnPropertyChanged("IsRCEnabled");
 
-                    (RefreshPortsCommand as RelayCommand).NotifyCanExecuteChanged();
-                    (StartSerialCommand as RelayCommand).NotifyCanExecuteChanged();
-                    (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
+                        (RefreshPortsCommand as RelayCommand).NotifyCanExecuteChanged();
+                        (StartSerialCommand as RelayCommand).NotifyCanExecuteChanged();
+                        (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
+                    }
+                    else
+                        MessageBox.Show("Can't ground unit. Check the selected port!","Error",MessageBoxButton.OK, MessageBoxImage.Error);
                 },
                 () => !serialWrapper.IsOpen && selectedBaudRate != 0 && selectedPort != null);
 

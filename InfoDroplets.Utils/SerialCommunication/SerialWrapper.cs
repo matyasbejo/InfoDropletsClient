@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.IO.Ports;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,29 +48,32 @@ namespace InfoDroplets.Utils.SerialCommunication
         {
             _serialPort.WriteLine("reset");
         }
-        public void SafeOpen()
+        public bool SafeOpen()
         {
             if (!_serialPort.IsOpen)
             {
                 Open();
 
-                bool restarted = false;
                 DateTime timeAtReset = DateTime.Now;
+                int retries = 0;
 
                 _serialPort.WriteLine("reset");
-                do
+                while(retries < 3 )
                 {
                     var input = ReadLine();
                     if (input.Contains("GNU Reciever"))
-                        restarted = true;
-                    else if (DateTime.Now - timeAtReset > TimeSpan.FromSeconds(10))
+                        return true;
+                    else if (DateTime.Now - timeAtReset > TimeSpan.FromSeconds(20))
                     {
                         _serialPort.WriteLine("reset");
                         timeAtReset = DateTime.Now;
+                        retries++;
                     }
                 }
-                while (!restarted);
+
+                return false;
             }
+            return true;
         }
         public void SetPortName(string PortName)
         {
