@@ -9,6 +9,7 @@
         xmlns:converters="clr-namespace:InfoDroplets.Client.Converters"
         xmlns:enums="clr-namespace:InfoDroplets.Utils.Enums;assembly=InfoDroplets.Utils"
         mc:Ignorable="d"
+        Icon="pack://application:,,,/icon.ico"
         Title="MainWindow" Height="675" Width="1200">
     
     <Window.DataContext>
