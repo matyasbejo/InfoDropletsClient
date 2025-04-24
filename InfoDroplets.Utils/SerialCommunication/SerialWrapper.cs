@@ -61,7 +61,7 @@ namespace InfoDroplets.Utils.SerialCommunication
                 while(retries < 3 )
                 {
                     var input = ReadLine();
-                    if (input.Contains("GNU Reciever"))
+                    if (input.Contains("GNU Receiver"))
                         return true;
                     else if (DateTime.Now - timeAtReset > TimeSpan.FromSeconds(20))
                     {
