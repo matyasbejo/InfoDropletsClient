@@ -107,8 +107,8 @@
                     <TextBlock Text="Longitude:" FontWeight="Bold"/>
                     <TextBlock x:Name="tb_longitude" Text="{Binding SelectedDroplet.LastData.Longitude}" Margin="0,0,0,10"/>
 
-                    <TextBlock Text="Status:" FontWeight="Bold"/>
-                    <TextBlock x:Name="tb_status" Text="{Binding SelectedDroplet.MovementStatus}" Margin="0,0,0,10"/>
+                    <TextBlock Text="Droplet elevation:" FontWeight="Bold"/>
+                    <TextBlock x:Name="tb_elevationTrend" Text="{Binding SelectedDroplet.ElevationTrend}" Margin="0,0,0,10"/>
 
                     <TextBlock Text="Distance:" FontWeight="Bold"/>
                     <TextBlock x:Name="tb_distance" Text="{Binding SelectedDroplet.SpeedKmH, StringFormat={}{0} km}" Margin="0,0,0,10"/>

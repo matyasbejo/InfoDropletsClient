@@ -18,7 +18,7 @@ namespace InfoDroplets.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
-        public DropletMovementStatus? MovementStatus { get; set; }
+        public DropletElevationTrend? ElevationTrend { get; set; }
         public double? DistanceFromGNU { get; set; }
         public double? SpeedKmH { get; set; }
         public virtual ICollection<TrackingEntry> Measurements { get; set; }

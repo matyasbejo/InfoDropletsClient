@@ -12,7 +12,7 @@ namespace InfoDroplets.Logic
         void Create(Droplet item);
         void Delete(Droplet item);
         TrackingEntry GetLatestEntry(int dropletId);
-        DropletMovementStatus GetMovementStatus(List<TrackingEntry> trackingEntries);
+        DropletElevationTrend GetElevationTrend(List<TrackingEntry> trackingEntries);
         double GetSpeedKmH(List<TrackingEntry> trackingEntries);
         Droplet Read(int id);
         IQueryable<Droplet> ReadAll();

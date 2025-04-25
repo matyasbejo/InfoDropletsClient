@@ -61,7 +61,7 @@ namespace InfoDroplets.Logic
             try
             {
                 droplet.LastData = GetLatestEntry(id);
-                droplet.MovementStatus = GetMovementStatus(GetLastXEntries(droplet.Id, 5));
+                droplet.ElevationTrend = GetElevationTrend(GetLastXEntries(droplet.Id, 5));
                 droplet.SpeedKmH = GetSpeedKmH(GetLastXEntries(droplet.Id, 5));
                 droplet.LastUpdated = droplet.LastData.Time;
                 if (gnuPos != null) droplet.DistanceFromGNU = GetDistanceFromGnu(id, gnuPos);
@@ -76,17 +76,17 @@ namespace InfoDroplets.Logic
         #endregion
 
         #region Non CRUD
-        public DropletMovementStatus GetMovementStatus(List<TrackingEntry> trackingEntries)
+        public DropletElevationTrend GetElevationTrend(List<TrackingEntry> trackingEntries)
         {
             if (trackingEntries.First().Elevation < trackingEntries.Last().Elevation)
             {
-                return DropletMovementStatus.Rising;
+                return DropletElevationTrend.Rising;
             }
             else if (trackingEntries.First().Elevation > trackingEntries.Last().Elevation)
             {
-                return DropletMovementStatus.Falling;
+                return DropletElevationTrend.Falling;
             }
-            return DropletMovementStatus.Stationary;
+            return DropletElevationTrend.Stationary;
         }
 
         public double GetSpeedKmH(List<TrackingEntry> trackingEntries)

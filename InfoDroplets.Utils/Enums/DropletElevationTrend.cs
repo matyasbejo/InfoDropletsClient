@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InfoDroplets.Utils.Enums
 {
-    public enum DropletMovementStatus
+    public enum DropletElevationTrend
     {
         Stationary,
         Rising,
