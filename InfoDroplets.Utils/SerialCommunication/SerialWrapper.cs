@@ -48,22 +48,23 @@ namespace InfoDroplets.Utils.SerialCommunication
         {
             _serialPort.WriteLine("reset");
         }
-        public bool SafeOpen()
+        public void SafeOpen()
         {
             if (!_serialPort.IsOpen)
             {
                 Open();
 
+                bool restarted = false;
                 DateTime timeAtReset = DateTime.Now;
                 int retries = 0;
 
                 _serialPort.WriteLine("reset");
-                while(retries < 3 )
+                while(!restarted && retries < 3 )
                 {
                     var input = ReadLine();
                     if (input.Contains("GNU Receiver"))
-                        return true;
-                    else if (DateTime.Now - timeAtReset > TimeSpan.FromSeconds(20))
+                        restarted = true;
+                    else if (DateTime.Now - timeAtReset > TimeSpan.FromSeconds(10))
                     {
                         _serialPort.WriteLine("reset");
                         timeAtReset = DateTime.Now;
@@ -71,9 +72,11 @@ namespace InfoDroplets.Utils.SerialCommunication
                     }
                 }
 
-                return false;
+                if (!restarted)
+                    throw new Exception("No restart message received from ground unit");
             }
-            return true;
+            else
+                throw new Exception("Port is already open");
         }
         public void SetPortName(string PortName)
         {
@@ -96,7 +99,10 @@ namespace InfoDroplets.Utils.SerialCommunication
             _serialPort.WriteLine(message);
             Console.WriteLine($"message sent: {message}");
         }
-        public void Open() { _serialPort.Open(); }
+        void Open() 
+        {
+            _serialPort.Open();  
+        }
         public void SafeClose() 
         {
             if (_serialPort.IsOpen)
