@@ -95,7 +95,22 @@ namespace InfoDroplets.Client.ViewModels
                 return DropletLogic.ReadAllIds().ToList();
             }
         }
-        public int? SelectedId{ get; set; }
+
+        private int? selectedId;
+
+        public int? SelectedId
+        {
+            get 
+            { 
+                return selectedId; 
+            }
+            set 
+            { 
+                selectedId = value;
+                OnPropertyChanged("SelectedDroplet");
+            }
+        }
+
         public Droplet? SelectedDroplet { 
             get 
             {
