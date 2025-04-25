@@ -63,11 +63,15 @@
 
                     <Label x:Name="lb_SerialPort" Content="Serial port:" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0"/>
                     <Label x:Name="lb_BaudRate" Content="Baud rate:" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0"/>
-                    <WrapPanel x:Name="wp_SerialPorts" Grid.Row="0" Margin="0" Grid.Column="1" VerticalAlignment="Center">
-                        <ComboBox x:Name="cb_PortOptions" Width="110" Margin="1" ItemsSource="{Binding SerialWrapper.AvaliableSerialPorts}" SelectedIndex="0" SelectedItem="{Binding SelectedPort}" IsEnabled="{Binding SerialWrapper.IsOpen, Converter={StaticResource BooleanNegationConverter}}"/>
-                        <Button x:Name="bt_RefreshPorts" Content="⟳" Margin="1" Command="{Binding RefreshPortsCommand}" VerticalContentAlignment="Center" FontWeight="Bold" Background="#E9EFEC" Width="20"/>
-                    </WrapPanel>
-                    <ComboBox x:Name="cb_BaudRateOptions" Margin="1" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SerialWrapper.AvaliableBaudRates}" SelectedIndex="1" SelectedItem="{Binding SelectedBaudRate}" IsEnabled="{Binding SerialWrapper.IsOpen, Converter={StaticResource BooleanNegationConverter}}"/>
+                    <Grid Grid.Row="0" Grid.Column="1" Margin="1" VerticalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <ComboBox x:Name="cb_PortOptions" Width="110" VerticalContentAlignment="Center" Grid.Column="0" Margin="0,0,1,0" ItemsSource="{Binding SerialWrapper.AvaliableSerialPorts}" SelectedIndex="0" SelectedItem="{Binding SelectedPort}" IsEnabled="{Binding SerialWrapper.IsOpen, Converter={StaticResource BooleanNegationConverter}}"/>
+                        <Button x:Name="bt_RefreshPorts" Content="⟳" Command="{Binding RefreshPortsCommand}" VerticalContentAlignment="Center" Margin="1,0,0, 0" FontWeight="Bold" Background="#E9EFEC" Width="24" Grid.Column="1"/>
+                    </Grid>
+                    <ComboBox x:Name="cb_BaudRateOptions" Margin="1" Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" ItemsSource="{Binding SerialWrapper.AvaliableBaudRates}" SelectedIndex="1" SelectedItem="{Binding SelectedBaudRate}" IsEnabled="{Binding SerialWrapper.IsOpen, Converter={StaticResource BooleanNegationConverter}}"/>
                     <Button x:Name="bt_StartCommunication" Content="Start" Width="80" Command="{Binding StartSerialCommand}" Background="#E9EFEC" Margin="1" Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"/>
                     <Button x:Name="bt_StopCommunication" Content="Stop" Width="80" Command="{Binding StopSerialCommand}" Background="#E9EFEC" Margin="1" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"/>
                 </Grid>
@@ -110,8 +114,11 @@
                     <TextBlock Text="Droplet elevation:" FontWeight="Bold"/>
                     <TextBlock x:Name="tb_elevationTrend" Text="{Binding SelectedDroplet.ElevationTrend}" Margin="0,0,0,10"/>
 
+                    <TextBlock Text="Droplet direction:" FontWeight="Bold"/>
+                    <TextBlock x:Name="tb_direction" Text="{Binding SelectedDroplet.Direction}" Margin="0,0,0,10"/>
+
                     <TextBlock Text="Distance:" FontWeight="Bold"/>
-                    <TextBlock x:Name="tb_distance" Text="{Binding SelectedDroplet.SpeedKmH, StringFormat={}{0} km}" Margin="0,0,0,10"/>
+                    <TextBlock x:Name="tb_distance" Text="{Binding SelectedDroplet.DistanceFromGNU, StringFormat={}{0} km}" Margin="0,0,0,10"/>
 
                     <TextBlock Text="Last update:" FontWeight="Bold"/>
                     <TextBlock x:Name="tb_lastUpdate" Text="{Binding SelectedDroplet.LastUpdated}" Foreground="Green" Margin="0,0,0,10"/>
