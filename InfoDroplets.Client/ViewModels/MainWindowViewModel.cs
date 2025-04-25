@@ -136,29 +136,38 @@ namespace InfoDroplets.Client.ViewModels
             StartSerialCommand = new RelayCommand(
                 () =>
                 {
-                    serialWrapper.SetBaudeRate(selectedBaudRate);
-                    serialWrapper.SetPortName(selectedPort);
-                    serialWrapper.WrapperDataReceived += OnDataReceived;
-                    bool success = serialWrapper.SafeOpen();
-                    if (success)
+                    try
                     {
-                        Messenger.Send("PortOpened", "SerialPortInfo");
-                        OnPropertyChanged("IsRCEnabled");
-
-                        (RefreshPortsCommand as RelayCommand).NotifyCanExecuteChanged();
-                        (StartSerialCommand as RelayCommand).NotifyCanExecuteChanged();
-                        (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
+                        serialWrapper.SetBaudeRate(selectedBaudRate);
+                        serialWrapper.SetPortName(selectedPort);
+                        serialWrapper.SafeOpen();
+                        serialWrapper.WrapperDataReceived += OnDataReceived;
                     }
-                    else
-                        MessageBox.Show("Can't ground unit. Check the selected port!","Error",MessageBoxButton.OK, MessageBoxImage.Error);
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.Message + ex.StackTrace, $"Exception in: {ex.Source}", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    Messenger.Send("PortOpened", "SerialPortInfo");
+                    OnPropertyChanged("IsRCEnabled");
+
+                    (RefreshPortsCommand as RelayCommand).NotifyCanExecuteChanged();
+                    (StartSerialCommand as RelayCommand).NotifyCanExecuteChanged();
+                    (StopSerialCommand as RelayCommand).NotifyCanExecuteChanged();
                 },
                 () => !serialWrapper.IsOpen && selectedBaudRate != 0 && selectedPort != null);
 
             StopSerialCommand = new RelayCommand(
                 () =>
                 {
-                    serialWrapper.SafeClose();
-                    serialWrapper.WrapperDataReceived -= OnDataReceived;
+                    try
+                    {
+                        serialWrapper.SafeClose();
+                        serialWrapper.WrapperDataReceived -= OnDataReceived;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message + ex.StackTrace, $"Exception in: {ex.Source}", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                     Messenger.Send("PortClosed", "SerialPortInfo");
                     OnPropertyChanged("IsRCEnabled");
 
@@ -254,33 +263,40 @@ namespace InfoDroplets.Client.ViewModels
 
         async Task<bool> SendRcCommand(RadioCommand command)
         {
-
-            if (command == RadioCommand.FullReset)
+            try
             {
-                var result = MessageBox.Show("Are you sure you want to restart the device?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.No)
-                    return true;
-            }
+                if (command == RadioCommand.FullReset)
+                {
+                    var result = MessageBox.Show("Are you sure you want to restart the device?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.No)
+                        return true;
+                }
 
-            rcResponseReceived = false;
-            DropletLogic.SendCommand(SelectedDroplet.Id, command);
+                rcResponseReceived = false;
+                DropletLogic.SendCommand(SelectedDroplet.Id, command);
 
-            ChangeAndNotifyRCCommands(false);
+                ChangeAndNotifyRCCommands(false);
 
-            RcStateMessage = $"{command} #{SelectedDroplet.Id} sent";
-            OnPropertyChanged("RcStateMessage");
-            await Task.Delay(10000);
-
-            ChangeAndNotifyRCCommands(true);
-
-            if (!rcResponseReceived)
-            { 
-                RcStateMessage = $"Not ok: {command} #{SelectedDroplet.Id} failed";
+                RcStateMessage = $"{command} #{SelectedDroplet.Id} sent";
                 OnPropertyChanged("RcStateMessage");
+                await Task.Delay(10000);
+
+                ChangeAndNotifyRCCommands(true);
+
+                if (!rcResponseReceived)
+                {
+                    RcStateMessage = $"Not ok: {command} #{SelectedDroplet.Id} failed";
+                    OnPropertyChanged("RcStateMessage");
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + ex.StackTrace, $"Exception in: {ex.Source}", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-
-            return true;
         }
 
         void ChangeAndNotifyRCCommands(bool state)
