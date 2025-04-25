@@ -60,9 +60,11 @@ namespace InfoDroplets.Logic
             Droplet droplet = Read(id);
             try
             {
+                var last5entires = GetLastXEntries(droplet.Id, 5);
                 droplet.LastData = GetLatestEntry(id);
-                droplet.ElevationTrend = GetElevationTrend(GetLastXEntries(droplet.Id, 5));
-                droplet.SpeedKmH = GetSpeedKmH(GetLastXEntries(droplet.Id, 5));
+                droplet.ElevationTrend = GetElevationTrend(last5entires);
+                droplet.Direction = GetDirection(last5entires);
+                droplet.SpeedKmH = GetSpeedKmH(last5entires);
                 droplet.LastUpdated = droplet.LastData.Time;
                 if (gnuPos != null) droplet.DistanceFromGNU = GetDistanceFromGnu(id, gnuPos);
             }
@@ -73,6 +75,7 @@ namespace InfoDroplets.Logic
 
             Update(droplet);
         }
+
         #endregion
 
         #region Non CRUD
@@ -87,6 +90,27 @@ namespace InfoDroplets.Logic
                 return DropletElevationTrend.Falling;
             }
             return DropletElevationTrend.Stationary;
+        }
+        private DropletDirection? GetDirection(List<TrackingEntry> last5entires, double threshold = 0.0001)
+        {
+            TrackingEntry firstEntry = last5entires.First();
+            TrackingEntry lastEntry = last5entires.Last();
+
+            int latDir = Math.Abs(lastEntry.Latitude - firstEntry.Latitude) > threshold ? (lastEntry.Latitude > firstEntry.Latitude ? 1 : -1) : 0;
+            int lonDir = Math.Abs(lastEntry.Longitude - firstEntry.Longitude) > threshold ? (lastEntry.Longitude > firstEntry.Longitude ? 1 : -1) : 0;
+
+            return (latDir, lonDir) switch
+            {
+                (1, 0) => DropletDirection.North,
+                (1, 1) => DropletDirection.NorthEast,
+                (0, 1) => DropletDirection.East,
+                (-1, 1) => DropletDirection.SouthEast,
+                (-1, 0) => DropletDirection.South,
+                (-1, -1) => DropletDirection.SouthWest,
+                (0, -1) => DropletDirection.West,
+                (1, -1) => DropletDirection.NorthWest,
+                _ => DropletDirection.None
+            };
         }
 
         public double GetSpeedKmH(List<TrackingEntry> trackingEntries)
