@@ -116,9 +116,10 @@
 
                     <TextBlock Text="Droplet direction:" FontWeight="Bold"/>
                     <TextBlock x:Name="tb_direction" Text="{Binding SelectedDroplet.Direction}" Margin="0,0,0,10"/>
-
+                    <Grid></Grid>
                     <TextBlock Text="Distance:" FontWeight="Bold"/>
-                    <TextBlock x:Name="tb_distance" Text="{Binding SelectedDroplet.DistanceFromGNU, StringFormat={}{0} km}" Margin="0,0,0,10"/>
+                    <TextBlock x:Name="tb_distance3d" Text="{Binding SelectedDroplet.DistanceFromGNU3D, StringFormat={}3D: {0} km}"/>
+                    <TextBlock x:Name="tb_distance2d" Text="{Binding SelectedDroplet.DistanceFromGNU2D, StringFormat={}2D: {0} km}" Margin="0,0,0,10"/>
 
                     <TextBlock Text="Last update:" FontWeight="Bold"/>
                     <TextBlock x:Name="tb_lastUpdate" Text="{Binding SelectedDroplet.LastUpdated}" Foreground="Green" Margin="0,0,0,10"/>

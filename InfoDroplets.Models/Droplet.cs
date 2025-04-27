@@ -20,7 +20,8 @@ namespace InfoDroplets.Models
 
         public DropletElevationTrend? ElevationTrend { get; set; }
         public DropletDirection? Direction { get; set; }
-        public double? DistanceFromGNU { get; set; }
+        public double? DistanceFromGNU3D { get; set; }
+        public double? DistanceFromGNU2D { get; set; }
         public double? SpeedKmH { get; set; }
         public virtual ICollection<TrackingEntry> Measurements { get; set; }
         public virtual TrackingEntry? LastData { get; set; }

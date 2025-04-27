@@ -55,7 +55,7 @@ namespace InfoDroplets.Logic
             dropletRepo.Update(item);
         }
 
-        public void UpdateDropletStatus(int id, IGpsPos? gnuPos = null)
+        public void UpdateDropletStatus(int id, IGpsPos referencePos = null)
         {
             Droplet droplet = Read(id);
             try
@@ -66,7 +66,12 @@ namespace InfoDroplets.Logic
                 droplet.Direction = GetDirection(last5entires);
                 droplet.SpeedKmH = GetSpeedKmH(last5entires);
                 droplet.LastUpdated = droplet.LastData.Time;
-                if (gnuPos != null) droplet.DistanceFromGNU = GetDistanceFromGnu(id, gnuPos);
+                if (referencePos == null)
+                    referencePos = new GpsPos(46.180182, 19.010954, 112); //Baja Observatory of the University of Szeged coordinates
+
+                IGpsPos dropletPos = droplet.Measurements.Last();
+                droplet.DistanceFromGNU2D = Distance2DHaversineKm(dropletPos, referencePos);
+                droplet.DistanceFromGNU3D = Distance3DKm(dropletPos, referencePos);
             }
             catch (Exception e)
             {
@@ -79,6 +84,13 @@ namespace InfoDroplets.Logic
         #endregion
 
         #region Non CRUD
+        public TrackingEntry GetLatestEntry(int dropletId)
+        {
+            var lastMesurement = Read(dropletId).Measurements?.LastOrDefault();
+            if (lastMesurement == null)
+                throw new ArgumentNullException("Droplet has no data");
+            else return lastMesurement;
+        }
         public DropletElevationTrend GetElevationTrend(List<TrackingEntry> trackingEntries)
         {
             if (trackingEntries.First().Elevation < trackingEntries.Last().Elevation)
@@ -90,48 +102,15 @@ namespace InfoDroplets.Logic
                 return DropletElevationTrend.Falling;
             }
             return DropletElevationTrend.Stationary;
-        }
-        private DropletDirection? GetDirection(List<TrackingEntry> last5entires, double threshold = 0.0001)
-        {
-            TrackingEntry firstEntry = last5entires.First();
-            TrackingEntry lastEntry = last5entires.Last();
-
-            int latDir = Math.Abs(lastEntry.Latitude - firstEntry.Latitude) > threshold ? (lastEntry.Latitude > firstEntry.Latitude ? 1 : -1) : 0;
-            int lonDir = Math.Abs(lastEntry.Longitude - firstEntry.Longitude) > threshold ? (lastEntry.Longitude > firstEntry.Longitude ? 1 : -1) : 0;
-
-            return (latDir, lonDir) switch
-            {
-                (1, 0) => DropletDirection.North,
-                (1, 1) => DropletDirection.NorthEast,
-                (0, 1) => DropletDirection.East,
-                (-1, 1) => DropletDirection.SouthEast,
-                (-1, 0) => DropletDirection.South,
-                (-1, -1) => DropletDirection.SouthWest,
-                (0, -1) => DropletDirection.West,
-                (1, -1) => DropletDirection.NorthWest,
-                _ => DropletDirection.None
-            };
-        }
-
-        public double GetSpeedKmH(List<TrackingEntry> trackingEntries)
+        }  
+        double GetSpeedKmH(List<TrackingEntry> trackingEntries)
         {
             TrackingEntry pos1 = trackingEntries.First();
             TrackingEntry pos2 = trackingEntries.Last();
-            var DistanceMetersDelta = HaversineDistanceKm(pos1, pos2);
+            var DistanceMetersDelta = Distance2DHaversineKm(pos1, pos2);
             var ElapsedSeconds = (pos2.Time - pos1.Time).TotalHours;
             return Math.Round(DistanceMetersDelta / ElapsedSeconds, 2);
         }
-        List<TrackingEntry> GetLastXEntries(int dropletId, int maxEntryCount, int minEntryCount = 2)
-        {
-            var lastMesurements = this.Read(dropletId).Measurements?.TakeLast(maxEntryCount);
-
-            if (lastMesurements == null || lastMesurements.Count() == 0)
-                throw new ArgumentNullException("Droplet has no data");
-            else if (lastMesurements.Count() < minEntryCount)
-                throw new ArgumentException("Droplet has not enough data");
-            else return lastMesurements.ToList();
-        }
-
         public virtual void SendCommand(int dropletId, RadioCommand commandType)
         {
             string command = GenerateCommand(dropletId, commandType);
@@ -162,35 +141,58 @@ namespace InfoDroplets.Logic
                     throw new NotImplementedException("Command unknown");
             }
         }
-        double GetDistanceFromGnu(int id, IGpsPos gnuPos)
+        List<TrackingEntry> GetLastXEntries(int dropletId, int maxEntryCount, int minEntryCount = 2)
         {
-            Droplet droplet = Read(id);
-            GpsPos dropletPos = new GpsPos(droplet.LastData.Latitude, droplet.LastData.Longitude, droplet.LastData.Elevation);
+            var lastMesurements = this.Read(dropletId).Measurements?.TakeLast(maxEntryCount);
 
-            double DistanceSphere = HaversineDistanceKm(dropletPos, gnuPos);
-            double AltitudeDelta = dropletPos.Elevation - gnuPos.Elevation;
-            return Math.Round(Math.Sqrt(Math.Pow(DistanceSphere, 2) + Math.Pow(AltitudeDelta, 2)), 3);
-        }
-        public TrackingEntry GetLatestEntry(int dropletId)
-        {
-            var lastMesurement = Read(dropletId).Measurements?.LastOrDefault();
-            if (lastMesurement == null)
+            if (lastMesurements == null || lastMesurements.Count() == 0)
                 throw new ArgumentNullException("Droplet has no data");
-            else return lastMesurement;
+            else if (lastMesurements.Count() < minEntryCount)
+                throw new ArgumentException("Droplet has not enough data");
+            else return lastMesurements.ToList();
         }
-        static double HaversineDistanceKm(IGpsPos pos1, IGpsPos pos2)
+        private DropletDirection? GetDirection(List<TrackingEntry> last5entires, double threshold = 0.0001)
+        {
+            TrackingEntry firstEntry = last5entires.First();
+            TrackingEntry lastEntry = last5entires.Last();
+
+            int latDir = Math.Abs(lastEntry.Latitude - firstEntry.Latitude) > threshold ? (lastEntry.Latitude > firstEntry.Latitude ? 1 : -1) : 0;
+            int lonDir = Math.Abs(lastEntry.Longitude - firstEntry.Longitude) > threshold ? (lastEntry.Longitude > firstEntry.Longitude ? 1 : -1) : 0;
+
+            return (latDir, lonDir) switch
+            {
+                (1, 0) => DropletDirection.North,
+                (1, 1) => DropletDirection.NorthEast,
+                (0, 1) => DropletDirection.East,
+                (-1, 1) => DropletDirection.SouthEast,
+                (-1, 0) => DropletDirection.South,
+                (-1, -1) => DropletDirection.SouthWest,
+                (0, -1) => DropletDirection.West,
+                (1, -1) => DropletDirection.NorthWest,
+                _ => DropletDirection.None
+            };
+        }
+
+        public static double Distance2DHaversineKm(IGpsPos pos1, IGpsPos pos2)
         {
             double earthRadius = 6378;
             double degreesToRadians = 0.0174532925;
 
-            var latRad = (pos2.Latitude - pos1.Latitude) * degreesToRadians;
-            var lngRad = (pos2.Longitude - pos1.Longitude) * degreesToRadians;
+            var latRad = Math.Abs(pos2.Latitude - pos1.Latitude) * degreesToRadians;
+            var lngRad = Math.Abs(pos2.Longitude - pos1.Longitude) * degreesToRadians;
             var h1 = Math.Sin(latRad / 2) * Math.Sin(latRad / 2) +
                           Math.Cos(pos1.Latitude * degreesToRadians) * Math.Cos(pos2.Latitude * degreesToRadians) *
                           Math.Sin(lngRad / 2) * Math.Sin(lngRad / 2);
             var h2 = 2 * Math.Asin(Math.Min(1, Math.Sqrt(h1)));
 
-            return earthRadius * h2;
+            return Math.Round(earthRadius * h2,4);
+        }
+
+        public static double Distance3DKm(IGpsPos pos1, IGpsPos pos2)
+        {
+            double distanceHaversine = Distance2DHaversineKm(pos1, pos2);
+            double deltaHkm = Math.Abs(pos2.Elevation/1000 - pos1.Elevation/1000);
+            return Math.Round(Math.Sqrt(distanceHaversine*distanceHaversine + deltaHkm*deltaHkm),4);
         }
 
         #endregion
