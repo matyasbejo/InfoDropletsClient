@@ -8,7 +8,7 @@ namespace InfoDroplets.Utils.Enums
 {
     public enum DropletDirection
     {
-        None,
+        Stationary,
         North,
         NorthEast,
         East,

@@ -151,7 +151,7 @@ namespace InfoDroplets.Logic
                 throw new ArgumentException("Droplet has not enough data");
             else return lastMesurements.ToList();
         }
-        private DropletDirection? GetDirection(List<TrackingEntry> last5entires, double threshold = 0.0001)
+        public static DropletDirection? GetDirection(List<TrackingEntry> last5entires, double threshold = 0.0001)
         {
             TrackingEntry firstEntry = last5entires.First();
             TrackingEntry lastEntry = last5entires.Last();
@@ -169,7 +169,7 @@ namespace InfoDroplets.Logic
                 (-1, -1) => DropletDirection.SouthWest,
                 (0, -1) => DropletDirection.West,
                 (1, -1) => DropletDirection.NorthWest,
-                _ => DropletDirection.None
+                _ => DropletDirection.Stationary
             };
         }
 
