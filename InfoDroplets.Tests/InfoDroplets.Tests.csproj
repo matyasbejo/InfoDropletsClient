@@ -13,4 +13,8 @@
   	<PackageTeference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\InfoDroplets.Logic\InfoDroplets.Logic.csproj" />
+  </ItemGroup>
+
 </Project>
