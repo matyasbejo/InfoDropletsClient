@@ -26,13 +26,13 @@ namespace InfoDroplets.Models
         public DateTime Time { get; private set; }
 
         [Required]
-        public double Elevation { get; private set; }
+        public double Elevation { get; set; }
 
         [Required]
-        public double Latitude { get; private set; }
+        public double Latitude { get; set; }
 
         [Required]
-        public double Longitude { get; private set; }
+        public double Longitude { get; set; }
         #endregion
 
         public TrackingEntry(int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time)
@@ -56,6 +56,11 @@ namespace InfoDroplets.Models
             Latitude = double.Parse(inputValues[3]);
             Longitude = double.Parse(inputValues[4]);
             Elevation = double.Parse(inputValues[5]);
+        }
+
+        public TrackingEntry()
+        {
+            
         }
     }
 }
