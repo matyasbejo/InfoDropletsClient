@@ -24,7 +24,7 @@ namespace InfoDroplets.Tests
         }
         
         [Test, TestCaseSource(typeof(Distance3DKmTestData), nameof(Distance3DKmTestData.TestCases))]
-        public void Distance3DKm(string TestCaseName, IGpsPos pos1, IGpsPos pos2, double expectedDistance, double expectedRange, bool expectedToPass)
+        public void Distance3DKmTester(string TestCaseName, IGpsPos pos1, IGpsPos pos2, double expectedDistance, double expectedRange, bool expectedToPass)
         {
             if (expectedToPass)
             {
