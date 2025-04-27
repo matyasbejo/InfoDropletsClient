@@ -91,7 +91,7 @@ namespace InfoDroplets.Logic
                 throw new ArgumentNullException("Droplet has no data");
             else return lastMesurement;
         }
-        public DropletElevationTrend GetElevationTrend(List<TrackingEntry> trackingEntries)
+        public static DropletElevationTrend GetElevationTrend(List<TrackingEntry> trackingEntries)
         {
             if (trackingEntries.First().Elevation < trackingEntries.Last().Elevation)
             {
@@ -99,7 +99,7 @@ namespace InfoDroplets.Logic
             }
             else if (trackingEntries.First().Elevation > trackingEntries.Last().Elevation)
             {
-                return DropletElevationTrend.Falling;
+                return DropletElevationTrend.Descending;
             }
             return DropletElevationTrend.Stationary;
         }  

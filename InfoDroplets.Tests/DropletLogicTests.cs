@@ -68,6 +68,20 @@ namespace InfoDroplets.Tests
                 Assert.Throws(expectedException, () => DropletLogic.GenerateCommand(dropletId,command));
             }
         }
+        
+        [Test, TestCaseSource(typeof(GetElevationTrendTestData), nameof(GenerateCommandTestData.TestCases))]
+        public void GetElevationTrendTester(string TestCaseName, List<TrackingEntry> entries, DropletElevationTrend expectedElevationTrend, Type expectedException)
+        {
+            if (expectedException == null)
+            {
+                DropletElevationTrend generatedOutput = DropletLogic.GetElevationTrend(entries);
+                Assert.That(generatedOutput == expectedElevationTrend);
+            }
+            else
+            {
+                Assert.Throws(expectedException, () => DropletLogic.GetElevationTrend(entries));
+            }
+        }
     }
 
     internal class HaversineDistanceKmTestData
@@ -302,6 +316,63 @@ namespace InfoDroplets.Tests
             yield return new object[] { "06InvalidNullRadioCommand", 8, null, null, typeof(ArgumentNullException) }; //expected fail
             yield return new object[] { "07InvalidNullInputs", null, null, null, typeof(ArgumentNullException) }; //expected fail
         }
+    }
+    internal class GetElevationTrendTestData
+    {
+        public static IEnumerable<object[]> TestCases()
+        {
+            yield return new object[] { "01ValidSingleEntryList", SingleEntryList, DropletElevationTrend.Stationary, null }; //expected succes
+            yield return new object[] { "02ValidRisingEntryList", RisingEntryList, DropletElevationTrend.Rising, null }; //expected succes
+            yield return new object[] { "02ValidRisingEntryList", DescendingEntryList, DropletElevationTrend.Descending, null }; //expected succes
+            yield return new object[] { "03InvalidEmptyEntryList", EmptyEntryList, null, typeof(InvalidOperationException) }; //expected fail
+            yield return new object[] { "04InvalidNullEntryList", null, null, typeof(ArgumentNullException) }; //expected fail
+        }
+
+        static readonly List<TrackingEntry> SingleEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 100
+            }
+        };
+        
+        static readonly List<TrackingEntry> RisingEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 101
+            }
+        };
+        
+        static readonly List<TrackingEntry> DescendingEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 99
+            }
+        };
+
+        static readonly List<TrackingEntry> EmptyEntryList = new List<TrackingEntry>
+        {
+        };
     }
 }
 
