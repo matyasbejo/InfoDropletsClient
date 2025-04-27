@@ -1,8 +1,12 @@
 ﻿using InfoDroplets.Logic;
 using InfoDroplets.Models;
 using InfoDroplets.Repository;
+using InfoDroplets.Utils.Enums;
 using InfoDroplets.Utils.Interfaces;
+using Microsoft.ApplicationInsights.DataContracts;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace InfoDroplets.Tests
 {
@@ -10,30 +14,44 @@ namespace InfoDroplets.Tests
     public class DropletLogicTests
     {
         [Test, TestCaseSource(typeof(HaversineDistanceKmTestData), nameof(HaversineDistanceKmTestData.TestCases))]
-        public void HaversineDistanceKmTester(string TestCaseName, IGpsPos pos1, IGpsPos pos2, double expectedDistance, double expectedRange, bool expectedToPass)
+        public void HaversineDistanceKmTester(string TestCaseName, IGpsPos pos1, IGpsPos pos2, double expectedDistance, double expectedRange, Type expectedException)
         {
-            if (expectedToPass)
+            if (expectedException == null)
             {
                 double calculatedDistance = DropletLogic.Distance2DHaversineKm(pos1, pos2);
                 Assert.That(Math.Abs((calculatedDistance - expectedDistance)) <= expectedRange);
             }
             else
             {
-                Assert.Throws(typeof(NullReferenceException), () => DropletLogic.Distance2DHaversineKm(pos1, pos2));
+                Assert.Throws(expectedException, () => DropletLogic.Distance2DHaversineKm(pos1, pos2));
             }
         }
         
         [Test, TestCaseSource(typeof(Distance3DKmTestData), nameof(Distance3DKmTestData.TestCases))]
-        public void Distance3DKmTester(string TestCaseName, IGpsPos pos1, IGpsPos pos2, double expectedDistance, double expectedRange, bool expectedToPass)
+        public void Distance3DKmTester(string TestCaseName, IGpsPos pos1, IGpsPos pos2, double expectedDistance, double expectedRange, Type expectedException)
         {
-            if (expectedToPass)
+            if (expectedException == null)
             {
                 double calculatedDistance = DropletLogic.Distance3DKm(pos1, pos2);
                 Assert.That(Math.Abs((calculatedDistance - expectedDistance)) <= expectedRange);
             }
             else
             {
-                Assert.Throws(typeof(NullReferenceException), () => DropletLogic.Distance3DKm(pos1, pos2));
+                Assert.Throws(expectedException, () => DropletLogic.Distance3DKm(pos1, pos2));
+            }
+        }
+        
+        [Test, TestCaseSource(typeof(GetDirectionTestData), nameof(GetDirectionTestData.TestCases))]
+        public void GetDirectionTester(string TestCaseName, List<TrackingEntry> expectedEntries, DropletDirection expectedDirection, Type expectedException)
+        {
+            if (expectedException == null)
+            {
+                DropletDirection? actualDirection = DropletLogic.GetDirection(expectedEntries);
+                Assert.That(actualDirection == expectedDirection);
+            }
+            else
+            {
+                Assert.Throws(expectedException, () => DropletLogic.GetDirection(expectedEntries));
             }
         }
     }
@@ -42,13 +60,13 @@ namespace InfoDroplets.Tests
     {
         public static IEnumerable<object[]> TestCases()
         {
-            yield return new object[] { "1ValidSameHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 100), 0.9497, 0.01, true}; //expected success
-            yield return new object[] { "2ValidDifferentHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 1000), 0.9497, 0.01, true}; //expected success
-            yield return new object[] { "3ValidZeroHeight", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.680594, 16.577495, 0), 0.9497, 0.01, true}; //expected success
-            yield return new object[] { "4ValidSamePosition", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.683784, 16.589251, 0), 0, 0, true}; //expected success
-            yield return new object[] { "5InvalidMissingFirstValue", null, new GpsPos(47.683784, 16.589251, 0), 0, 0, false}; //expected fail
-            yield return new object[] { "6InvalidMissingSecondValue", new GpsPos(47.683784, 16.589251, 0), null, 0, 0, false}; //expected fail
-            yield return new object[] { "7InvalidMissingValues", null, null, 0, 0, false}; //expected fail
+            yield return new object[] { "01ValidSameHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 100), 0.9497, 0.01, null}; //expected success
+            yield return new object[] { "02ValidDifferentHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 1000), 0.9497, 0.01, null}; //expected success
+            yield return new object[] { "03ValidZeroHeight", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.680594, 16.577495, 0), 0.9497, 0.01, null}; //expected success
+            yield return new object[] { "04ValidSamePosition", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.683784, 16.589251, 0), 0, 0, null}; //expected success
+            yield return new object[] { "05InvalidMissingFirstValue", null, new GpsPos(47.683784, 16.589251, 0), 0, 0, typeof(NullReferenceException)}; //expected fail
+            yield return new object[] { "06InvalidMissingSecondValue", new GpsPos(47.683784, 16.589251, 0), null, 0, 0, typeof(NullReferenceException)}; //expected fail
+            yield return new object[] { "07InvalidMissingValues", null, null, 0, 0, typeof(NullReferenceException)}; //expected fail
         }
     }
     
@@ -56,15 +74,211 @@ namespace InfoDroplets.Tests
     {
         public static IEnumerable<object[]> TestCases()
         {
-            yield return new object[] { "1ValidDifferentPosSameHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 100), 0.9497, 0.01, true}; //expected success
-            yield return new object[] { "3ValidDifferentPosDifferentHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 1000), 1.3, 0.01, true}; //expected success
-            yield return new object[] { "2ValidSamePosDifferentHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.683784, 16.589251, 1000), 0.9, 0, true }; //expected success
-            yield return new object[] { "4ValidZeroHeight", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.680594, 16.577495, 0), 0.9497, 0.01, true}; //expected success
-            yield return new object[] { "5ValidSamePosition", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.683784, 16.589251, 0), 0, 0, true}; //expected success
-            yield return new object[] { "6InvalidMissingFirstValue", null, new GpsPos(47.683784, 16.589251, 0), 0, 0, false}; //expected fail
-            yield return new object[] { "7InvalidMissingSecondValue", new GpsPos(47.683784, 16.589251, 0), null, 0, 0, false}; //expected fail
-            yield return new object[] { "8InvalidMissingValues", null, null, 0, 0, false}; //expected fail
+            yield return new object[] { "01ValidDifferentPosSameHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 100), 0.9497, 0.01, null}; //expected success
+            yield return new object[] { "03ValidDifferentPosDifferentHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 1000), 1.3, 0.01, null}; //expected success
+            yield return new object[] { "02ValidSamePosDifferentHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.683784, 16.589251, 1000), 0.9, 0, null }; //expected success
+            yield return new object[] { "04ValidZeroHeight", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.680594, 16.577495, 0), 0.9497, 0.01, null}; //expected success
+            yield return new object[] { "05ValidSamePosition", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.683784, 16.589251, 0), 0, 0, null}; //expected success
+            yield return new object[] { "06InvalidMissingFirstValue", null, new GpsPos(47.683784, 16.589251, 0), 0, 0, typeof(NullReferenceException)}; //expected fail
+            yield return new object[] { "07InvalidMissingSecondValue", new GpsPos(47.683784, 16.589251, 0), null, 0, 0, typeof(NullReferenceException)}; //expected fail
+            yield return new object[] { "08InvalidMissingValues", null, null, 0, 0, typeof(NullReferenceException)}; //expected fail
         }
     }
+
+    internal class GetDirectionTestData
+    {
+        public static IEnumerable<object[]> TestCases()
+        {
+            yield return new object[] { "01ValidSingleEntryList", SingleEntryList, DropletDirection.Stationary, null }; //expected succes
+            yield return new object[] { "02ValidNorthEntryList", NorthEntryList, DropletDirection.North, null }; //expected succes
+            yield return new object[] { "03ValidEastEntryList", EastEntryList, DropletDirection.East, null }; //expected succes
+            yield return new object[] { "04ValidSouthEntryList", SouthEntryList, DropletDirection.South, null }; //expected succes
+            yield return new object[] { "05ValidWestEntryList", WestEntryList, DropletDirection.West, null }; //expected succes
+            yield return new object[] { "06ValidNorthEastEntryList", NorthEastEntryList, DropletDirection.NorthEast, null }; //expected succes
+            yield return new object[] { "07ValidSouthEastEntryList", SouthEastEntryList, DropletDirection.SouthEast, null }; //expected succes
+            yield return new object[] { "08ValidSouthWestEntryList", SouthWestEntryList, DropletDirection.SouthWest, null }; //expected succes
+            yield return new object[] { "09ValidNorthWestEntryList", NorthWestEntryList, DropletDirection.NorthWest, null }; //expected succes
+            yield return new object[] { "10ValidStationaryEntryList", StationaryEntryList, DropletDirection.Stationary, null }; //expected succes
+            yield return new object[] { "11ValidStationaryWithinThresholdEntryList", StationaryWithinThresholdEntryList, DropletDirection.Stationary, null }; //expected succes
+            yield return new object[] { "12InvalidStationaryEmptyListEntryList", EmptyEntryList, null, typeof(InvalidOperationException) }; //expected fail
+            yield return new object[] { "13InvalidStationaryNullListEntryList", null, null, typeof(ArgumentNullException) }; //expected fail
+        }
+
+        static readonly List<TrackingEntry> SingleEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 100
+            }
+        };
+
+        static readonly List<TrackingEntry> NorthEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 0,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 47.642630,
+                Longitude = 0,
+                Elevation = 100
+            }
+        };
+
+        static readonly List<TrackingEntry> NorthEastEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 0,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 47.642630,
+                Longitude = 0.03222,
+                Elevation = 100
+            }
+        };
+
+        static readonly List<TrackingEntry> EastEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 0,
+                Longitude = 18.697721,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 0,
+                Longitude = 18.697881,
+                Elevation = 100
+            }
+        };
+
+        static readonly List<TrackingEntry> SouthEastEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 0.03222,
+                Longitude = 18.697721,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 0,
+                Longitude = 18.697881,
+                Elevation = 100
+            }
+        };
+
+        static readonly List<TrackingEntry> SouthEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 0,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 47.640466,
+                Longitude = 0,
+                Elevation = 100
+            }
+        };
+
+        static readonly List<TrackingEntry> SouthWestEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 0.003333,
+                Longitude = 18.697721,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 0,
+                Longitude = 18.696678,
+                Elevation = 100
+            }
+        };
+
+        static readonly List<TrackingEntry> WestEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 0,
+                Longitude = 18.697721,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 0,
+                Longitude = 18.696678,
+                Elevation = 100
+            }
+        };
+
+        static readonly List<TrackingEntry> NorthWestEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 0,
+                Longitude = 18.697721,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 0.003302,
+                Longitude = 18.696678,
+                Elevation = 100
+            }
+        };
+        
+        static readonly List<TrackingEntry> StationaryEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 20,
+                Longitude = 18,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 20,
+                Longitude = 18,
+                Elevation = 100
+            }
+        };
+
+        static readonly List<TrackingEntry> StationaryWithinThresholdEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 20.00001,
+                Longitude = 18.0001,
+                Elevation = 100
+            },
+            new TrackingEntry
+            {
+                Latitude = 20.00005,
+                Longitude = 18.00005,
+                Elevation = 100
+            }
+        };
+
+        static readonly List<TrackingEntry> EmptyEntryList = new List<TrackingEntry>
+        {
+        };
+    }
+
+
 }
 
