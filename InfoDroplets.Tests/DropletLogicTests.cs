@@ -42,16 +42,30 @@ namespace InfoDroplets.Tests
         }
         
         [Test, TestCaseSource(typeof(GetDirectionTestData), nameof(GetDirectionTestData.TestCases))]
-        public void GetDirectionTester(string TestCaseName, List<TrackingEntry> expectedEntries, DropletDirection expectedDirection, Type expectedException)
+        public void GetDirectionTester(string TestCaseName, List<TrackingEntry> entries, DropletDirection expectedDirection, Type expectedException)
         {
             if (expectedException == null)
             {
-                DropletDirection? actualDirection = DropletLogic.GetDirection(expectedEntries);
+                DropletDirection? actualDirection = DropletLogic.GetDirection(entries);
                 Assert.That(actualDirection == expectedDirection);
             }
             else
             {
-                Assert.Throws(expectedException, () => DropletLogic.GetDirection(expectedEntries));
+                Assert.Throws(expectedException, () => DropletLogic.GetDirection(entries));
+            }
+        }
+        
+        [Test, TestCaseSource(typeof(GenerateCommandTestData), nameof(GenerateCommandTestData.TestCases))]
+        public void GenerateCommandTester(string TestCaseName, int? dropletId, RadioCommand? command, string ExpectedOutput, Type expectedException)
+        {
+            if (expectedException == null)
+            {
+                string generatedOutput = DropletLogic.GenerateCommand(dropletId,command);
+                Assert.That(generatedOutput == ExpectedOutput);
+            }
+            else
+            {
+                Assert.Throws(expectedException, () => DropletLogic.GenerateCommand(dropletId,command));
             }
         }
     }
@@ -69,7 +83,6 @@ namespace InfoDroplets.Tests
             yield return new object[] { "07InvalidMissingValues", null, null, 0, 0, typeof(NullReferenceException)}; //expected fail
         }
     }
-    
     internal class Distance3DKmTestData
     {
         public static IEnumerable<object[]> TestCases()
@@ -84,7 +97,6 @@ namespace InfoDroplets.Tests
             yield return new object[] { "08InvalidMissingValues", null, null, 0, 0, typeof(NullReferenceException)}; //expected fail
         }
     }
-
     internal class GetDirectionTestData
     {
         public static IEnumerable<object[]> TestCases()
@@ -278,7 +290,18 @@ namespace InfoDroplets.Tests
         {
         };
     }
-
-
+    internal class GenerateCommandTestData
+    {
+        public static IEnumerable<object[]> TestCases()
+        {
+            yield return new object[] { "01ValidGpsReset", 5, RadioCommand.GpsReset, "R5", null }; //expected success
+            yield return new object[] { "02ValidFullReset", 3, RadioCommand.FullReset, "F3", null }; //expected success
+            yield return new object[] { "03ValidGetFileVersion", 1, RadioCommand.GetFileVersion, "V1", null }; //expected success
+            yield return new object[] { "04ValidPing", 11, RadioCommand.Ping, "P11", null }; //expected success
+            yield return new object[] { "05InvalidNullDropletId", null, RadioCommand.GetFileVersion, null, typeof(ArgumentNullException) }; //expected fail
+            yield return new object[] { "06InvalidNullRadioCommand", 8, null, null, typeof(ArgumentNullException) }; //expected fail
+            yield return new object[] { "07InvalidNullInputs", null, null, null, typeof(ArgumentNullException) }; //expected fail
+        }
+    }
 }
 

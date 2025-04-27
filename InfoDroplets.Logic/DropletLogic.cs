@@ -121,8 +121,11 @@ namespace InfoDroplets.Logic
         {
             CommandGenerated?.Invoke(this, new CommandEventArgs(input));
         }
-        string GenerateCommand(int dropletId, RadioCommand command)
+        public static string GenerateCommand(int? dropletId, RadioCommand? command)
         {
+            if (dropletId == null || command == null)
+                throw new ArgumentNullException("Input was null");
+
             switch (command)
             {
                 case RadioCommand.FullReset:
