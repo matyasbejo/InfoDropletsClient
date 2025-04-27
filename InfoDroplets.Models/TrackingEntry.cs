@@ -23,7 +23,7 @@ namespace InfoDroplets.Models
         public int SatelliteCount { get; private set; }
 
         [Required]
-        public DateTime Time { get; private set; }
+        public DateTime Time { get; set; }
 
         [Required]
         public double Elevation { get; set; }
