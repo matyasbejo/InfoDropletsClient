@@ -10,6 +10,6 @@ namespace InfoDroplets.Utils.Enums
     {
         Stationary,
         Rising,
-        Falling
+        Descending
     }
 }
