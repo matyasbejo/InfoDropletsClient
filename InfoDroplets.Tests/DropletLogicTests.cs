@@ -82,7 +82,23 @@ namespace InfoDroplets.Tests
                 Assert.Throws(expectedException, () => DropletLogic.GetElevationTrend(entries));
             }
         }
+        
+        [Test, TestCaseSource(typeof(GetSpeedKmHTestData), nameof(GetSpeedKmHTestData.TestCases))]
+        public void GetSpeedKmHTester(string TestCaseName, List<TrackingEntry> entries, double expectedSpeed, Type expectedException)
+        {
+            if (expectedException == null)
+            {
+                double calculatedSpeed = DropletLogic.GetSpeedKmH(entries);
+                Assert.That(calculatedSpeed == expectedSpeed);
+            }
+            else
+            {
+                Assert.Throws(expectedException, () => DropletLogic.GetSpeedKmH(entries));
+            }
+        }
     }
+
+    #region TestDatas
 
     internal class HaversineDistanceKmTestData
     {
@@ -337,7 +353,7 @@ namespace InfoDroplets.Tests
                 Elevation = 100
             }
         };
-        
+
         static readonly List<TrackingEntry> RisingEntryList = new List<TrackingEntry>
         {
             new TrackingEntry
@@ -353,7 +369,7 @@ namespace InfoDroplets.Tests
                 Elevation = 101
             }
         };
-        
+
         static readonly List<TrackingEntry> DescendingEntryList = new List<TrackingEntry>
         {
             new TrackingEntry
@@ -373,6 +389,69 @@ namespace InfoDroplets.Tests
         static readonly List<TrackingEntry> EmptyEntryList = new List<TrackingEntry>
         {
         };
+
     }
+    internal class GetSpeedKmHTestData
+    {
+        public static IEnumerable<object[]> TestCases()
+        {
+            yield return new object[] { "01ValidSingleEntryList", SingleEntryList, 0.0, null }; //expected succes
+            yield return new object[] { "02Valid1Km1h2DEntryList", _1Km1Hour2DEntryList, 1.0, null }; //expected succes
+            yield return new object[] { "03Valid1Km1h3DEntryList", _1Km1Hour3DEntryList, 1.0, null }; //expected succes
+            yield return new object[] { "04InvalidEmptyEntryList", EmptyEntryList, null, typeof(InvalidOperationException) }; //expected fail
+            yield return new object[] { "05InvalidNullEntryList", null, null, typeof(NullReferenceException) }; //expected fail
+        }
+
+        static readonly List<TrackingEntry> SingleEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 100
+            }
+        };
+
+        static readonly List<TrackingEntry> _1Km1Hour2DEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 100,
+                Time = new DateTime(2025,04,28,13,0,0,0)
+            },
+            new TrackingEntry
+            {
+                Latitude = 47.650597,
+                Longitude = 18.697721,
+                Elevation = 100,
+                Time = new DateTime(2025,04,28,14,0,0,0)
+            }
+        };
+        static readonly List<TrackingEntry> _1Km1Hour3DEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 100,
+                Time = new DateTime(2025,04,28,13,0,0,0)
+            },
+            new TrackingEntry
+            {
+                Latitude = 47.650593,
+                Longitude = 18.697721,
+                Elevation = 150,
+                Time = new DateTime(2025,04,28,14,0,0,0)
+            }
+        };
+
+        static readonly List<TrackingEntry> EmptyEntryList = new List<TrackingEntry>
+        {
+        };
+    }
+
+    #endregion
 }
 
