@@ -4,6 +4,7 @@ using InfoDroplets.Repository;
 using InfoDroplets.Utils.Enums;
 using InfoDroplets.Utils.Interfaces;
 using InfoDroplets.Utils.SerialCommunication;
+using System.Net;
 using System.Timers;
 
 namespace InfoDroplets.Logic
@@ -55,7 +56,7 @@ namespace InfoDroplets.Logic
             dropletRepo.Update(item);
         }
 
-        public void UpdateDropletStatus(int id, IGpsPos referencePos = null)
+        public void UpdateDropletStatus(int id, IGpsPos? referencePos = null)
         {
             Droplet droplet = Read(id);
             try
@@ -103,13 +104,16 @@ namespace InfoDroplets.Logic
             }
             return DropletElevationTrend.Stationary;
         }  
-        double GetSpeedKmH(List<TrackingEntry> trackingEntries)
+        public static double GetSpeedKmH(List<TrackingEntry> trackingEntries)
         {
+            if (trackingEntries.Count == 1)
+                return 0;
+
             TrackingEntry pos1 = trackingEntries.First();
             TrackingEntry pos2 = trackingEntries.Last();
-            var DistanceMetersDelta = Distance2DHaversineKm(pos1, pos2);
-            var ElapsedSeconds = (pos2.Time - pos1.Time).TotalHours;
-            return Math.Round(DistanceMetersDelta / ElapsedSeconds, 2);
+            double DistanceKmDelta = Distance2DHaversineKm(pos1, pos2);
+            double ElapsedTimeInHours = (pos2.Time - pos1.Time).TotalHours;
+            return Math.Round(DistanceKmDelta / ElapsedTimeInHours, 2);
         }
         public virtual void SendCommand(int dropletId, RadioCommand commandType)
         {
