@@ -23,7 +23,7 @@ namespace InfoDroplets.Models
         public int SatelliteCount { get; private set; }
 
         [Required]
-        public DateTime Time { get; set; }
+        public TimeOnly Time { get; set; }
 
         [Required]
         public double Elevation { get; set; }
@@ -35,14 +35,14 @@ namespace InfoDroplets.Models
         public double Longitude { get; set; }
         #endregion
 
-        public TrackingEntry(int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time)
+        public TrackingEntry(int dropletId, int satelliteCount, double longitude, double latitude, double elevation, TimeOnly time)
         {
             DropletId = dropletId;
             SatelliteCount = satelliteCount;
             Time = time;
         }
 
-        public TrackingEntry(int id, int dropletId, int satelliteCount, double longitude, double latitude, double elevation, DateTime time) : this(dropletId,satelliteCount, longitude, latitude, elevation, time)
+        public TrackingEntry(int id, int dropletId, int satelliteCount, double longitude, double latitude, double elevation, TimeOnly time) : this(dropletId,satelliteCount, longitude, latitude, elevation, time)
         {
             Id = id;
         }
@@ -52,7 +52,7 @@ namespace InfoDroplets.Models
             var inputValues = inputString.Split(";");
             DropletId = int.Parse(inputValues[0]);
             SatelliteCount = int.Parse(inputValues[1]);
-            Time = DateTime.ParseExact(inputValues[2], "H:m:s", null);
+            Time = TimeOnly.ParseExact(inputValues[2], "H:m:s");
             Latitude = double.Parse(inputValues[3]);
             Longitude = double.Parse(inputValues[4]);
             Elevation = double.Parse(inputValues[5]);

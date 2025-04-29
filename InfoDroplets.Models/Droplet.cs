@@ -25,7 +25,7 @@ namespace InfoDroplets.Models
         public double? SpeedKmH { get; set; }
         public virtual ICollection<TrackingEntry> Measurements { get; set; }
         public virtual TrackingEntry? LastData { get; set; }
-        public DateTime? LastUpdated { get; set; }
+        public TimeOnly? LastUpdated { get; set; }
 
         #endregion
 
