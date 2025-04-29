@@ -11,7 +11,7 @@ using System.Diagnostics;
 namespace InfoDroplets.Tests
 {
     [TestFixture]
-    public class DropletLogicTests
+    public class DropletLogicNonCRUDTests
     {
         [Test, TestCaseSource(typeof(HaversineDistanceKmTestData), nameof(HaversineDistanceKmTestData.TestCases))]
         public void HaversineDistanceKmTester(string TestCaseName, IGpsPos pos1, IGpsPos pos2, double expectedDistance, double expectedRange, Type expectedException)
@@ -97,8 +97,6 @@ namespace InfoDroplets.Tests
             }
         }
     }
-
-    #region TestDatas
 
     internal class HaversineDistanceKmTestData
     {
@@ -451,7 +449,5 @@ namespace InfoDroplets.Tests
         {
         };
     }
-
-    #endregion
 }
 
