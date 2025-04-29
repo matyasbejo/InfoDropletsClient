@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InfoDroplets.Utils.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.Specialized;
@@ -12,7 +13,7 @@ namespace InfoDroplets.Utils.SerialCommunication
 {
     public class SerialWrapper : IDisposable, ISerialWrapper
     {
-        SerialPort _serialPort;
+        ISerialPort _serialPort;
         public event SerialDataReceivedEventHandler WrapperDataReceived;
 
 
@@ -28,10 +29,10 @@ namespace InfoDroplets.Utils.SerialCommunication
         public List<int> AvaliableBaudRates { get; private set; }
         public bool IsOpen { get { return _serialPort.IsOpen; } }
 
-        public SerialWrapper()
+        public SerialWrapper(ISerialPort serialPort = null)
         {
             AvaliableBaudRates = new List<int> { 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
-            _serialPort = new SerialPort();
+            _serialPort = serialPort ?? new SystemSerialPort();
             _serialPort.DataReceived += Wrapper_DataReceived;
         }
 
