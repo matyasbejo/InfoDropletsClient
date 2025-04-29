@@ -419,14 +419,14 @@ namespace InfoDroplets.Tests
                 Latitude = 47.641597,
                 Longitude = 18.697721,
                 Elevation = 100,
-                Time = new DateTime(2025,04,28,13,0,0,0)
+                Time = new TimeOnly(13,0,0,0)
             },
             new TrackingEntry
             {
                 Latitude = 47.650597,
                 Longitude = 18.697721,
                 Elevation = 100,
-                Time = new DateTime(2025,04,28,14,0,0,0)
+                Time = new TimeOnly(14,0,0,0)
             }
         };
         static readonly List<TrackingEntry> _1Km1Hour3DEntryList = new List<TrackingEntry>
@@ -436,14 +436,14 @@ namespace InfoDroplets.Tests
                 Latitude = 47.641597,
                 Longitude = 18.697721,
                 Elevation = 100,
-                Time = new DateTime(2025,04,28,13,0,0,0)
+                Time = new TimeOnly(13,0,0,0)
             },
             new TrackingEntry
             {
                 Latitude = 47.650593,
                 Longitude = 18.697721,
                 Elevation = 150,
-                Time = new DateTime(2025,04,28,14,0,0,0)
+                Time = new TimeOnly(14,0,0,0)
             }
         };
 
