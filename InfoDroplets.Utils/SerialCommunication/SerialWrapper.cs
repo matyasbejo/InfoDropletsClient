@@ -108,6 +108,8 @@ namespace InfoDroplets.Utils.SerialCommunication
         {
             if (_serialPort.IsOpen)
                 _serialPort.Close();
+            else
+                throw new Exception("Port is already closed");
         }
         public string ReadLine() 
         {
