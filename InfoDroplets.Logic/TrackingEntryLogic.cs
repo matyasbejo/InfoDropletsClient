@@ -7,12 +7,17 @@ namespace InfoDroplets.Logic
     public class TrackingEntryLogic : ITrackingEntryLogic
     {
         IRepository<TrackingEntry> repo;
-        IMessenger messenger;
+        IMessenger? messenger;
 
         public TrackingEntryLogic(IMessenger messenger, IRepository<TrackingEntry> teRepo)
         {
             this.repo = teRepo;
             this.messenger = messenger;
+        }
+        
+        public TrackingEntryLogic(IRepository<TrackingEntry> teRepo)
+        {
+            this.repo = teRepo;
         }
 
         public void Create(string data)
