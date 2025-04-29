@@ -12,7 +12,7 @@ namespace InfoDroplets.Logic
     public class DropletLogic : IDropletLogic
     {
         IRepository<Droplet> dropletRepo;
-        IMessenger messenger;
+        IMessenger? messenger;
 
         public event CommandGeneratedEventHandler CommandGenerated;
         public DropletLogic(IMessenger messenger, IRepository<Droplet> repository)
@@ -21,10 +21,19 @@ namespace InfoDroplets.Logic
             dropletRepo = repository;
         }
 
+        public DropletLogic(IRepository<Droplet> repository)
+        {
+            dropletRepo = repository;
+        }
+
         #region CRUD
         public void Create(Droplet item)
         {
-            dropletRepo.Create(item);
+            var d = dropletRepo.ReadAll();
+            if (dropletRepo.ReadAll().FirstOrDefault(d => d.Id == item.Id) == null)
+                dropletRepo.Create(item);
+            else 
+                throw new InvalidOperationException($"Droplet already exist with id {item.Id}.");
         }
 
         public void Delete(Droplet item)
