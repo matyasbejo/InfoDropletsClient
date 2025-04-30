@@ -11,12 +11,12 @@
         mc:Ignorable="d"
         Icon="pack://application:,,,/icon.ico"
         Title="MainWindow" Height="675" Width="1200">
-    
+
     <Window.DataContext>
         <vms:MainWindowViewModel/>
     </Window.DataContext>
 
-        <Window.Resources>
+    <Window.Resources>
         <Style TargetType="Button" x:Key="RCButton">
             <Setter Property="Height" Value="25"/>
             <Setter Property="Background" Value="#EEF7FF"/>
@@ -87,7 +87,26 @@
         </Border>
 
         <Border x:Name="MapArea" Background="#f2efe9" Margin="7" CornerRadius="10" Grid.Column="0" Grid.Row="1" Padding="3">
-            <map:GMapControl x:Name="myMap" Margin="6" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True"/>
+            <Grid Margin="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="2"/>
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="2"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <map:GMapControl x:Name="myMap" Grid.ColumnSpan="5" Grid.RowSpan="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True"/>
+                <Rectangle Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Fill="Red"/>
+                <Rectangle Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Fill="red"/>
+                <!--<Ellipse Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="3" Stroke="Red"/>-->
+            </Grid>
         </Border>
 
         <Border x:Name="DetailsArea" Background="#f2efe9" Margin="7" CornerRadius="10" Padding="10" Grid.Column="1" Grid.Row="1">

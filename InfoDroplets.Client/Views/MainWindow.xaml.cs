@@ -32,7 +32,7 @@ namespace InfoDropletsClient
             myMap.MinZoom = 1;
             myMap.MaxZoom = 20;
             myMap.Zoom = 13;
-            myMap.ShowCenter = true;
+            myMap.ShowCenter = false;
             myMap.CanDragMap = false;
             myMap.MouseWheelZoomType = MouseWheelZoomType.ViewCenter;
             myMap.FillEmptyTiles = true;
