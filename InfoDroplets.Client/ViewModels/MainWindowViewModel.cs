@@ -300,7 +300,7 @@ namespace InfoDroplets.Client.ViewModels
 
                 if (!rcResponseReceived)
                 {
-                    RcStateMessage = $"Not ok: {command} #{SelectedDroplet.Id} failed";
+                    RcStateMessage = $"{command} #{SelectedDroplet.Id} Didn't answer in 10 sec";
                     OnPropertyChanged("RcStateMessage");
                     return false;
                 }
