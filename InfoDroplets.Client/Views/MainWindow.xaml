@@ -10,7 +10,7 @@
         xmlns:enums="clr-namespace:InfoDroplets.Utils.Enums;assembly=InfoDroplets.Utils"
         mc:Ignorable="d"
         Icon="pack://application:,,,/icon.ico"
-        Title="MainWindow" Height="675" Width="1200">
+        Title="Info-Droplets Client" Height="675" Width="1200">
 
     <Window.DataContext>
         <vms:MainWindowViewModel/>
@@ -103,8 +103,8 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <map:GMapControl x:Name="myMap" Grid.ColumnSpan="5" Grid.RowSpan="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True"/>
-                <Rectangle Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Fill="Red"/>
-                <Rectangle Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Fill="red"/>
+                <Rectangle Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Fill="Red" IsHitTestVisible="False"/>
+                <Rectangle Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Fill="red" IsHitTestVisible="False"/>
                 <!--<Ellipse Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="3" Stroke="Red"/>-->
             </Grid>
         </Border>
