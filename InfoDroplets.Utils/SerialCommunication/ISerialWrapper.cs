@@ -17,7 +17,7 @@ namespace InfoDroplets.Utils.SerialCommunication
         int GetBaudeRate();
         string GetPortName();
         string ReadLine();
-        void Reset();
+        void SendResetReceiver();
         void SafeOpen();
         void SendCommand(object sender, CommandEventArgs e) { }
         void SetBaudeRate(int BaudeRate = 9600);

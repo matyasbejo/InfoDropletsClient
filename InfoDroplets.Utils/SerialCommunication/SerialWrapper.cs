@@ -45,7 +45,7 @@ namespace InfoDroplets.Utils.SerialCommunication
         {
             WriteLine(e.Command);
         }
-        public void Reset()
+        public void SendResetReceiver()
         {
             _serialPort.WriteLine("reset");
         }
@@ -59,8 +59,8 @@ namespace InfoDroplets.Utils.SerialCommunication
                 DateTime timeAtReset = DateTime.Now;
                 int retries = 0;
 
-                _serialPort.WriteLine("reset");
-                while(!restarted && retries < 3 )
+                SendResetReceiver();
+                while (!restarted && retries < 3 )
                 {
                     var input = ReadLine();
                     if (input.Contains("GNU Receiver"))
