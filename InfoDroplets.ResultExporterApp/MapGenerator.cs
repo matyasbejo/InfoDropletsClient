@@ -31,7 +31,7 @@ namespace ResultExporterApp
             PrepareOutputFolder(newFilePath);
 
             GlobalLabelHelper.Instance.LabelText = "Generate file content....";
-            var NewFileContent = GenerateFileContent();
+            var NewFileContent = GenerateMapContent();
 
             GlobalLabelHelper.Instance.LabelText = "Write content to file....";
             File.WriteAllText(newFilePath, NewFileContent);
@@ -76,8 +76,8 @@ namespace ResultExporterApp
 
             return true;
         }
-
-        public string GenerateFileContent()
+        
+        public string GenerateMapContent()
         {
             foreach (var item in CustomFileValues)
             {
@@ -87,8 +87,8 @@ namespace ResultExporterApp
             string logSegmentKey = "_RE_LOGSEGMENT_";
             string breakSegmentKey = "_RE_BREAKSEGMENT_";
 
-            string logSegmentsContent = GenerateSegments(LogCollection);
-            string breakSegmentsContent = GenerateSegments(BreakCollection);
+            string logSegmentsContent = GenerateMapContentFromSegments(this.LogCollection);
+            string breakSegmentsContent = GenerateMapContentFromSegments(this.BreakCollection);
 
             MapContent = MapContent.Replace(logSegmentKey, logSegmentsContent);
             MapContent = MapContent.Replace(breakSegmentKey, breakSegmentsContent);
@@ -99,7 +99,7 @@ namespace ResultExporterApp
             return MapContent;
         }
 
-        string GenerateSegments(List<List<LogEntry>> entries)
+        string GenerateMapContentFromSegments(List<List<LogEntry>> entries)
         {
             string output = "";
             foreach (var entryList in entries)
