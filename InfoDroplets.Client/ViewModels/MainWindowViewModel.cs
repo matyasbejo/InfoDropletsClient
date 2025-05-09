@@ -88,6 +88,8 @@ namespace InfoDroplets.Client.ViewModels
 
         #endregion
 
+        #region View declarations
+
         public List<int> AvaliableDropletIds
         {
             get 
@@ -130,7 +132,8 @@ namespace InfoDroplets.Client.ViewModels
                     return new PointLatLng(0,0);
             }
         }
-        public bool IsRCEnabled { get { return serialWrapper.IsOpen && AvaliableDropletIds.Count > 0; } }
+
+        #endregion
 
         IDropletLogic DropletLogic { get; set; }
         ITrackingEntryLogic TrackingEntryLogic { get; set; }
