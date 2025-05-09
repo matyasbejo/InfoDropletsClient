@@ -120,7 +120,7 @@ namespace InfoDroplets.Logic
 
             TrackingEntry pos1 = trackingEntries.First();
             TrackingEntry pos2 = trackingEntries.Last();
-            double DistanceKmDelta = Distance2DHaversineKm(pos1, pos2);
+            double DistanceKmDelta = Distance3DKm(pos1, pos2);
             double ElapsedTimeInHours = (pos2.Time - pos1.Time).TotalHours;
             return Math.Round(DistanceKmDelta / ElapsedTimeInHours, 2);
         }
@@ -167,13 +167,16 @@ namespace InfoDroplets.Logic
                 throw new ArgumentException("Droplet has not enough data");
             else return lastMesurements.ToList();
         }
-        public static DropletDirection? GetDirection(List<TrackingEntry> last5entires, double threshold = 0.0001)
+        
+        public static DropletDirection? GetDirection(List<TrackingEntry> last5entires, double threshold = 0.00018)
         {
             TrackingEntry firstEntry = last5entires.First();
             TrackingEntry lastEntry = last5entires.Last();
 
-            int latDir = Math.Abs(lastEntry.Latitude - firstEntry.Latitude) > threshold ? (lastEntry.Latitude > firstEntry.Latitude ? 1 : -1) : 0;
-            int lonDir = Math.Abs(lastEntry.Longitude - firstEntry.Longitude) > threshold ? (lastEntry.Longitude > firstEntry.Longitude ? 1 : -1) : 0;
+            int latDir = Math.Abs(lastEntry.Latitude - firstEntry.Latitude) > threshold ? (lastEntry.Latitude > firstEntry.Latitude 
+                ? 1 : -1) : 0;
+            int lonDir = Math.Abs(lastEntry.Longitude - firstEntry.Longitude) > threshold ? (lastEntry.Longitude > firstEntry.Longitude 
+                ? 1 : -1) : 0;
 
             return (latDir, lonDir) switch
             {
@@ -188,7 +191,7 @@ namespace InfoDroplets.Logic
                 _ => DropletDirection.Stationary
             };
         }
-
+        
         public static double Distance2DHaversineKm(IGpsPos pos1, IGpsPos pos2)
         {
             double earthRadius = 6378;
