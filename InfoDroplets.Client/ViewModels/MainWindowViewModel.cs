@@ -65,7 +65,7 @@ namespace InfoDroplets.Client.ViewModels
         #region Radio control declarations
 
         public ICommand RCFullResetCommand { get; set; }
-        public ICommand RCPingCommand { get; set; }
+        public ICommand RCGpsResetCommand { get; set; }
         public ICommand RCFileVersionCommand { get; set; }
 
         private string rcStateMessage;
@@ -85,6 +85,7 @@ namespace InfoDroplets.Client.ViewModels
         }
         public string RcStateUpdateTime { get; set; }
         public bool RcButtonsEnabled { get; set; }
+        public bool IsRCEnabled { get { return serialWrapper.IsOpen && AvaliableDropletIds.Count > 0; } }
 
         #endregion
 
@@ -212,8 +213,8 @@ namespace InfoDroplets.Client.ViewModels
                 () => RcButtonsEnabled
                 );
             
-            RCPingCommand = new RelayCommand(
-                () => SendRcCommand(RadioCommand.Ping),
+            RCGpsResetCommand = new RelayCommand(
+                () => SendRcCommand(RadioCommand.GpsReset),
                 () => RcButtonsEnabled
                 );
 
@@ -320,7 +321,7 @@ namespace InfoDroplets.Client.ViewModels
         void ChangeAndNotifyRCCommands(bool state)
         {
             RcButtonsEnabled = state;
-            (RCPingCommand as RelayCommand).NotifyCanExecuteChanged();
+            (RCGpsResetCommand as RelayCommand).NotifyCanExecuteChanged();
             (RCFullResetCommand as RelayCommand).NotifyCanExecuteChanged();
             (RCFileVersionCommand as RelayCommand).NotifyCanExecuteChanged();
         }

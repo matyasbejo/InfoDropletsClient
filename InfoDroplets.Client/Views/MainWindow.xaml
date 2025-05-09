@@ -165,7 +165,7 @@
                         </Grid.ColumnDefinitions>
 
                         <Button Content="{x:Static enums:RadioCommand.GetFileVersion}" Command="{Binding RCFileVersionCommand}" Style="{StaticResource RCButton}" Margin="0,5,2.5,5" IsEnabled="{Binding IsRCEnabled}" Grid.Column="0"/>
-                        <Button Content="{x:Static enums:RadioCommand.Ping}" Command="{Binding RCPingCommand}" Style="{StaticResource RCButton}" Margin="2.5,5,2.5,5" IsEnabled="{Binding IsRCEnabled}" Grid.Column="1"/>
+                        <Button Content="{x:Static enums:RadioCommand.GpsReset}" Command="{Binding RCGpsResetCommand}" Style="{StaticResource RCButton}" Margin="2.5,5,2.5,5" IsEnabled="{Binding IsRCEnabled}" Grid.Column="1"/>
                         <Button Content="{x:Static enums:RadioCommand.FullReset}" Command="{Binding RCFullResetCommand}" Style="{StaticResource RCButton}" Margin="2.5,5,0,5" IsEnabled="{Binding IsRCEnabled}" Grid.Column="2"/>
                     </Grid>
                     <Grid>
