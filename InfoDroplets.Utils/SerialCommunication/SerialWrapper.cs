@@ -16,7 +16,6 @@ namespace InfoDroplets.Utils.SerialCommunication
         ISerialPort _serialPort;
         public event SerialDataReceivedEventHandler WrapperDataReceived;
 
-
         public string SelectedSerialPort { get; set; }
         public int SelectedBaudRate { get; set; }
         public List<string> AvaliableSerialPorts
@@ -40,7 +39,6 @@ namespace InfoDroplets.Utils.SerialCommunication
         {
             WrapperDataReceived?.Invoke(this, e);
         }
-
         public void SendCommand(object sender, CommandEventArgs e)
         {
             WriteLine(e.Command);
