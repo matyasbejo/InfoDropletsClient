@@ -55,7 +55,7 @@ namespace InfoDroplets.Models
             Time = TimeOnly.ParseExact(inputValues[2], "H:m:s");
             Latitude = double.Parse(inputValues[3]);
             Longitude = double.Parse(inputValues[4]);
-            Elevation = double.Parse(inputValues[5]);
+            Elevation = Math.Round(double.Parse(inputValues[5])/1000,4);
         }
 
         public TrackingEntry()
