@@ -95,8 +95,17 @@ namespace InfoDroplets.Client.ViewModels
         {
             get 
             {
-                return DropletLogic.ReadAllIds().ToList();
+                var ids = DropletLogic.ReadAllIds().ToList();
+                if (ids.Count != 0 && !DropletSelectorEnabled)
+                    DropletSelectorEnabled = true;
+                OnPropertyChanged("DropletSelectorEnabled");
+                return ids;
             }
+        }
+
+        public bool DropletSelectorEnabled
+        {
+            get; set;
         }
 
         private int? selectedId;

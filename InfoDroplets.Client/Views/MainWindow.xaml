@@ -81,7 +81,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="Monitored droplet: " FontSize="16" VerticalContentAlignment="Center" Grid.Column="0"/>
-                    <ComboBox x:Name="cb_AvaliableDroplets" FontSize="16" Margin="0,8,10,8" VerticalContentAlignment="Center" IsEnabled="{Binding SerialWrapper.IsOpen}" ItemsSource="{Binding AvaliableDropletIds}" SelectedIndex="0" SelectedItem="{Binding SelectedId}" Grid.Column="1"/>
+                    <ComboBox x:Name="cb_AvaliableDroplets" FontSize="16" Margin="0,8,10,8" VerticalContentAlignment="Center" IsEnabled="{Binding DropletSelectorEnabled}" ItemsSource="{Binding AvaliableDropletIds}" SelectedIndex="0" SelectedItem="{Binding SelectedId}" Grid.Column="1"/>
                 </Grid>
             </Grid>
         </Border>
