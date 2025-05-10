@@ -102,17 +102,16 @@ namespace InfoDroplets.Logic
                 throw new ArgumentNullException("Droplet has no data");
             else return lastMesurement;
         }
-        public static DropletElevationTrend GetElevationTrend(List<TrackingEntry> trackingEntries)
+        public static DropletElevationTrend GetElevationTrend(List<TrackingEntry> trackingEntries, double thresholdKm = 0.02)
         {
-            if (trackingEntries.First().Elevation < trackingEntries.Last().Elevation)
-            {
+            double elevationDelta = trackingEntries.Last().Elevation - trackingEntries.First().Elevation;
+
+            if(Math.Abs(elevationDelta) < thresholdKm)
+                return DropletElevationTrend.Stationary;
+            else if(elevationDelta > 0)
                 return DropletElevationTrend.Rising;
-            }
-            else if (trackingEntries.First().Elevation > trackingEntries.Last().Elevation)
-            {
+            else 
                 return DropletElevationTrend.Descending;
-            }
-            return DropletElevationTrend.Stationary;
         }  
         public static double GetSpeedKmH(List<TrackingEntry> trackingEntries)
         {
