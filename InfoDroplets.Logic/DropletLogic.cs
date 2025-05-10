@@ -68,6 +68,7 @@ namespace InfoDroplets.Logic
         public void UpdateDropletStatus(int id, IGpsPos? referencePos = null)
         {
             Droplet droplet = Read(id);
+            
             try
             {
                 var last5entires = GetLastXEntries(droplet.Id, 5);
@@ -77,7 +78,7 @@ namespace InfoDroplets.Logic
                 droplet.SpeedKmH = GetSpeedKmH(last5entires);
                 droplet.LastUpdated = droplet.LastData.Time;
                 if (referencePos == null)
-                    referencePos = new GpsPos(46.180182, 19.010954, 112); //Baja Observatory of the University of Szeged coordinates
+                    referencePos = new GpsPos(46.180182, 19.010954, 0.112); //Baja Observatory of the University of Szeged coordinates
 
                 IGpsPos dropletPos = droplet.Measurements.Last();
                 droplet.DistanceFromGNU2D = Distance2DHaversineKm(dropletPos, referencePos);
@@ -173,10 +174,8 @@ namespace InfoDroplets.Logic
             TrackingEntry firstEntry = last5entires.First();
             TrackingEntry lastEntry = last5entires.Last();
 
-            int latDir = Math.Abs(lastEntry.Latitude - firstEntry.Latitude) > threshold ? (lastEntry.Latitude > firstEntry.Latitude 
-                ? 1 : -1) : 0;
-            int lonDir = Math.Abs(lastEntry.Longitude - firstEntry.Longitude) > threshold ? (lastEntry.Longitude > firstEntry.Longitude 
-                ? 1 : -1) : 0;
+            int latDir = Math.Abs(lastEntry.Latitude - firstEntry.Latitude) > threshold ? (lastEntry.Latitude > firstEntry.Latitude ? 1 : -1) : 0;
+            int lonDir = Math.Abs(lastEntry.Longitude - firstEntry.Longitude) > threshold ? (lastEntry.Longitude > firstEntry.Longitude ? 1 : -1) : 0;
 
             return (latDir, lonDir) switch
             {
@@ -194,24 +193,27 @@ namespace InfoDroplets.Logic
         
         public static double Distance2DHaversineKm(IGpsPos pos1, IGpsPos pos2)
         {
-            double earthRadius = 6378;
-            double degreesToRadians = 0.0174532925;
+            double dLat = (Math.PI / 180) * (pos2.Latitude - pos1.Latitude);
+            double dLon = (Math.PI / 180) * (pos2.Longitude - pos1.Longitude);
 
-            var latRad = Math.Abs(pos2.Latitude - pos1.Latitude) * degreesToRadians;
-            var lngRad = Math.Abs(pos2.Longitude - pos1.Longitude) * degreesToRadians;
-            var h1 = Math.Sin(latRad / 2) * Math.Sin(latRad / 2) +
-                          Math.Cos(pos1.Latitude * degreesToRadians) * Math.Cos(pos2.Latitude * degreesToRadians) *
-                          Math.Sin(lngRad / 2) * Math.Sin(lngRad / 2);
-            var h2 = 2 * Math.Asin(Math.Min(1, Math.Sqrt(h1)));
+            double lat1Radians = (Math.PI / 180) * (pos1.Latitude);
+            double lat2Radians = (Math.PI / 180) * (pos2.Latitude);
 
-            return Math.Round(earthRadius * h2,4);
+            double a = Math.Pow(Math.Sin(dLat / 2), 2) +
+                       Math.Pow(Math.Sin(dLon / 2), 2) *
+                       Math.Cos(lat1Radians) * Math.Cos(lat2Radians);
+
+            double rad = 6371;
+            double c = 2 * Math.Asin(Math.Sqrt(a));
+            return Math.Round(rad * c,4);
         }
 
         public static double Distance3DKm(IGpsPos pos1, IGpsPos pos2)
         {
             double distanceHaversine = Distance2DHaversineKm(pos1, pos2);
-            double deltaHkm = Math.Abs(pos2.Elevation/1000 - pos1.Elevation/1000);
-            return Math.Round(Math.Sqrt(distanceHaversine*distanceHaversine + deltaHkm*deltaHkm),4);
+            double deltaHkm = Math.Abs(pos2.Elevation - pos1.Elevation);
+            var result = Math.Round(Math.Sqrt(distanceHaversine*distanceHaversine + deltaHkm*deltaHkm),4);
+            return result;
         }
 
         #endregion

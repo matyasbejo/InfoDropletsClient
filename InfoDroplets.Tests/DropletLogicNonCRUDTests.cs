@@ -102,7 +102,7 @@ namespace InfoDroplets.Tests
     {
         public static IEnumerable<object[]> TestCases()
         {
-            yield return new object[] { "01ValidSameHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 100), 0.9497, 0.01, null}; //expected success
+            yield return new object[] { "01ValidSameHeight", new GpsPos(46.186237, 19.224501, 100), new GpsPos(46.180182, 19.010954, 100), 16.453974744181, 0.01, null}; //expected success
             yield return new object[] { "02ValidDifferentHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 1000), 0.9497, 0.01, null}; //expected success
             yield return new object[] { "03ValidZeroHeight", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.680594, 16.577495, 0), 0.9497, 0.01, null}; //expected success
             yield return new object[] { "04ValidSamePosition", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.683784, 16.589251, 0), 0, 0, null}; //expected success
@@ -197,7 +197,7 @@ namespace InfoDroplets.Tests
             new TrackingEntry
             {
                 Latitude = 0,
-                Longitude = 18.697881,
+                Longitude = 18.707881,
                 Elevation = 100
             }
         };
@@ -206,14 +206,14 @@ namespace InfoDroplets.Tests
         {
             new TrackingEntry
             {
-                Latitude = 0.03222,
+                Latitude = 0.04222,
                 Longitude = 18.697721,
                 Elevation = 100
             },
             new TrackingEntry
             {
                 Latitude = 0,
-                Longitude = 18.697881,
+                Longitude = 18.699881,
                 Elevation = 100
             }
         };

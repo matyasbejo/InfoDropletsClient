@@ -238,7 +238,7 @@ namespace InfoDroplets.Client.ViewModels
                         TrackingEntryLogic.Create(line);
                         var newDropletId = int.Parse(line.Trim().Split(';')[0]);
 
-                        DropletLogic.UpdateDropletStatus(newDropletId, new GpsPos(47.500429, 19.084596, 100));
+                        DropletLogic.UpdateDropletStatus(newDropletId);
                         OnPropertyChanged("SelectedDroplet");
                         OnPropertyChanged("MapPos");
                     }

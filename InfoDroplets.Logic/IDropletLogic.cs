@@ -18,6 +18,6 @@ namespace InfoDroplets.Logic
         void SendCommand(int dropletId, RadioCommand commandType);
         void SendCommand(string input);
         void Update(Droplet item);
-        void UpdateDropletStatus(int id, IGpsPos gnuPos);
+        void UpdateDropletStatus(int id, IGpsPos? gnuPos = null);
     }
 }
