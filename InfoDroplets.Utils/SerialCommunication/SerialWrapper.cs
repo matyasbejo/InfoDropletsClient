@@ -72,7 +72,10 @@ namespace InfoDroplets.Utils.SerialCommunication
                 }
 
                 if (!restarted)
+                {
+                    SafeClose();
                     throw new Exception("No restart message received from ground unit");
+                }
             }
             else
                 throw new Exception("Port is already open");
