@@ -27,7 +27,7 @@ namespace InfoDropletsClient
         {
             InitializeComponent();
 
-            myMap.CacheLocation = Environment.CurrentDirectory + "\\GMapCache2\\";
+            myMap.CacheLocation = Environment.CurrentDirectory + "\\GMapCache\\";
             myMap.MapProvider = GMapProviders.OpenStreetMap;
             myMap.MinZoom = 1;
             myMap.MaxZoom = 20;
