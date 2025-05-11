@@ -98,9 +98,9 @@ namespace InfoDroplets.ResultExporterApp
             FileInfo? aFileInfo = aFilePaths.Length == 0 ? null : new FileInfo(aFilePaths.Last());
             FileInfo? bFileInfo = bFilePaths.Length == 0 ? null : new FileInfo(bFilePaths.Last());
 
-            if (aFileInfo == null || !aFileInfo.Exists || aFileInfo.Length == 0)
+            if (aFileInfo == null)
                 paths = bFilePaths;
-            else if (bFileInfo == null || !bFileInfo.Exists || bFileInfo.Length == 0)
+            else if (bFileInfo == null)
                 paths = aFilePaths;
             else paths = aFilePaths;
 
