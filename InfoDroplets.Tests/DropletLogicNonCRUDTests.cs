@@ -1,12 +1,8 @@
 ﻿using InfoDroplets.Logic;
 using InfoDroplets.Models;
-using InfoDroplets.Repository;
 using InfoDroplets.Utils.Enums;
 using InfoDroplets.Utils.Interfaces;
-using Microsoft.ApplicationInsights.DataContracts;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace InfoDroplets.Tests
 {
@@ -103,7 +99,7 @@ namespace InfoDroplets.Tests
         public static IEnumerable<object[]> TestCases()
         {
             yield return new object[] { "01ValidSameHeight", new GpsPos(46.186237, 19.224501, 100), new GpsPos(46.180182, 19.010954, 100), 16.453974744181, 0.01, null}; //expected success
-            yield return new object[] { "02ValidDifferentHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 1000), 0.9497, 0.01, null}; //expected success
+            yield return new object[] { "02ValidDifferentHeight", new GpsPos(47.683784, 16.589251, 0.100), new GpsPos(47.680594, 16.577495, 1), 0.9497, 0.01, null}; //expected success
             yield return new object[] { "03ValidZeroHeight", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.680594, 16.577495, 0), 0.9497, 0.01, null}; //expected success
             yield return new object[] { "04ValidSamePosition", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.683784, 16.589251, 0), 0, 0, null}; //expected success
             yield return new object[] { "05InvalidMissingFirstValue", null, new GpsPos(47.683784, 16.589251, 0), 0, 0, typeof(NullReferenceException)}; //expected fail
@@ -115,11 +111,11 @@ namespace InfoDroplets.Tests
     {
         public static IEnumerable<object[]> TestCases()
         {
-            yield return new object[] { "01ValidDifferentPosSameHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 100), 0.9497, 0.01, null}; //expected success
-            yield return new object[] { "03ValidDifferentPosDifferentHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 1000), 1.3, 0.01, null}; //expected success
-            yield return new object[] { "02ValidSamePosDifferentHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.683784, 16.589251, 1000), 0.9, 0, null }; //expected success
-            yield return new object[] { "04ValidZeroHeight", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.680594, 16.577495, 0), 0.9497, 0.01, null}; //expected success
-            yield return new object[] { "05ValidSamePosition", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.683784, 16.589251, 0), 0, 0, null}; //expected success
+            yield return new object[] { "01ValidDifferentPosSameHeight", new GpsPos(47.683784, 16.589251, 100), new GpsPos(47.680594, 16.577495, 100), 0.9497, 0.1, null}; //expected success
+            yield return new object[] { "03ValidDifferentPosDifferentHeight", new GpsPos(47.683784, 16.589251, 0.1), new GpsPos(47.680594, 16.577495, 1), 1.3, 0.1, null}; //expected success
+            yield return new object[] { "02ValidSamePosDifferentHeight", new GpsPos(47.683784, 16.589251, 0.100), new GpsPos(47.683784, 16.589251, 1), 0.9, 0.1, null }; //expected success
+            yield return new object[] { "04ValidZeroHeight", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.680594, 16.577495, 0), 0.9497, 0.1, null}; //expected success
+            yield return new object[] { "05ValidSamePosition", new GpsPos(47.683784, 16.589251, 0), new GpsPos(47.683784, 16.589251, 0), 0, 0.1, null}; //expected success
             yield return new object[] { "06InvalidMissingFirstValue", null, new GpsPos(47.683784, 16.589251, 0), 0, 0, typeof(NullReferenceException)}; //expected fail
             yield return new object[] { "07InvalidMissingSecondValue", new GpsPos(47.683784, 16.589251, 0), null, 0, 0, typeof(NullReferenceException)}; //expected fail
             yield return new object[] { "08InvalidMissingValues", null, null, 0, 0, typeof(NullReferenceException)}; //expected fail
@@ -325,7 +321,23 @@ namespace InfoDroplets.Tests
             yield return new object[] { "01ValidGpsReset", 5, RadioCommand.GpsReset, "R5", null }; //expected success
             yield return new object[] { "02ValidFullReset", 3, RadioCommand.FullReset, "F3", null }; //expected success
             yield return new object[] { "03ValidGetFileVersion", 1, RadioCommand.GetFileVersion, "V1", null }; //expected success
-            yield return new object[] { "04ValidPing", 11, RadioCommand.Ping, "P11", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet0", 0, RadioCommand.Ping, "P0", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet1", 1, RadioCommand.Ping, "P1", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet2", 2, RadioCommand.Ping, "P2", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet3", 3, RadioCommand.Ping, "P3", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet4", 4, RadioCommand.Ping, "P4", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet5", 5, RadioCommand.Ping, "P5", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet6", 6, RadioCommand.Ping, "P6", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet7", 7, RadioCommand.Ping, "P7", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet8", 8, RadioCommand.Ping, "P8", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet9", 9, RadioCommand.Ping, "P9", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet10", 10, RadioCommand.Ping, "P10", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet11", 11, RadioCommand.Ping, "P11", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet12", 12, RadioCommand.Ping, "P12", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet13", 13, RadioCommand.Ping, "P13", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet14", 14, RadioCommand.Ping, "P14", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet15", 15, RadioCommand.Ping, "P15", null }; //expected success
+            yield return new object[] { "04ValidPingDroplet-1", -1, RadioCommand.Ping, "P-1", null }; //expected success
             yield return new object[] { "05InvalidNullDropletId", null, RadioCommand.GetFileVersion, null, typeof(ArgumentNullException) }; //expected fail
             yield return new object[] { "06InvalidNullRadioCommand", 8, null, null, typeof(ArgumentNullException) }; //expected fail
             yield return new object[] { "07InvalidNullInputs", null, null, null, typeof(ArgumentNullException) }; //expected fail
@@ -395,9 +407,13 @@ namespace InfoDroplets.Tests
         {
             yield return new object[] { "01ValidSingleEntryList", SingleEntryList, 0.0, null }; //expected succes
             yield return new object[] { "02Valid1Km1h2DEntryList", _1Km1Hour2DEntryList, 1.0, null }; //expected succes
-            yield return new object[] { "03Valid1Km1h3DEntryList", _1Km1Hour3DEntryList, 1.0, null }; //expected succes
-            yield return new object[] { "04InvalidEmptyEntryList", EmptyEntryList, null, typeof(InvalidOperationException) }; //expected fail
-            yield return new object[] { "05InvalidNullEntryList", null, null, typeof(NullReferenceException) }; //expected fail
+            yield return new object[] { "03Valid1Km1Hour3DEntryList", _1Km1Hour3DEntryList, 10.01, null }; //expected succes
+            yield return new object[] { "04Valid1Km2Hour2DEntryList", _1Km2Hour2DEntryList, 0.5, null }; //expected succes
+            yield return new object[] { "05Valid1Km3Hour2DEntryList", _1Km3Hour2DEntryList, 0.33, null }; //expected succes
+            yield return new object[] { "06Valid1Km0_5Hour2DEntryList", _1Km0_5Hour2DEntryList, 2.0, null }; //expected succes
+            yield return new object[] { "07Valid1Km1Hour3DEntryList", _1Km1Hour3DEntryList, 10.01, null }; //expected succes
+            yield return new object[] { "08InvalidEmptyEntryList", EmptyEntryList, null, typeof(InvalidOperationException) }; //expected fail
+            yield return new object[] { "09InvalidNullEntryList", null, null, typeof(NullReferenceException) }; //expected fail
         }
 
         static readonly List<TrackingEntry> SingleEntryList = new List<TrackingEntry>
@@ -438,14 +454,63 @@ namespace InfoDroplets.Tests
             },
             new TrackingEntry
             {
-                Latitude = 47.650593,
+                Latitude = 47.650597,
                 Longitude = 18.697721,
-                Elevation = 150,
-                Time = new TimeOnly(14,0,0,0)
+                Elevation = 100,
+                Time = new TimeOnly(13,6,0,0)
             }
         };
-
-        static readonly List<TrackingEntry> EmptyEntryList = new List<TrackingEntry>
+        static readonly List<TrackingEntry> _1Km2Hour2DEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 100,
+                Time = new TimeOnly(13,0,0,0)
+            },
+            new TrackingEntry
+            {
+                Latitude = 47.650597,
+                Longitude = 18.697721,
+                Elevation = 100,
+                Time = new TimeOnly(15,0,0,0)
+            }
+        };
+        static readonly List<TrackingEntry> _1Km3Hour2DEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 100,
+                Time = new TimeOnly(13,0,0,0)
+            },
+            new TrackingEntry
+            {
+                Latitude = 47.650593,
+                Longitude = 18.697721,
+                Elevation = 100,
+                Time = new TimeOnly(16,0,0,0)
+            }
+        };
+        static readonly List<TrackingEntry> _1Km0_5Hour2DEntryList = new List<TrackingEntry>
+        {
+            new TrackingEntry
+            {
+                Latitude = 47.641597,
+                Longitude = 18.697721,
+                Elevation = 100,
+                Time = new TimeOnly(13,0,0,0)
+            },
+            new TrackingEntry
+            {
+                Latitude = 47.650593,
+                Longitude = 18.697721,
+                Elevation = 100,
+                Time = new TimeOnly(13,30,0,0)
+            }
+        };        static readonly List<TrackingEntry> EmptyEntryList = new List<TrackingEntry>
         {
         };
     }
