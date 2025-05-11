@@ -1,7 +1,6 @@
 ﻿using InfoDroplets.ResultExporter.Models;
 using NUnit.Framework;
 using ResultExporterApp;
-using System.Security.Cryptography;
 
 namespace InfoDroplets.ResultExporterApp.Tester
 {
