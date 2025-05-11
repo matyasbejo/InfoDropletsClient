@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:InfoDroplets.ResultExporterApp"
         mc:Ignorable="d"
         Title="Info-Droplets result exporter " Height="230" Width="700"
-        ResizeMode="CanMinimize"
+        ResizeMode="CanResize"
         Background="AliceBlue">
     <Grid Height="190" VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
