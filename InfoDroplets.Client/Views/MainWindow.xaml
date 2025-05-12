@@ -34,11 +34,8 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <!-- Top toolbar row -->
             <RowDefinition Height="1*"/>
-            <!-- Main content row -->
             <RowDefinition Height="7*"/>
-            <!-- Status row -->
             <RowDefinition Height="0.37*"/>
         </Grid.RowDefinitions>
 
