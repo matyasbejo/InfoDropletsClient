@@ -43,7 +43,7 @@ namespace InfoDroplets.ResultExporterApp
             ProcessFiles(AllFilesLines);
 
             GlobalLabelHelper.Instance.LabelText = "Calculating center position of map...";
-            CenterPos = GetMapCenterPos(); //TODO: összes teszt megírása. Ez pl tesztelhető lesz ha kap egy minimális mock??? databaset.
+            CenterPos = GetMapCenterPos();
 
             GlobalLabelHelper.Instance.LabelText = "Calculating upper limit of elevation function...";
             ElevationLimit = GetElevationLimit();
