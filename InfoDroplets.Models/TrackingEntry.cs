@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Metrics;
 using InfoDroplets.Utils.Interfaces;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace InfoDroplets.Models
 {
@@ -53,9 +54,9 @@ namespace InfoDroplets.Models
             DropletId = int.Parse(inputValues[0]);
             SatelliteCount = int.Parse(inputValues[1]);
             Time = TimeOnly.ParseExact(inputValues[2], "H:m:s");
-            Latitude = double.Parse(inputValues[3]);
-            Longitude = double.Parse(inputValues[4]);
-            Elevation = Math.Round(double.Parse(inputValues[5])/1000,3);
+            Latitude = double.Parse(inputValues[3], new NumberFormatInfo() { NumberDecimalSeparator = "." });
+            Longitude = double.Parse(inputValues[4], new NumberFormatInfo() { NumberDecimalSeparator = "." });
+            Elevation = Math.Round(double.Parse(inputValues[5], new NumberFormatInfo() { NumberDecimalSeparator = "." }) /1000,3);
         }
 
         public TrackingEntry()

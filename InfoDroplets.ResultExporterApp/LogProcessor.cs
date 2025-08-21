@@ -1,5 +1,6 @@
 ﻿using InfoDroplets.ResultExporter.Models;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -69,9 +70,9 @@ namespace InfoDroplets.ResultExporterApp
             {
                 var rowData = row.Split(';');
                 if (rowData.Count() != 6) throw new Exception($"The line {row} is not a valid LogEntry.");
-                var Lat = double.Parse(rowData[3]);
-                var Long = double.Parse(rowData[4]);
-                var El = double.Parse(rowData[5]);
+                var Lat = double.Parse(rowData[3], new NumberFormatInfo() { NumberDecimalSeparator = "." });
+                var Long = double.Parse(rowData[4], new NumberFormatInfo() { NumberDecimalSeparator = "." });
+                var El = double.Parse(rowData[5], new NumberFormatInfo() { NumberDecimalSeparator = "." });
 
                 convertedValues.Add(new LogEntry(Lat, Long, El));
             }
