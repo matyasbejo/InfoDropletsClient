@@ -10,7 +10,7 @@
         xmlns:enums="clr-namespace:InfoDroplets.Utils.Enums;assembly=InfoDroplets.Utils"
         mc:Ignorable="d"
         Icon="pack://application:,,,/icon.ico"
-        Title="Info-Droplets Client" Height="675" Width="1200">
+        Title="Info-Droplets Client" Height="720" Width="1200">
 
     <Window.DataContext>
         <vms:MainWindowViewModel/>
@@ -25,6 +25,7 @@
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
         <converters:BooleanNegationConverter x:Key="BooleanNegationConverter"/>
+        <converters:DropletStateConverter x:Key="DroletStateConverter"/>
     </Window.Resources>
 
     <Grid Background="#82817e">
@@ -36,7 +37,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="7*"/>
-            <RowDefinition Height="0.37*"/>
+            <!--<RowDefinition Height="0.37*"/>-->
         </Grid.RowDefinitions>
 
         <Border x:Name="NavbarArea" Background="#d9d0c9" Margin="7,14,7,7" CornerRadius="10" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch">
@@ -114,10 +115,14 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
-                    <TextBlock Text="{Binding SelectedDroplet.Id, StringFormat={}🎈 Droplet #{0},FallbackValue='Select a droplet to start'}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                    <WrapPanel  Margin="0,0,0,15">
+                        <TextBlock Text="{Binding SelectedDroplet.Id, StringFormat={}🎈 Droplet #{0},FallbackValue='Select a droplet to start'}" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                        <TextBlock Text="{Binding SelectedDroplet.State, FallbackValue='', Converter={StaticResource DroletStateConverter} }" FontSize="18" FontStyle="Italic" Foreground="Red"/>
+                    </WrapPanel>
 
                     <TextBlock Text="Altitude:" FontWeight="Bold"/>
-                    <TextBox x:Name="tb_altitude" Text="{Binding SelectedDroplet.LastData.Elevation, StringFormat={}{0} km}" Margin="0,0,0,10" IsReadOnly="True"/>
+                    <TextBox x:Name="tb_altitude" Text="{Binding SelectedDroplet.LastData.Elevation, StringFormat={}{0} km}" Margin="0,0,0,10" IsReadOnly="True" TextChanged="tb_altitude_TextChanged"/>
+                    
                     <TextBlock Text="Speed:" FontWeight="Bold"/>
                     <TextBox x:Name="tb_speed" Text="{Binding SelectedDroplet.SpeedKmH, StringFormat={}{0} km/h}" Margin="0,0,0,10" IsReadOnly="True"/>
 
@@ -127,11 +132,15 @@
                     <TextBlock Text="Longitude:" FontWeight="Bold"/>
                     <TextBox x:Name="tb_longitude" Text="{Binding SelectedDroplet.LastData.Longitude}" Margin="0,0,0,10" IsReadOnly="True"/>
 
-                    <TextBlock Text="Droplet elevation:" FontWeight="Bold"/>
+                    <TextBlock Text="Elevation trend:" FontWeight="Bold"/>
                     <TextBox x:Name="tb_elevationTrend" Text="{Binding SelectedDroplet.ElevationTrend}" Margin="0,0,0,10" IsReadOnly="True"/>
 
-                    <TextBlock Text="Droplet direction:" FontWeight="Bold"/>
+                    <TextBlock Text="Direction:" FontWeight="Bold"/>
                     <TextBox x:Name="tb_direction" Text="{Binding SelectedDroplet.Direction}" Margin="0,0,0,10" IsReadOnly="True"/>
+
+                    <TextBlock Text="Last update:" FontWeight="Bold"/>
+                    <TextBox x:Name="tb_lastUpdate" Text="{Binding SelectedDroplet.LastUpdated, StringFormat={}{0:HH:mm:ss}}" IsReadOnly="True" Margin="0,0,0,10"/>
+
                     <TextBlock Text="Distance:" FontWeight="Bold" Margin="0,0,0,3"/>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -148,9 +157,6 @@
                         <TextBlock Text="2D:" Margin="0,0,10,0" Grid.Column="0" Grid.Row="1"/>
                         <TextBox x:Name="tb_distance2d" Text="{Binding SelectedDroplet.DistanceFromGNU2D, StringFormat={}{0} km}" IsReadOnly="True" Grid.Row="1" Grid.Column="1" Margin="0,0,0,10"/>
                     </Grid>
-                    
-                    <TextBlock Text="Last update:" FontWeight="Bold"/>
-                    <TextBox x:Name="tb_lastUpdate" Text="{Binding SelectedDroplet.LastUpdated, StringFormat={}{0:HH:mm:ss}}" IsReadOnly="True" Foreground="Green" Margin="0,0,0,10"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2">

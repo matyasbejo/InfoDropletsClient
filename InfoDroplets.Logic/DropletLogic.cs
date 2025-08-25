@@ -83,6 +83,23 @@ namespace InfoDroplets.Logic
                 IGpsPos dropletPos = droplet.Measurements.Last();
                 droplet.DistanceFromGNU2D = Distance2DHaversineKm(dropletPos, referencePos);
                 droplet.DistanceFromGNU3D = Distance3DKm(dropletPos, referencePos);
+
+                if (droplet.LastData.Latitude == 0 && droplet.LastData.Longitude == 0)
+                {
+                    if (droplet.LastData.Time == new TimeOnly(0, 0, 0))
+                    {
+                        droplet.State = DropletState.NoFixNoTime;
+                    }
+                    else
+                    {
+                        droplet.State = DropletState.NoFixHasTime;
+                    }
+                }
+                else
+                {
+                    droplet.State |= DropletState.HasFixHasTime;
+                }
+                    
             }
             catch (Exception e)
             {
