@@ -71,11 +71,7 @@ namespace InfoDroplets.Logic
             
             try
             {
-                var last5entires = GetLastXEntries(droplet.Id, 5);
                 droplet.LastData = GetLatestEntry(id);
-                droplet.ElevationTrend = GetElevationTrend(last5entires);
-                droplet.Direction = GetDirection(last5entires);
-                droplet.SpeedKmH = GetSpeedKmH(last5entires);
                 droplet.LastUpdated = droplet.LastData.Time;
                 if (referencePos == null)
                     referencePos = new GpsPos(46.180182, 19.010954, 0.112); //Baja Observatory of the University of Szeged coordinates
@@ -83,6 +79,11 @@ namespace InfoDroplets.Logic
                 droplet.DistanceFromGNU2D = Distance2DHaversineKm(droplet.LastData, referencePos);
                 droplet.DistanceFromGNU3D = Distance3DKm(droplet.LastData, referencePos);
                 droplet.State = GetDropletState(droplet.LastData);
+
+                var last5entires = GetLastXEntries(droplet.Id, 5);
+                droplet.ElevationTrend = GetElevationTrend(last5entires);
+                droplet.Direction = GetDirection(last5entires);
+                droplet.SpeedKmH = GetSpeedKmH(last5entires);
             }
             catch (Exception e)
             {
