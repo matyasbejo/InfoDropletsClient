@@ -20,7 +20,7 @@ namespace InfoDroplets.Models
 
         public DropletElevationTrend? ElevationTrend { get; set; }
         public DropletDirection? Direction { get; set; }
-        public DropletState State { get; set; }
+        public DropletState? State { get; set; }
         public double? DistanceFromGNU3D { get; set; }
         public double? DistanceFromGNU2D { get; set; }
         public double? SpeedKmH { get; set; }

@@ -83,23 +83,7 @@ namespace InfoDroplets.Logic
                 IGpsPos dropletPos = droplet.Measurements.Last();
                 droplet.DistanceFromGNU2D = Distance2DHaversineKm(dropletPos, referencePos);
                 droplet.DistanceFromGNU3D = Distance3DKm(dropletPos, referencePos);
-
-                if (droplet.LastData.Latitude == 0 && droplet.LastData.Longitude == 0)
-                {
-                    if (droplet.LastData.Time == new TimeOnly(0, 0, 0))
-                    {
-                        droplet.State = DropletState.NoFixNoTime;
-                    }
-                    else
-                    {
-                        droplet.State = DropletState.NoFixHasTime;
-                    }
-                }
-                else
-                {
-                    droplet.State |= DropletState.HasFixHasTime;
-                }
-                    
+                droplet.State = GetDropletState(droplet.LastData);
             }
             catch (Exception e)
             {
@@ -230,6 +214,27 @@ namespace InfoDroplets.Logic
             double deltaHkm = Math.Abs(pos2.Elevation - pos1.Elevation);
             var result = Math.Round(Math.Sqrt(distanceHaversine*distanceHaversine + deltaHkm*deltaHkm),4);
             return result;
+        }
+
+        static DropletState GetDropletState(TrackingEntry te)
+        {
+            DropletState state;
+            if (te.Latitude == 0 && te.Longitude == 0)
+            {
+                if (te.Time == new TimeOnly(0, 0, 0))
+                {
+                    state = DropletState.NoFixNoTime;
+                }
+                else
+                {
+                    state = DropletState.NoFixHasTime;
+                }
+            }
+            else
+            {
+                state = DropletState.HasFixHasTime;
+            }
+            return state;
         }
 
         #endregion
