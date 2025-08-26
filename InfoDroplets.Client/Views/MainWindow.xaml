@@ -10,7 +10,7 @@
         xmlns:enums="clr-namespace:InfoDroplets.Utils.Enums;assembly=InfoDroplets.Utils"
         mc:Ignorable="d"
         Icon="pack://application:,,,/icon.ico"
-        Title="Info-Droplets Client" Height="710" Width="1200">
+        Title="Info-Droplets Client V1.1.2 - by Matyas Bejo" Height="710" Width="1200">
 
     <Window.DataContext>
         <vms:MainWindowViewModel/>
