@@ -347,3 +347,4 @@ Temporary Items
 .apdisk
 /InfoDroplets.ConsoleClient/InfoDroplets.ConsoleClient.csproj
 /undoCommit.bat
+*.exe

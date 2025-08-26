@@ -23,6 +23,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoDroplets.ResultExporter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfoDroplets.Tests", "InfoDroplets.Tests\InfoDroplets.Tests.csproj", "{18AD124A-E804-4D66-8FBB-3475AAB427E2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InstallerCreator", "InstallerCreator", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		Installers\ClientScript.iss = Installers\ClientScript.iss
+		Installers\ResultExporterScript.iss = Installers\ResultExporterScript.iss
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
