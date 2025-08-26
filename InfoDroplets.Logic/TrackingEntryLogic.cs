@@ -22,10 +22,14 @@ namespace InfoDroplets.Logic
 
         public void Create(string data)
         {
-            string allowedCharacters = "0123456789;.:";
+            string allowedCharacters = "0123456789;.:-";
             data = data.Trim();
             var argumentList = data.Split(";");
-            if (argumentList.Count() != 6 || data.Any(c => !allowedCharacters.Contains(c)))
+            if(argumentList.Count() == 6)
+            {
+                data += ";9999";
+                argumentList = data.Split(";");
+            }
             if (argumentList.Count() != 7 || data.Any(c => !allowedCharacters.Contains(c)))
                 throw new ArgumentException($"Input error: {data}");
 
