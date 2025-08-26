@@ -26,6 +26,7 @@ namespace InfoDroplets.Logic
             data = data.Trim();
             var argumentList = data.Split(";");
             if (argumentList.Count() != 6 || data.Any(c => !allowedCharacters.Contains(c)))
+            if (argumentList.Count() != 7 || data.Any(c => !allowedCharacters.Contains(c)))
                 throw new ArgumentException($"Input error: {data}");
 
             int LogEntryDropletId = int.Parse(argumentList[0]); 

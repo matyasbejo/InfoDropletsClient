@@ -10,7 +10,7 @@
         xmlns:enums="clr-namespace:InfoDroplets.Utils.Enums;assembly=InfoDroplets.Utils"
         mc:Ignorable="d"
         Icon="pack://application:,,,/icon.ico"
-        Title="Info-Droplets Client" Height="720" Width="1200">
+        Title="Info-Droplets Client" Height="710" Width="1200">
 
     <Window.DataContext>
         <vms:MainWindowViewModel/>
@@ -140,6 +140,9 @@
 
                     <TextBlock Text="Last update:" FontWeight="Bold"/>
                     <TextBox x:Name="tb_lastUpdate" Text="{Binding SelectedDroplet.LastUpdated, StringFormat={}{0:HH:mm:ss}}" IsReadOnly="True" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="RSSI:" FontWeight="Bold"/>
+                    <TextBox x:Name="tb_rssi" Text="{Binding SelectedDroplet.LastData.RSSI, StringFormat={}{0} dBm}" IsReadOnly="True" Margin="0,0,0,10"/>
 
                     <TextBlock Text="Distance:" FontWeight="Bold" Margin="0,0,0,3"/>
                     <Grid>

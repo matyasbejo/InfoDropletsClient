@@ -34,6 +34,9 @@ namespace InfoDroplets.Models
 
         [Required]
         public double Longitude { get; set; }
+
+        [Required]
+        public int RSSI { get; set; }
         #endregion
 
         public TrackingEntry(int dropletId, int satelliteCount, double longitude, double latitude, double elevation, TimeOnly time)
@@ -57,6 +60,7 @@ namespace InfoDroplets.Models
             Latitude = double.Parse(inputValues[3], new NumberFormatInfo() { NumberDecimalSeparator = "." });
             Longitude = double.Parse(inputValues[4], new NumberFormatInfo() { NumberDecimalSeparator = "." });
             Elevation = Math.Round(double.Parse(inputValues[5], new NumberFormatInfo() { NumberDecimalSeparator = "." }) /1000,3);
+            RSSI = int.Parse(inputValues[6]);
         }
 
         public TrackingEntry()
