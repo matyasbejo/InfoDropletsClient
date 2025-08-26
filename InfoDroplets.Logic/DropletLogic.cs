@@ -80,9 +80,8 @@ namespace InfoDroplets.Logic
                 if (referencePos == null)
                     referencePos = new GpsPos(46.180182, 19.010954, 0.112); //Baja Observatory of the University of Szeged coordinates
 
-                IGpsPos dropletPos = droplet.Measurements.Last();
-                droplet.DistanceFromGNU2D = Distance2DHaversineKm(dropletPos, referencePos);
-                droplet.DistanceFromGNU3D = Distance3DKm(dropletPos, referencePos);
+                droplet.DistanceFromGNU2D = Distance2DHaversineKm(droplet.LastData, referencePos);
+                droplet.DistanceFromGNU3D = Distance3DKm(droplet.LastData, referencePos);
                 droplet.State = GetDropletState(droplet.LastData);
             }
             catch (Exception e)
