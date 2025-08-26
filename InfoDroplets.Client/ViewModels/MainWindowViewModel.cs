@@ -254,8 +254,14 @@ namespace InfoDroplets.Client.ViewModels
                     {
                         var newDropletId = int.Parse(line.Trim().Split(';')[0]);
                         DropletLogic.Create(new Droplet(newDropletId));
+                        TrackingEntryLogic.ReadAll();
+
+                        DropletLogic.UpdateDropletStatus(newDropletId);
+
                         OnPropertyChanged("AvaliableDropletIds");
                         OnPropertyChanged("IsRCEnabled");
+                        OnPropertyChanged("SelectedDroplet");
+                        OnPropertyChanged("MapPos");
                     }
                     catch (ArgumentException ex)
                     {

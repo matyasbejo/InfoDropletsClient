@@ -34,9 +34,10 @@ namespace InfoDroplets.Logic
                 throw new ArgumentException($"Input error: {data}");
 
             int LogEntryDropletId = int.Parse(argumentList[0]); 
-            bool isFirstDropletInCollection = !ReadAll().Any(d => d.DropletId == LogEntryDropletId);
+            bool isFirstDropletInCollection = !repo.ReadAll().Any(d => d.DropletId == LogEntryDropletId);
 
             repo.Create(new TrackingEntry(data));
+
             if (isFirstDropletInCollection)
                 throw new NullReferenceException($"Droplet {LogEntryDropletId} does not exist");
         }
