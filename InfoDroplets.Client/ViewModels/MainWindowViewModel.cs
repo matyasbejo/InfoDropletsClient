@@ -244,9 +244,9 @@ namespace InfoDroplets.Client.ViewModels
                     try
                     {
                         TrackingEntryLogic.Create(line);
-                        var dropletId = int.Parse(line.Trim().Split(';')[0]);
+                        var newDropletId = int.Parse(line.Trim().Split(';')[0]);
 
-                        DropletLogic.UpdateDropletStatus(dropletId);
+                        DropletLogic.UpdateDropletStatus(newDropletId);
                         OnPropertyChanged("SelectedDroplet");
                         OnPropertyChanged("MapPos");
                     }
@@ -256,11 +256,6 @@ namespace InfoDroplets.Client.ViewModels
                         DropletLogic.Create(new Droplet(newDropletId));
                         OnPropertyChanged("AvaliableDropletIds");
                         OnPropertyChanged("IsRCEnabled");
-
-                        TrackingEntryLogic.Create(line);
-                        DropletLogic.UpdateDropletStatus(newDropletId);
-                        OnPropertyChanged("SelectedDroplet");
-                        OnPropertyChanged("MapPos");
                     }
                     catch (ArgumentException ex)
                     {
