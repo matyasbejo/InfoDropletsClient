@@ -20,7 +20,7 @@ namespace InfoDroplets.Client.Converters
             switch ((int)value)
             {
                 case (0):
-                    displayValue = " - no fix";
+                    displayValue = " - no data";
                     break;
 
                 case (1):
